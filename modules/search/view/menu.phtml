@@ -1,0 +1,39 @@
+<ul>
+    <li class="current"><a href="/admin/" class="dashboard"><span>Dashboard</span></a></li>
+    <li><a href="/admin/news/" class="tables"><span>Novinky</span></a></li>
+    <li><a href="/admin/action/" class="tables"><span>Akce</span></a></li>
+    <li><a href="/admin/report/" class="tables"><span>Reportáže</span></a></li>
+    <li><a href="/admin/gallery/" class="media"><span>Galerie</span></a></li>
+    <li><a href="/admin/content/" class="editor"><span>Obsah webu</span></a></li>
+    <li><a href="/admin/advertisement/" class="chat"><span>Bazar</span></a></li>
+    {if $isSuperAdmin}
+    <li><a href="/admin/partner/" class="grid"><span>Partneři</span></a></li>
+    <li><a href="/admin/analytics/" class="charts"><span>Analytics</span></a></li>
+    <li>
+        <a href="/admin/user/" class="users menudrop"><span>Uživatelé</span></a>
+        <ul>
+            <li><a href="/admin/feedback/"><span>Feedback</span></a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/admin/system/" class="error menudrop"><span>Nastavení</span></a>
+        <ul>
+            <li><a href="/admin/redirect/"><span>Přesměrování</span></a></li>
+            <li><a href="/search/"><span>Search Index</span></a></li>
+            <li><a href="/admin/imessage/"><span>Info Message</span></a></li>
+        </ul>
+    </li>
+    {/if}{elseif $isAdmin}
+    <li><a href="/admin/partner/" class="grid"><span>Partneři</span></a></li>
+    <li><a href="/admin/analytics/" class="charts"><span>Analytics</span></a></li>
+    <li>
+        <a href="/admin/user/" class="users menudrop"><span>Uživatelé</span></a>
+        <ul>
+            <li><a href="/admin/feedback/"><span>Feedback</span></a></li>
+        </ul>
+    </li>
+    <li>
+        <a href="/admin/system/" class="error menudrop"><span>Nastavení</span></a>
+    </li>
+    {/elseif}
+</ul>

@@ -1,0 +1,55 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li class="current"><a href="#">Nová Galerie</a></li>
+</ul><!--maintabmenu-->
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Nová Galerie</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+        <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+        <p>
+            <label>Název*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('title', array($gallery,'title'), true)}
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Veřejná/soukromá</label>
+            <span class="field">
+                <select class="width80" name="public">
+                    <option value="0">Soukromá</option>
+                    <option value="1" selected>Veřejná</option>
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Popis*</label>
+            <span class="field">
+                <textarea class="width80" name="description" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($gallery,'description')}</textarea>
+                {if isset($errors["description"])}
+                <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Pořadí<small>Max. 99</small></label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('rank', array($gallery,'rank',1))}
+
+s                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p class="stdformbutton">
+            <input name="submitAddGallery" type="submit" value="Uložit" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</div>

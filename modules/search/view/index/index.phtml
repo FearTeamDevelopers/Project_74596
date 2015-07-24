@@ -1,0 +1,65 @@
+<ul class="maintabmenu">
+    <li class="current"><a href="/search/">Search Index</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Manual Re-Index</span></h2>
+    </div><!--contenttitle-->
+
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+            <col class="con0" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="head0">Model</th>
+                <th class="head1">Run Re-Index</th>
+            </tr>
+        </thead>
+        <tbody>
+            {if !empty($tables)}
+            {foreach $table in $tables}
+            <tr>
+                <td>{echo $table["modelLabel"]}</td>
+                <td><a href="/search/index/updateindex/{echo $table_i}" class="btn btn3 btn_refresh"></a></td>
+            </tr>
+            {/foreach}
+            {/if} 
+        </tbody>
+    </table>
+    
+    <br/>
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Index Log</span></h2>
+    </div><!--contenttitle-->
+
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="head0">Model</th>
+                <th class="head1">Run by</th>
+                <th class="head0">Indexed words count</th>
+                <th class="head1">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {if !empty($indexLog)}
+                {foreach $log in $indexLog}
+                    <tr>
+                        <td>{echo $log->getSourceModel()}</td>
+                        <td>{echo $log->getRunBy()}</td>
+                        <td>{echo $log->getWordsCount()}</td>
+                        <td>{echo $log->getCreated()}</td>
+                    </tr>
+                {/foreach}
+            {/if} 
+        </tbody>
+    </table>
+</div><!--content-->

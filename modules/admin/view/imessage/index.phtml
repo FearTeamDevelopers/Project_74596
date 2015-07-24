@@ -1,0 +1,50 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Zprávy</a></li>
+    <li><a href="/admin/imessage/add/">Nová zpráva</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Info Zprávy</span></h2>
+    </div><!--contenttitle-->
+
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Title</td><td class="head1">Type</td>
+                <td class="head0">Text</td><td class="head1">Zobrazovat od</td>
+                <td class="head0">Zobrazovat do</td><td class="head1">Vytvořeno</td>
+                <td class="head0">Stav</td><td class="head1">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            {if (!empty($imessages))}
+                {foreach $message in $imessages}
+                    <tr>
+                        <td>{echo $message->getTitle()}</td>
+                        <td>{echo ucfirst($message->getMessageType())}</td>
+                        <td>{echo $message->getBody()}</td>
+                        <td>{echo $message->getDisplayFrom()}</td>
+                        <td>{echo $message->getDisplayTo()}</td>
+                        <td>{echo $message->getCreated()}</td>
+                        <td>
+                            {if ($message->active)}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
+                        </td>
+
+                        <td>
+                            <a href="/admin/imessage/edit/{echo $message->id}" class="btn btn3 btn_pencil" title="Upravit"></a> 
+                            <a href="/admin/imessage/delete/{echo $message->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                        </td>
+                    </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,29 @@
+section.wrapper.login.singlePage
+   .row
+      .small-12.columns
+         .container
+            header
+               h2.fi-torso Přihlášení
+            form(method='POST' action='#')
+               |{if isset($account_error)}
+               label.error.fi-alert
+                  |{echo $account_error}
+               |{/if}
+               input(type='email' name='email' placeholder='Váš@email.cz' required)
+               |{if isset($email_error)}
+               label.error.fi-alert
+                  |{echo $email_error}
+               |{/if}
+               input(type='password' name='password' placeholder='Vaše heslo' required)
+               |{if isset($password_error)}
+               label.error.fi-alert
+                  |{echo $password_error}
+               |{/if}
+               input(type='submit' name='submitLogin' value='Přihlásit')
+               |<br/><br/>
+               span Zaregistrujte se a vytvořte si účet
+                    a(href='/registrace') &nbsp;zde
+               input(type="hidden", name="csrf", id="csrf", value!="{echo $token}")
+
+
+

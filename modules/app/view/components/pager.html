@@ -1,0 +1,6 @@
+{if  $pagecount > 1}
+<section class="pager row">
+  {if $currentpage !=1}
+  {if $currentpage !=2}<a href="{echo $pagerpathprefix}/p/1{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><<</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 2}</a>{/if}<a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 1}</a>{/if}<a href="#" class="active">{echo $currentpage}</a>{if $currentpage != $pagecount}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 1}</a>{if $currentpage != $pagecount - 1}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 2}</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">></a><a href="{echo $pagerpathprefix}/p/{echo $pagecount}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">>></a>{/if}
+  {/if}
+</section>{/if}

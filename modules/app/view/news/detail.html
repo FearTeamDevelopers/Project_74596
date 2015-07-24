@@ -1,0 +1,8 @@
+
+<section class="wrapper singlePage">
+  <div class="row container">
+    <header>
+      <h1>{echo $news->getTitle()}</h1><span>{echo "Vytvořil: ".$news->getUserAlias().", ".\App\Helper\DateFormater::t2d($news->getCreated())}</span>
+    </header>{echo html_entity_decode($news->getBody())}
+  </div>
+</section>

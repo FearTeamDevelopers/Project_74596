@@ -1,0 +1,94 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/email/">Šablony</a></li>
+    <li class="current"><a href="#">Email</a></li>
+    <li><a href="/admin/email/add/">Nová šablona</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="widgetbox">
+        <div class="contenttitle radiusbottom0">
+            <h2 class="table"><span>Základní info</span></h2>
+        </div><!--contenttitle-->
+        
+        <form class="stdform stdform2" method="post" action="#">
+            <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+            <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+            
+            <p>
+                <label>Použít šablonu</label>
+                <span class="field">
+                    <select name="template" class="width40">
+                        {foreach $template in $templates}
+                        <option value="{echo $template->getId()}">{echo $template->getTitle()}</option>
+                        {/foreach}
+                    </select>
+                    <select name="lang">
+                        <option value="cs">CZ</option>
+                        <option value="en">EN</option>
+                    </select>
+                    <a href="/admin/email/loadtemplate/" class="btn btn_refresh ajaxLoadTemplate"><span>Načíst</span></a>
+                </span>
+            </p>
+            <p>
+                <label>Typ emailu</label>
+                <span class="field">
+                    <select name="type" class="width40">
+                        <option value="1">Jednotlivý příjemci</option>
+                        <option value="2">Hromadný pro skupinu</option>
+                    </select>
+                </span>
+            </p>
+            <p id="singleRecipient">
+                <label>Příjemci*</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('singlerecipients', array($email,'recipientlist'), false, 'width80', 'Emaily oddělené čárkou')}
+                    {if isset($errors["recipientlist"])}
+                    <label class="error">{echo join("<br/>", $errors["recipientlist"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p id="groupRecipient" class="nodisplay">
+                <label>Příjemci*</label>
+                <span class="field">
+                    <input type="checkbox" name="grouprecipients[]" value="role_member">Členové<br/>
+                    <input type="checkbox" name="grouprecipients[]" value="role_participant">Členové s přístupem do administrace<br/>
+                    <input type="checkbox" name="grouprecipients[]" value="role_admin">Adminové<br/>
+                    {if isset($errors["recipientlist"])}
+                    <label class="error">{echo join("<br/>", $errors["recipientlist"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Předmět*</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('subject', array($email,'subject'), true)}
+                    {if isset($errors["subject"])}
+                    <label class="error">{echo join("<br/>", $errors["subject"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Zpráva*</label>
+                <span class="field">
+                    <textarea rows="20" name="text" id="ckeditor">{echo isset($email)? $email->body: ""}</textarea>
+                    {if isset($errors["body"])}
+                    <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-text">Smazat</button>
+                    <button id="text-new-paragraph">Nový odstavec</button>
+                    <button id="text-link-to-gallery">Odkaz na galerii</button>
+                    <button id="text-link-to-action">Odkaz na akci</button>
+                    <button id="text-link-to-news">Odkaz na novinku</button>
+                    <button id="text-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+            <p class="stdformbutton">
+                <input name="submitSendEmail" type="submit" value="Odeslat" class="submit radius2" />
+            </p>
+        </form>
+    </div>
+</div>
+<br class="clear-all"/>
+<div id="insert-dialog"><p></p></div>
+<script type="text/javascript" src="/public/js/custom/build/emails.js"></script>

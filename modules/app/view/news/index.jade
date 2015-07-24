@@ -1,0 +1,25 @@
+section.wrapper.novinky.singlePage
+    header.row
+        h2 Novinky
+    |{if !empty($news)}    
+    section.row.container
+        | {foreach $new in $news}
+        article
+            header
+                h3 {echo $new->getTitle()}
+                span 
+                    small {echo "Vytvořil: ".$new->getUserAlias().", ".\App\Helper\DateFormater::t2d($new->getCreated())}
+            .body
+                div {echo html_entity_decode($new->getShortBody())}
+                a(href!='/novinky/r/{echo $new->getUrlKey()}') čti více
+        | {/foreach}
+    .moreWrap.large-2.medium-3.small-6.centerBlock
+      a(href='/archivnovinek')
+         .more
+            span Archiv novinek
+    |{/if}
+    include ../components/pager
+
+
+
+

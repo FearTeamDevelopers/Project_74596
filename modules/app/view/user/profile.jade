@@ -1,0 +1,98 @@
+section.wrapper.profil.singlePage
+   .row
+      .buttonWrapper.large-8.medium-12.small-12.centerBlock
+         ul
+            li
+               a(href='/bazar/pridat').fi-plus Nový inzerát
+            li
+               a(href='/bazar/moje-inzeraty').fi-page-copy Moje inzeráty
+            li
+               a(href='#').fi-pencil#openEdit Upravit údaje
+   .row
+      article.small-12.large-8.medium-8.centerBlock#info
+         table
+            tr
+               td
+                  span Jméno:
+               td {echo $user->firstname." ".$user->lastname}
+            tr
+               td
+                  span Telefon:
+               td {echo $user->phoneNumber}
+            tr
+               td
+                  span Email:
+               td {echo $user->email}
+      article.small-12.large-8.medium-8.centerBlock#edit
+         a(href='#').fi-x-circle#closeEdit
+         form(method='post', action='#')
+            input(type="hidden", name="csrf", id="csrf", value!="{echo $token}")
+            table
+               tr
+                  td
+                     span Jméno:
+                  td
+                     | {if isset($errors["firstname"])}
+                     label.error.fi-alert
+                        | {echo join("<br/>", $errors["firstname"])}
+                     | {/if}
+                     |{echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '')}
+               tr
+                  td
+                     span Příjmení:
+                  td
+                     |{if isset($errors["lastname"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["lastname"])}
+                     |{/if}
+                     |{echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '')}
+               tr
+                  td
+                     span Telefon:
+                  td
+                     |{if isset($errors["phoneNumber"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["phoneNumber"])}
+                     |{/if}
+                     input(type='tel', name='phone',value!='{echo isset($user)? $user->phoneNumber: ""}')
+               tr
+                  td
+                     span Email:
+                  td
+                     |{if isset($errors["email"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["email"])}
+                     |{/if}
+                     input(type='email', name='email',value!='{echo isset($user)? $user->email: ""}' required)
+               tr
+                  td
+                     span Původní heslo:
+                  td
+                     |{if isset($errors["oldpass"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["oldpass"])}
+                     |{/if}
+                     input(type='password', placeholder='nepovinné...',pattern=".{5,}",title='min. 5 znaků', name='oldpass')
+               tr
+                  td
+                     span Heslo:
+                  td
+                     |{if isset($errors["password"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["password"])}
+                     |{/if}
+                     input(type='password', placeholder='nepovinné...',pattern=".{5,}",title='min. 5 znaků', name='password')
+               tr
+                  td
+                     span Ověření hesla:
+                  td
+                     |{if isset($errors["password2"])}
+                     label.error.fi-alert
+                        |{echo join("<br/>", $errors["password2"])}
+                     |{/if}
+                     input(type='password',pattern=".{5,}",title='min. 5 znaků', name='password2', placeholder='nepovinné...')
+
+
+               tr
+                  td(colspan=2)
+                     input(type='submit', name='editProfile', value='Upravit').more

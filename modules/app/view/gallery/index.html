@@ -1,0 +1,27 @@
+
+<section class="wrapper gallery singlePage">
+  <header class="row">
+    <h2>Galerie</h2>
+  </header>
+  <div class="row">
+    {if !empty($galleries)}
+    {foreach $gallery in $galleries}<a href="/galerie/r/{echo $gallery->getUrlKey()}" title="{echo $gallery->getTitle()}">
+      <div class="large-4 medium-6 small-12 columns galleryWrapper">
+        <article>
+          <div class="imgWrapper"><img src="{echo $gallery->getImgThumb()}"/></div>
+          <div class="info">
+            <h3>{echo $gallery->getTitle()}</h3>
+          </div>
+        </article>
+      </div></a>{/foreach}
+    {/if}{else}
+    <div class="large-12 medium-12 small-12 columns">
+      <h2>Žádné galerie nejsou k dispozici</h2>
+    </div>{/else}
+  </div>{if  $pagecount > 1}
+  <section class="pager row">
+    {if $currentpage !=1}
+    {if $currentpage !=2}<a href="{echo $pagerpathprefix}/p/1{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><<</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 2}</a>{/if}<a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 1}</a>{/if}<a href="#" class="active">{echo $currentpage}</a>{if $currentpage != $pagecount}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 1}</a>{if $currentpage != $pagecount - 1}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 2}</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">></a><a href="{echo $pagerpathprefix}/p/{echo $pagecount}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">>></a>{/if}
+    {/if}
+  </section>{/if}
+</section>

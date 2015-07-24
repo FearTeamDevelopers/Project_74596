@@ -1,0 +1,29 @@
+{if !empty($infoMessage)}
+<div class="notification msginfo">
+    <a class="close"></a><p>{echo $infoMessage}</p>
+</div>
+{/if}
+
+{if !empty($warningMessage)}
+<div class="notification msgalert">
+    <a class="close"></a><p>{echo $warningMessage}</p>
+</div>
+{/if}
+
+{if !empty($successMessage)}
+<div class="notification msgsuccess">
+    <a class="close"></a><p>{echo $successMessage}</p>
+</div>
+{/if}
+
+{if !empty($errorMessage)}
+<div class="notification msgerror">
+    <a class="close"></a><p>{echo $errorMessage}</p>
+</div>
+{/if}
+
+{if !empty($longFlashMessage)}
+<div class="notification_long msginfo">
+    <a class="close"></a><p>{echo $longFlashMessage}</p>
+</div>
+{/if}

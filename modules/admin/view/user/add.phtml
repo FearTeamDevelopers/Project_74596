@@ -1,0 +1,131 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/user/">Uživatelé</a></li>
+    <li class="current"><a href="#">Nový uživatel</a></li>
+</ul>
+
+<div class="content">
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+        <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+
+        <div class="contenttitle radiusbottom0">
+            <h2 class="form"><span>Osobní údaje</span></h2>
+        </div>
+        <p>
+            <label>Jméno*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true)}
+                {if isset($errors["firstname"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["firstname"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Příjmení*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true)}
+                {if isset($errors["lastname"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["lastname"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Telefon</label>
+            <span class="field">
+                <input type="tel" name="phone" class="width80" value="{echo isset($user)? $user->phoneNumber: ""}" />
+                {if isset($errors["phoneNumber"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["phoneNumber"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Notifikace</label>
+            <span class="field">
+                <input type="checkbox" name="actionNotification" value="1" /><span>Chci dostávat emailové oznámení o nových akcích</span><br/>
+            </span>
+        </p>
+        
+        <br/>
+        <div class="contenttitle radiusbottom0">
+            <h2 class="form"><span>Přihlašovací údaje</span></h2>
+        </div>
+        <p>
+            <label>Email*</label>
+            <span class="field">
+                <input required type="email" name="email" class="width80" value="{echo isset($user)? $user->email: ""}" />
+                {if isset($errors["email"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["email"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Heslo*</label>
+            <span class="field">
+                <input required type="password" name="password" class="width80" value=""/>
+                {if isset($errors["password"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["password"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Potvrdit heslo*</label>
+            <span class="field">
+                <input required type="password" name="password2" class="width80" value=""/>
+                {if isset($errors["password2"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["password2"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        {if $isSuperAdmin}
+        <p>
+            <label>Role</label>
+            <span class="field">
+                <select name="role" class="width80">
+                    <option value="role_member">Člen</option>
+                    <option value="role_participant">Člen s přístupem do administrace</option>
+                    <option value="role_admin">Admin</option>
+                    <option value="role_superadmin">Super Admin</option>
+                </select>
+                {if isset($errors["role"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["role"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        {/if}{elseif $isAdmin}
+        <p>
+            <label>Role</label>
+            <span class="field">
+                <select name="role" class="width80">
+                    <option value="role_member">Člen</option>
+                    <option value="role_participant">Člen s přístupem do administrace</option>
+                    <option value="role_admin">Admin</option>
+                </select>
+                {if isset($errors["role"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["role"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        {/elseif}
+
+        <p class="stdformbutton">
+            <input type="submit" name="submitAddUser" value="Uložit" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</div>

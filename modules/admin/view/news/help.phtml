@@ -1,0 +1,118 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/news/">Novinky</a></li>
+    <li><a href="/admin/news/add/">Přidat novinku</a></li>
+    <li class="current"><a href="#">Nápověda</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Novinky</span></h2>
+    </div><!--contenttitle-->
+
+    <div class="tabs">
+        <ul>
+            <li><a href="#list">Seznam</a></li>
+            <li><a href="#add">Vytváření novinek</a></li>
+            <li><a href="#images">Vkládání obrázků</a></li>
+        </ul>
+
+        <div id="list">
+            <h2>Seznam novinek</h2>
+            <img src="/public/images/help/news-index.png" width="100%" /><br/>
+            <p>V základním okně novinek je zobrazen jejich seznam a základní informace<br/><br/>
+                Důležité jsou poslední 3 sloupce a to Stav, V archivu a akce, které lze s novinkou provést<br/>
+                Z důvodu možného většího množství přispěvatelů, je v administraci několi uživatelských rolí 
+                (viz.<a href="/admin/user/help/#roles">Uživatelské role</a>). 
+                Aby byl možný určitý dohled nad obsahem stránek, je v základě nasteveno aby administrátoři akce schvalovali.
+                Toto nastavení lze změnit, tak že akce budou automaticky schváleny a zobrazeny na stránkách<br/><br/>
+                <strong>Stav</strong><br/>
+            <ul>
+                <li>Čeká na schválení - výchozí stav, kdy článek čeká na schválení administrátorem</li>
+                <li>Schválen - článek byl schválen a teď se zobrazuje na stránkách</li>
+                <li>Zamítnut - článek byl zamítnut a zobrazuje se pouze v administraci</li>
+            </ul><br/>
+            <ul>
+                <li>Aktivní - článek je v základu aktivní a zobrazuje se na stránkách</li>
+                <li>Neaktivní - článek byl zneaktivněn a na stránkách se nebude zobrazovat</li>
+                <li>Moje - článeky mnou vytvořené</li>
+            </ul><br/><br/>
+            <strong>V archivu</strong><br/>
+            <ul>
+                <li>Ano - článek byl archivován, na stránkách se již nezobrazuje, ale je stále možné se na něj v nových článcích odkazovat</li>
+                <li>Ne - článek ještě nebyl archivován a pokud je schválen a aktivní, tak se normálně zobrazuje na stránkách</li>
+            </ul><br/><br/>
+            <strong>Akce</strong><br/>
+            <ul>
+                <li>Upravit</li>
+                <li>Smazat</li>
+                <li>Schválit (tlačítko v zeleném kruhu) - tlačítko pro rychlé schválení</li>
+                <li>Zamítnout (tlačítko v červeném kruhu) - tlačítko pro rychlé zamítnutí</li>
+            </ul>
+            </p>
+        </div>
+        <div id="add">
+            <h2>Přidat novinku</h2>
+            <img src="/public/images/help/news-add.png" width="100%" /><br/>
+            <p>
+                Při vytváření nové novinky se v horní části může zobrazit seznam konceptů. 
+                Během psaní článku se každých 5 min provede uložení aktuálního obsahu polí: 
+                Název, Teaser, Text, Meta-Název, Meta-Popis, Klíčová slova. V případě nehody může být koncept 
+                obnoven. Koncepty ze seznamu je možné načíst nebo smazat. Pokud je článek 
+                úspěšně uložen, je koncept smazán.<br/><br/>
+                Popis polí formuláře pro vytvoření nové akce<br/>
+                <strong>Název</strong><br/>
+                <strong>Pořadí</strong> - novinky jsou defaultně řazeny podle data vytvoření (od nejnovějších), ale toto je možné upravit nastavením
+                    pořadí, pak jsou novinky řazeny nejdříve podle pořadí (sestupně) a pak až podle data vytvoření<br/>
+                <strong>Teaser</strong> - krátký text, který se zobrazuje v seznamu novinek nebo na hlavní stránce (obr. níže)<br/>
+                <strong>Text</strong> - hlavní text novinky. Zobrazuje se v detailu novinky (obr. níže)<br/>
+                <strong>Rozšiřující tlačítka</strong><br/>
+            <ul>
+                <li>Smazat - smaže text v editoru</li>
+                <li>Nový odstavec - slouží k úklidu textu po použití Zarovnání vlevo nebo vpravo</li>
+                <li>Přidat odkaz na celý článek - do pole teaser vloží text "Celý článek" jako odkaz na detail článku</li>
+                <li>Zkopírovat do Text - zkopíruje obsah pole teaser do pole text</li>
+                <li>Zkopírovat do Teaser - zkopíruje obsah pole text do pole teaser</li>
+                <li>Odkaz na galerii - vloží odkaz na aktivní galerii</li>
+                <li>Odkaz na akci - vloží odkaz na aktivní nebo archivovanou akci</li>
+                <li>Odkaz na novinku - vloží odkaz na aktivní nebo archivovanou  novinku</li>
+                <li>Odkaz na stránku - v rámci hastrmana. Odkaz na stránky v sekci Obsah webu</li>
+            </ul>
+                <br/><br/>
+                <strong>Metadata</strong> jsou důležitá pro interní vyhledávač. Každý den v noci se spustí kód, který indexuje obsah stránek
+                a jednotlivým slovům přiřazuje váhu na základě toho jestli se slovo vyskytuje v klíčových slovech, Meta-Názvu a kolikrát se 
+                vyskytuje v Meta-popisu. Zároveň se meta-popis zobrazuje ve výsledku vyhledávání (obr. níže). Meta-Název a Meta-Popis 
+                využívá ve svém indexu i google, proto je dobré tyto pole vyplňovat.<br/>
+                <ul>
+                    <li>Meta-Název - nemusí se nutně vyplňovat, je přebírán vyhledávacími roboty (např. googlebotem)</li>
+                    <li>Meta-Popis - je lepší vyplnit, zobrazuje se ve výsledku vyhledávání a je přebírán vyhledávacími roboty (např. googlebotem)</li>
+                    <li>Klíčová slova - vyplňovat pouze malá písmena a bez diakritiky, pomáhá k lepšímu umístění ve výsledku vyhledávání na stránkách podle zadaných slov</li>
+                </ul><br/><br/>
+                
+                <strong>Zobrazit náhled</strong> - zobrazí náhled článku, ale neprovede uložení<br/><br/>
+                
+                Zobrazení akce na stránkách<br/>
+                <img src="/public/images/help/news-homepage.png" width="49%" />
+                <img src="/public/images/help/search-result.png" width="49%" />
+            </p>
+        </div>
+        <div id="images">
+            <h2>Vkládání obrázků do článku</h2>
+            <p>
+                Postup je stejný všude, kde je použit CK editor<br/>
+                <img src="/public/images/help/editor.png" /> 
+                <br/><br/>
+                Pro vložení obrázku do textu klikněte na označenou ikonku<br/>
+                <img src="/public/images/help/editor-image.png" /> <br/>
+                Zobrazí se následující okno<br/>
+                <img src="/public/images/help/editor-insert-image.png" /> <br/>
+                Zde klikněte na Browse server (Vybrat na serveru) a zobrazí se následující souborový manažer<br/>
+                <img src="/public/images/help/editor-filemanager.png" /> <br/>
+                Výběr obrázku provedete dvojklikem na obrázek a zobrazí se následující okno, kde můžete 
+                upravit rozměry zobrazení obrázku (Width, Height) nebo zarovnání v textu (Alignment)<br/>
+                <img src="/public/images/help/editor-insert-image-after.png" /> <br/>
+                Po potvrzení stiskem tlačítka Ok se vybraný obrázek vloží do textu
+            </p>
+            
+        </div>
+    </div>
+</div>

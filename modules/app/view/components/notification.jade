@@ -1,0 +1,31 @@
+.notificationWrapper
+   |{if !empty($infoMessage)}
+   .notification.msginfo.large-5.small-12.medium-8.centerBlock
+      a(href='#').fi-x-circle.closeNotif
+      p.fi-info {echo $infoMessage}
+   |{/if}
+
+   |{if !empty($warningMessage)}
+   .notification.msgalert.large-5.small-12.medium-8.centerBlock
+      a(href='#').fi-x-circle.closeNotif
+      p.fi-alert {echo $warningMessage}
+   |{/if}
+
+   |{if !empty($successMessage)}
+   .notification.msgsuccess.large-5.small-12.medium-8.centerBlock
+      a(href='#').fi-x-circle.closeNotif
+      p.fi-check {echo $successMessage}
+   |{/if}
+
+   |{if !empty($errorMessage)}
+   .notification.msgerror.large-5.small-12.medium-8.centerBlock
+      a(href='#').fi-x-circle.closeNotif
+      p.fi-skull {echo $errorMessage}
+   |{/if}
+
+   |{if !empty($longFlashMessage)}
+   .notification_long.msginfo.large-5.small-12.medium-8.centerBlock
+      a(href='#').fi-x-circle.closeNotif
+      p.fi-info {echo $longFlashMessage}</p>
+   |{/if}
+

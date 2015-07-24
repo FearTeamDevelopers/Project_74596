@@ -1,0 +1,104 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/imessage/">Zprávy</a></li>
+    <li><a href="/admin/imessage/add/">Nová Zpráva</a></li>
+    <li class="current"><a href="#">Editovat Zprávu</a></li>
+</ul>
+
+{if isset($imessage)}
+<div class="content">
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+        <div class="contenttitle radiusbottom0">
+            <h2 class="form"><span>Zpráva</span></h2>
+        </div>
+        <p>
+            <label>Title*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('title', array($imessage,'title'), true)}
+                {if isset($errors["title"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["title"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Typ*</label>
+            <span class="field">
+                <select name="mtype" class="width80">
+                    {if $imessage->getMessageType() == "info"}
+                    <option value="info" selected>Info</option>
+                    <option value="warning">Warning</option>
+                    <option value="error">Error</option>
+                    {/if}{elseif $imessage->getMessageType() == "warning"}
+                    <option value="info">Info</option>
+                    <option value="warning" selected>Warning</option>
+                    <option value="error">Error</option>
+                    {/elseif}{else}
+                    <option value="info">Info</option>
+                    <option value="warning">Warning</option>
+                    <option value="error" selected>Error</option>
+                    {/else}
+                </select>
+                {if isset($errors["messageType"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["messageType"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Text*</label>
+            <span class="field">
+                <textarea rows="10" name="text" class="width80">{echo \Admin\Helper\FormPrinter::iset($imessage,'body')}</textarea>
+                {if isset($errors["body"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["body"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Zobrazovat od*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('dfrom', array($imessage,'displayFrom'), false, 'width40 datepicker')}
+                {if isset($errors["displayFrom"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["displayFrom"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Zobrazovat do*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('dto', array($imessage,'displayTo'), false, 'width40 datepicker2')}
+                {if isset($errors["displayTo"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["displayTo"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Aktivní</label>
+            <span class="field">
+                <select name="active" class="width80">
+                    {if $imessage->active}
+                    <option value="0">Neaktivní</option>
+                    <option value="1" selected>Aktivní</option>
+                    {/if}{else}
+                    <option value="0" selected>Neaktivní</option>
+                    <option value="1">Aktivní</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+
+        <p class="stdformbutton">
+            <input type="submit" name="submitEditImessage" value="Uložit" class="submit radius2"/>
+        </p>
+    </form>
+</div>
+{/if}

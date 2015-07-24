@@ -1,0 +1,54 @@
+<a href="#" class="showMenu">Menu</a>
+<nav>
+  <ul>
+    <li><a href="#" class="dropdown">O nás</a>
+      <ul>
+        <li><a href="/o-nas">Potápěčské centrum</a></li>
+        <li><a href="/klub-hastrman">Klub sportovních potápěčů</a></li>
+        <li><a href="/apnea-tym">Apnea tým</a></li>
+      </ul>
+    </li>
+    <li><a href="/novinky">Novinky</a></li>
+    <li><a href="/akce">Akce</a></li>
+    <li><a href="/reportaze">Reportáže</a></li>
+    <li><a href="/kurzy" class="dropdown">Kurzy</a>
+      <ul class="kurzy">
+        <li><a href="/kurzy/cmas">CMAS</a></li>
+        <li><a href="/kurzy/tdi">TDI</a></li>
+        <li><a href="/kurzy/sdi">SDI</a></li>
+        <li><a href="/kurzy/udi">UDI</a></li>
+        <li><a href="/apnea-diving-international">Apnea</a></li>
+      </ul>
+    </li>
+    <li><a href="#" class="dropdown">Služby</a>
+      <ul>
+        <li><a href="/sluzby/plneni-lahvi">Plnění lahví</a></li>
+        <li><a href="/sluzby/pujcovna-potapecske-vystroje">Půjčovna potápěčské výstroje</a></li>
+        <li><a href="/sluzby/prodej-nove-vystroje">Prodej nové výstroje</a></li>
+        <li><a href="/sluzby/prace-pod-vodou">Práce pod vodou</a></li>
+        <li><a href="/sluzby/servis-potapecske-techniky">Servis potápěčské techniky</a></li>
+      </ul>
+    </li>
+    <li><a href="/galerie" class="galerie">Galerie</a></li>
+    <li><a href="/bazar">Bazar</a></li>
+    <li><a href="#" class="dropdown">Odkazy</a>
+      <ul>
+        <li><a href="/odkazy">Zajímavé stránky</a></li>
+        <li><a href="/bazen">Bazén</a></li>
+      </ul>
+    </li>
+    <li><a href="#" class="dropdown">Ostatní</a>
+      <ul>
+        <li><a href="/technika">Technika</a></li>
+        <li><a href="/pojisteni">Pojišťění</a></li>
+      </ul>
+    </li>{if !isset($authUser)}
+    <li><a href="/prihlasit" title="Přihlásit se" class="fi-torso galerie"></a></li>{/if}{else}
+    <li><a href="#" class="dropdown fi-power"></a>
+      <ul>
+        <li><a href="/muj-profil">Můj profil</a></li>
+        <li><a href="/odhlasit">Odhlásit se</a></li>
+      </ul>
+    </li>{/else}
+  </ul>
+</nav>

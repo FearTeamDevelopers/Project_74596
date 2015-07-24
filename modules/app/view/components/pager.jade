@@ -1,0 +1,25 @@
+
+|{if  $pagecount > 1}
+section.pager.row
+   | {if $currentpage !=1}
+   | {if $currentpage !=2}
+   a(href!='{echo $pagerpathprefix}/p/1{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') <<
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') <
+
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage-2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') {echo $currentpage - 2}
+   | {/if}
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') {echo $currentpage - 1}
+   | {/if}
+   a(href!='#').active {echo $currentpage}
+   | {if $currentpage != $pagecount}
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') {echo $currentpage + 1}
+   | {if $currentpage != $pagecount - 1}
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage+2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') {echo $currentpage + 2}
+
+   a(href!='{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') >
+   a(href!='{echo $pagerpathprefix}/p/{echo $pagecount}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}') >>
+
+   | {/if}
+   | {/if}
+
+|{/if}

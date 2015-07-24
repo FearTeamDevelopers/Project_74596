@@ -1,0 +1,103 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/content/">Stránky</a></li>
+    <li><a href="/admin/content/add/">Přidat stránku</a></li>
+    <li class="current"><a href="#">Editovat stránku</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($content)}
+<div class="content">
+    <div class="widgetbox">
+        <div class="contenttitle radiusbottom0">
+            <h2 class="table"><span>Základní info</span></h2>
+        </div><!--contenttitle-->
+
+        <form class="stdform stdform2" method="post" action="#">
+            <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+            <p>
+                <label>Název stránky</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('page', array($content,'title'), true)}
+                    {if isset($errors["title"])}
+                    <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Text*</label>
+                <span class="field">
+                    <textarea rows="20" name="text" id="ckeditor">{echo $content->body}</textarea>
+                    {if isset($errors["body"])}
+                    <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-text">Smazat</button>
+                    <button id="text-new-paragraph">Nový odstavec</button>
+                    <button id="text-link-to-gallery">Odkaz na galerii</button>
+                    <button id="text-link-to-action">Odkaz na akci</button>
+                    <button id="text-link-to-news">Odkaz na novinku</button>
+                    <button id="text-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+
+            <br/>
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Metadata</span></h2>
+            </div><!--contenttitle-->
+            <p>
+                <label>Meta-Název</label>
+                <span class="field" >
+                    {echo \Admin\Helper\FormPrinter::textInput('metatitle', array($content,'metaTitle'), false, 'width80', "Výchozí hodnota: stejná jako Název")}
+                    {if isset($errors["metaTitle"])}
+                    <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Meta-Popis</label>
+                <span class="field">
+                    <textarea rows="5" name="metadescription" class="width80">{echo \Admin\Helper\FormPrinter::iset($content,'metaDescription')}</textarea>
+                    {if isset($errors["metaDescription"])}
+                    <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
+                    {/if}
+                </span>
+            </p>
+
+            <p>
+                <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('keywords', array($content,'keywords'), false, 'width80', "Oddělovač: mezera")}
+                    {if isset($errors["keywords"])}
+                    <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
+                    {/if}
+                </span>
+            </p>
+
+            <br/>
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Systémové info</span></h2>
+            </div><!--contenttitle-->
+            <p>
+                <label>Aktivní</label>
+                <span class="field">
+                    <select name="active" class="width80">
+                        {if $content->active}
+                        <option value="0">Neaktivní</option>
+                        <option value="1" selected>Aktivní</option>
+                        {/if}{else}
+                        <option value="0" selected>Neaktivní</option>
+                        <option value="1">Aktivní</option>
+                        {/else}
+                    </select>
+                </span>
+            </p>
+            <p class="stdformbutton">
+                <input name="submitEditContent" type="submit" value="Uložit" class="submit radius2" />
+            </p>
+        </form>
+    </div>
+</div>
+<br class="clear-all"/>
+<div id="insert-dialog"><p></p></div>
+<script type="text/javascript" src="/public/js/custom/build/news.js"></script>
+{/if}

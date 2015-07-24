@@ -1,0 +1,275 @@
+RewriteEngine On
+RewriteBase /
+
+########## Begin - Common hacking tools and bandwidth hoggers block
+# This line also disables Akeeba Remote Control 2.5 and earlier
+SetEnvIf user-agent "Indy Library" stayout=1
+# WARNING: Disabling wget will also block the most common method for
+# running CRON jobs. Remove if you have issues with CRON jobs.
+SetEnvIf user-agent "Wget" stayout=1
+# The following rules are for bandwidth-hogging download tools
+SetEnvIf user-agent "libwww-perl" stayout=1
+SetEnvIf user-agent "Download Demon" stayout=1
+SetEnvIf user-agent "GetRight" stayout=1
+SetEnvIf user-agent "GetWeb!" stayout=1
+SetEnvIf user-agent "Go!Zilla" stayout=1
+SetEnvIf user-agent "Go-Ahead-Got-It" stayout=1
+SetEnvIf user-agent "GrabNet" stayout=1
+SetEnvIf user-agent "TurnitinBot" stayout=1
+deny from env=stayout
+########## End - Common hacking tools and bandwidth hoggers block
+
+########## HTTPS
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP_HOST} !.*\.dev.*$
+RewriteCond %{REQUEST_URI} ^/(admin|login|prihlasit).*$
+RewriteRule (.*) https://%{HTTP_HOST}/$1 [R=301,L,NC]
+########## End - HTTPS
+
+########## Ebola git
+RewriteCond %{REQUEST_URI} "/.git/"
+RewriteRule (.*) $1 [L]
+########## End - Ebola git
+
+########## Begin - Rewrite rules to block out some common exploits
+## If you experience problems on your site block out the operations listed below
+# Block out any script trying to base64_encode or base64_decode data within the URL
+RewriteCond %{QUERY_STRING} base64_(en|de)code[^(]*\([^)]*\) [OR]
+## IMPORTANT: If the above line throws an HTTP 500 error, replace it with these 2 lines:
+# RewriteCond %{QUERY_STRING} base64_encode\(.*\) [OR]
+# RewriteCond %{QUERY_STRING} base64_decode\(.*\) [OR]
+# Block out any script that includes a <script> tag in URL
+RewriteCond %{QUERY_STRING} (<|%3C)([^s]*s)+cript.*(>|%3E) [NC,OR]
+# Block out any script trying to set a PHP GLOBALS variable via URL
+RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+# Block out any script trying to modify a _REQUEST variable via URL
+RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+# Return 403 Forbidden header and show the content of the root homepage
+RewriteRule .* index.php [F]
+########## End - Rewrite rules to block out some common exploits
+
+########## Begin - File injection protection, by SigSiu.net
+RewriteCond %{REQUEST_METHOD} GET
+RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=http:// [OR]
+RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=(\.\.//?)+ [OR]
+RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=/([a-z0-9_.]//?)+ [NC]
+RewriteRule .* - [F]
+########## End - File injection protection
+
+########## Begin - Basic antispam Filter, by SigSiu.net
+## This code uses PCRE and works only with Apache 2.x.
+RewriteCond %{QUERY_STRING} \b(ambien|blue\spill|cialis|cocaine|ejaculation|erectile)\b [NC,OR]
+RewriteCond %{QUERY_STRING} \b(erections|hoodia|huronriveracres|impotence|levitra|libido)\b [NC,OR]
+RewriteCond %{QUERY_STRING} \b(lipitor|phentermin|pro[sz]ac|sandyauer|tramadol|troyhamby)\b [NC,OR]
+RewriteCond %{QUERY_STRING} \b(ultram|unicauca|valium|viagra|vicodin|xanax|ypxaieo)\b [NC]
+RewriteRule .* - [F]
+########## End - Basic antispam Filter, by SigSiu.net
+
+########## Files protection
+<FilesMatch "\.(htaccess|htpasswd|ini|phps|fla|psd|log|sh)$">
+Order Allow,Deny
+Deny from all
+</FilesMatch>
+########## End - Files protection
+
+########## Block bad user agents
+ ## The following list may include bots that no longer exist or are not a problem
+ ## for your site. The list will always be incomplete and it is therefore wise to
+ ## follow discussions on one of the many "security" mailing lists or on a forum
+ ## such as http://www.webmasterworld.com/search_engine_spiders/
+ ## It is also unwise to rely on this list as your ONLY security mechanism.
+ RewriteCond %{HTTP_USER_AGENT} ^BlackWidow [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Bot\ mailto:craftbot@yahoo.com [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^ChinaClaw [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Custo [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^DISCo [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Download\ Demon [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^eCatch [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^EirGrabber [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^EmailSiphon [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^EmailWolf [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Express\ WebPictures [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^ExtractorPro [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^EyeNetIE [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^FlashGet [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^GetRight [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^GetWeb! [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Go!Zilla [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Go-Ahead-Got-It [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^GrabNet [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Grafula [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^HMView [OR]
+ RewriteCond %{HTTP_USER_AGENT} HTTrack [NC,OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Image\ Stripper [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Image\ Sucker [OR]
+ RewriteCond %{HTTP_USER_AGENT} Indy\ Library [NC,OR]
+ RewriteCond %{HTTP_USER_AGENT} ^InterGET [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Internet\ Ninja [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^JetCar [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^JOC\ Web\ Spider [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^larbin [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^LeechFTP [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Mass\ Downloader [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^MIDown\ tool [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Mister\ PiX [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Navroad [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^NearSite [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^NetAnts [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^NetSpider [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Net\ Vampire [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^NetZIP [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Octopus [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Offline\ Explorer [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Offline\ Navigator [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^PageGrabber [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Papa\ Foto [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^pavuk [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^pcBrowser [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^RealDownload [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^ReGet [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^SiteSnagger [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^SmartDownload [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^SuperBot [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^SuperHTTP [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Surfbot [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^tAkeOut [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Teleport\ Pro [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^VoidEYE [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Web\ Image\ Collector [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Web\ Sucker [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebAuto [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebCopier [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebFetch [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebGo\ IS [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebLeacher [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebReaper [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebSauger [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Website\ eXtractor [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Website\ Quester [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebStripper [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebWhacker [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WebZIP [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Widow [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^WWWOFFLE [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Xaldon\ WebSpider [OR]
+ RewriteCond %{HTTP_USER_AGENT} ^Zeus
+ RewriteRule .* - [F]
+
+ #Block mySQL injects
+ RewriteCond %{QUERY_STRING} (;|<|>|â€™|â€ť|\)|%0A|%0D|%22|%27|%3C|%3E|%00).*(/\*|union|select|insert|cast|set|declare|drop|update|md5|benchmark) [NC,OR]
+ RewriteCond %{QUERY_STRING} \.\./\.\. [OR]
+ RewriteCond %{QUERY_STRING} (localhost|loopback|127\.0\.0\.1) [NC,OR]
+ RewriteCond %{QUERY_STRING} \.[a-z0-9] [NC,OR]
+ RewriteCond %{QUERY_STRING} (<|>|â€™|%0A|%0D|%27|%3C|%3E|%00) [NC]
+ RewriteRule .* index.php [F]
+
+## Disallow access to rogue PHP files throughout the site, unless they are explicitly allowed
+RewriteCond %{REQUEST_FILENAME} \.php$
+RewriteCond %{REQUEST_FILENAME} !/index[23]?\.php$
+RewriteCond %{REQUEST_FILENAME} !/public/js/plugins/filemanager/.*\.php$
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^([^/]+/)*([^/.]+\.)+php$ - [F]
+
+########## Begin - Compresion
+<FilesMatch "\.(js|css|html|htm|php|xml|phtml)$">
+SetOutputFilter DEFLATE
+</FilesMatch>
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|phtml|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+########## End - Compresion
+
+########## Begin - HEADER CACHING
+<FilesMatch "\.(flv|gif|jpg|jpeg|png|ico|svg)$">
+Header set Cache-Control "max-age=2592000"
+</FilesMatch>
+<FilesMatch "\.(js|css|pdf|swf)$">
+Header set Cache-Control "max-age=604800"
+</FilesMatch>
+<FilesMatch "\.(html|htm|txt|phtml)$">
+Header set Cache-Control "max-age=600"
+</FilesMatch>
+<FilesMatch "\.(pl|php|cgi|spl|scgi|fcgi)$">
+Header unset Cache-Control
+</FilesMatch>
+########## End - HEADER CACHING
+
+########## Begin - Optimal default expiration time
+## Note: this might cause problems and you might have to comment it out by
+## placing a hash in front of this section's lines
+<IfModule mod_expires.c>
+ExpiresActive On
+
+ExpiresDefault "now plus 1 hour"
+ExpiresByType text/css "now plus 1 week"
+ExpiresByType application/javascript "now plus 1 week"
+ExpiresByType application/x-javascript "now plus 1 week"
+ExpiresByType image/bmp "now plus 1 month"
+ExpiresByType image/gif "now plus 1 month"
+ExpiresByType image/jpeg "now plus 1 month"
+ExpiresByType image/jp2 "now plus 1 month"
+ExpiresByType image/pipeg "now plus 1 month"
+ExpiresByType image/png "now plus 1 month"
+ExpiresByType image/svg+xml "now plus 1 month"
+ExpiresByType image/tiff "now plus 1 month"
+ExpiresByType image/vnd.microsoft.icon "now plus 1 month"
+ExpiresByType image/x-icon "now plus 1 month"
+ExpiresByType image/ico "now plus 1 month"
+ExpiresByType image/icon "now plus 1 month"
+ExpiresByType text/ico "now plus 1 month"
+ExpiresByType application/ico "now plus 1 month"
+ExpiresByType image/vnd.wap.wbmp "now plus 1 month"
+ExpiresByType application/vnd.wap.wbxml "now plus 1 month"
+ExpiresByType application/smil "now plus 1 month"
+ExpiresByType audio/basic "now plus 1 month"
+ExpiresByType audio/mid "now plus 1 month"
+ExpiresByType audio/midi "now plus 1 month"
+ExpiresByType audio/mpeg "now plus 1 month"
+ExpiresByType audio/x-aiff "now plus 1 month"
+ExpiresByType audio/x-mpegurl "now plus 1 month"
+ExpiresByType audio/x-pn-realaudio "now plus 1 month"
+ExpiresByType audio/x-wav "now plus 1 month"
+ExpiresByType application/x-shockwave-flash "now plus 1 month"
+ExpiresByType x-world/x-vrml "now plus 1 month"
+ExpiresByType video/x-msvideo "now plus 1 month"
+ExpiresByType video/mpeg "now plus 1 month"
+ExpiresByType video/mp4 "now plus 1 month"
+ExpiresByType video/quicktime "now plus 1 month"
+ExpiresByType video/x-la-asf "now plus 1 month"
+ExpiresByType video/x-ms-asf "now plus 1 month"
+</IfModule>
+########## End - Optimal expiration time
+
+########## Begin - Redirect non-www to www
+RewriteCond %{HTTP_HOST} !.*\.(dev|fear-team\.cz).*$
+RewriteCond %{HTTP_HOST} !^dev\..*$
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteRule ^(.*)$ http://www.%{HTTP_HOST}/$1 [R,L]
+########## End - Redirect non-www to www
+
+########## Begin - Preventing Bandwidth Image Theft
+#RewriteCond %{HTTP_REFERER} !^(http(s)?://)?(www|dev\.)?(hastrman|hastrman\.fear-team)\.(cz|dev).* [NC]
+#RewriteCond %{HTTP_REFERER} !^$
+#RewriteRule \.(jpe?g|gif|bmp|png|ico|svg)$ - [F]
+########## End - Preventing Bandwidth Image Theft
+
+RewriteCond %{REQUEST_FILENAME} -s
+RewriteRule /public/(.*)/(.*)\.(css|jpe?g|gif|png|js|ico|svg)$ - [NC,L]
+
+RewriteCond %{REQUEST_URI} (^/tests/(.*)$)
+RewriteRule .* - [F]
+
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.*)$ - [NC,L]
+
+RewriteRule ^(.*)$ /index.php [NC,L]

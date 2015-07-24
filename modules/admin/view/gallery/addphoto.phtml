@@ -1,0 +1,61 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+    <li><a href="/admin/gallery/detail/{echo $gallery->id}">Detail Galerie</a></li>
+    <li class="current"><a href="#">Nahrát foto</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($gallery)}
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Nahrát foto do galerie</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2 uploadForm" method="post" action="#" enctype="multipart/form-data">
+        <input type="hidden" name="MAX_FILE_SIZE" value="15000000"/>
+        <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+        <input type="hidden" name="galleryid" class="collid" value="{echo $gallery->id}" />
+        <input type="hidden" name="csrf" value="{echo $token}" />
+
+        <p>
+            <label>Popis</label>
+            <span class="field">
+                <textarea rows="5" name="description" class="width80">{echo \Admin\Helper\FormPrinter::iset($photo,'description')}</textarea>
+                {if isset($errors["description"])}
+                <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Pořadí<small>Max. 99</small></label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('rank', array($photo,'rank',1))}
+
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Foto<small>*.jpg, *.jpeg, *.png, *.gif<br/>Max. 15MB</small></label>
+            <span class="field">
+                <a href="#" class="btn btn_folder multi_upload"><span>+</span></a>
+                <a href="#" class="btn btn_folder multi_upload_dec"><span>-</span></a>
+            </span>
+            <span class="field file_inputs">
+                <input type="file" name="uploadfile[]" accept="image/*"/>
+                {if isset($errors["uploadfile"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["uploadfile"])}
+                </label>
+                {/if}
+            </span> 
+
+        </p>
+
+        <p class="stdformbutton">
+            <input name="submitAddPhoto" type="submit" value="Uložit" class="submit radius2" />
+        </p>
+    </form>
+</div>
+{/if}

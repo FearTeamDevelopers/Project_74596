@@ -1,0 +1,95 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+    <li><a href="/admin/gallery/detail/{echo $gallery->id}">Detail Galerie</a></li>
+    <li class="current"><a href="#">Editovat Galerii</a></li>
+    <li><a href="/admin/gallery/delete/{echo $gallery->id}">Smazat Galerii</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($gallery)}
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Editovat Galerii</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+        <p>
+            <label>Název*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('title', array($gallery,'title'), true)}
+                {if isset($errors["title"])}
+                <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Avatar</label>
+            <span class="field">
+                <select class="width80" name="avatar">
+                    {script $photos = $gallery->getPhotos()}
+                    {if !empty($photos)}
+                    {foreach $photo in $photos}
+                    {if $photo->getId() == $gallery->getAvatarPhotoId()}
+                    <option value="{echo $photo->getId()}" selected>{echo $photo->getPhotoName()}</option>
+                    {/if}{else}
+                    <option value="{echo $photo->getId()}">{echo $photo->getPhotoName()}</option>
+                    {/else}
+                    {/foreach}
+                    {/if}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Pořadí<small>Max. 99</small></label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('rank', array($gallery,'rank',1))}
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Popis*</label>
+            <span class="field">
+                <textarea class="width80" name="description" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($gallery,'description')}</textarea>
+                {if isset($errors["description"])}
+                <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Veřejná</label>
+            <span class="field">
+                <select class="width80" name="public">
+                    {if $gallery->isPublic == 0}
+                    <option value="0" selected>Soukromá</option>
+                    <option value="1">Veřejná</option>
+                    {/if}{else}
+                    <option value="0">Soukromá</option>
+                    <option value="1" selected>Veřejná</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Aktivní</label>
+            <span class="field">
+                <select class="width80" name="active">
+                    {if $gallery->active == 0}
+                    <option value="0" selected>Neaktivní</option>
+                    <option value="1">Aktivní</option>
+                    {/if}{else}
+                    <option value="0">Neaktivní</option>
+                    <option value="1" selected>Aktivní</option>
+                    {/else}
+                </select>
+            </span>
+        </p>
+        <p class="stdformbutton">
+            <input name="submitEditGallery" type="submit" value="Uložit" class="submit radius2" />
+        </p>
+    </form>
+</div>
+{/if}

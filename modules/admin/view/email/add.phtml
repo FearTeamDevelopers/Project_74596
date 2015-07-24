@@ -1,0 +1,86 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/email/">Šablony</a></li>
+    <li><a href="/admin/email/send/">Email</a></li>
+    <li class="current"><a href="#">Nová šablona</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="widgetbox">
+        <div class="contenttitle radiusbottom0">
+            <h2 class="table"><span>Základní info</span></h2>
+        </div><!--contenttitle-->
+
+        <form class="stdform stdform2" method="post" action="#">
+            <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+            <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}" />
+
+            <p>
+                <label>Název šablony*</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('title', array($template,'title'), true)}
+                    {if isset($errors["title"])}
+                    <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Předmět</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('subject', array($template,'subject'), true)}
+                    {if isset($errors["subject"])}
+                    <label class="error">{echo join("<br/>", $errors["subject"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Text*</label>
+                <span class="field">
+                    <textarea rows="20" name="text" id="ckeditor">{echo isset($template)? $template->body: ""}</textarea>
+                    {if isset($errors["body"])}
+                    <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-text">Smazat</button>
+                    <button id="text-new-paragraph">Nový odstavec</button>
+                    <button id="text-link-to-gallery">Odkaz na galerii</button>
+                    <button id="text-link-to-action">Odkaz na akci</button>
+                    <button id="text-link-to-news">Odkaz na novinku</button>
+                    <button id="text-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+            <p>
+                <label>Text EN*</label>
+                <span class="field">
+                    <textarea rows="20" name="texten" id="ckeditor2">{echo isset($template)? $template->bodyEn: ""}</textarea>
+                    {if isset($errors["bodyEn"])}
+                    <label class="error">{echo join("<br/>", $errors["bodyEn"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-texten">Smazat</button>
+                    <button id="texten-new-paragraph">Nový odstavec</button>
+                    <button id="texten-link-to-gallery">Odkaz na galerii</button>
+                    <button id="texten-link-to-action">Odkaz na akci</button>
+                    <button id="texten-link-to-news">Odkaz na novinku</button>
+                    <button id="texten-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+            {if $isSuperAdmin}
+            <p>
+                <label>Typ</label>
+                <span class="field">
+                    <select class="width80" name="type">
+                        <option value="1">Běžná</option>
+                        <option value="2">Systémová</option>
+                    </select>
+                </span>
+            </p>
+            {/if}
+            <p class="stdformbutton">
+                <input name="submitAddEmailTemplate" type="submit" value="Uložit" class="submit radius2" />
+            </p>
+        </form>
+    </div>
+</div>
+<br class="clear-all"/>
+<div id="insert-dialog"><p></p></div>
+<script type="text/javascript" src="/public/js/custom/build/emails.js"></script>

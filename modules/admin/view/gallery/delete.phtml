@@ -1,0 +1,35 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+    <li><a href="/admin/gallery/detail/{echo $gallery->id}">Detail Galerie</a></li>
+    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Editovat Galerii</a></li>
+    <li class="current"><a href="#">Smazat Galerii</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($gallery)}
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Smazat Galerii</span></h2>
+    </div><!--contenttitle-->
+    
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="csrf" value="{echo $token}" />
+        <p>
+            <label>Název</label>
+            <span class="field">{echo $gallery->title}</span>
+        </p>
+        <p>
+            <label>Vytvořena</label>
+            <span class="field">{echo $gallery->created}</span>
+        </p>
+        <p>
+            <label>Upozornění</label>
+            <span class="field">Všechny fotografie nahrané do této galerie budou smazány</span>
+        </p>
+
+        <p class="stdformbutton">
+            <input name="submitDeleteGallery" type="submit" value="Smazat" class="submit radius2" />
+        </p>
+    </form>
+</div>
+{/if}

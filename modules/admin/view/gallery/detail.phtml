@@ -1,0 +1,61 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/gallery/">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+    <li class="current"><a href="#">Detail Galerie</a></li>
+    <li><a href="/admin/gallery/edit/{echo $gallery->id}">Editovat Galerii</a></li>
+    <li><a href="/admin/gallery/delete/{echo $gallery->id}">Smazat Galerii</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($gallery)}
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>{echo $gallery->title}</span></h2>
+    </div><!--contenttitle-->
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+    <div class="collectiondetail">
+        <p>
+            Autor: {echo $gallery->userAlias}<br/>
+            Vytvořeno: {echo $gallery->created}<br/>
+            Popis galerie:
+        </p>
+        <div class="collectiondetail_description">
+            {echo $gallery->description}
+        </div>
+        <br/>
+        <p>
+            <a href="/admin/gallery/addphoto/{echo $gallery->id}" class="btn btn_image"><span>Nahrát foto</span></a> 
+        </p>
+    </div>
+    <hr/>
+    
+    <div id="tabs-1">
+        {script $photos = $gallery->getPhotos()}
+        {if !empty($photos)}
+        <div style="overflow:hidden;">
+            <ul class="imagelist">
+                {foreach $photo in $photos}
+                    {if $photo->active}
+                        <li class="photoactive">
+                    {/if}{else}
+                        <li class="photoinactive">
+                    {/else}
+                        <a href="{echo $photo->imgMain}" data-lightbox="gallery">
+                            <img src="{echo $photo->imgThumb}" alt="" height="120px" />
+                        </a>
+                        <span>
+                            
+                            <a href="{echo $photo->imgMain}" class="view" value="Zobrazit" target="_blank"></a>
+                            <a href="/admin/gallery/changephotostatus/{echo $photo->id}" class="activate" value="Aktivovat/Deaktivovat"></a>
+                            <a href="/admin/gallery/deletephoto/{echo $photo->id}" class="delete" value="Smazat"></a>
+                        </span>
+                    </li>
+                {/foreach}
+            </ul>
+        </div>
+        {/if}{else}
+        <div class="notification msginfo"><a class="close"></a><p>Žádné foto v galerii</p></div>
+        {/else}
+    </div>
+</div>
+{/if}

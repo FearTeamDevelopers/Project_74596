@@ -1,0 +1,21 @@
+
+<section class="wrapper login singlePage">
+  <div class="row">
+    <div class="small-12 columns">
+      <div class="container">
+        <header>
+          <h2 class="fi-torso">Přihlášení</h2>
+        </header>
+        <form method="POST" action="#">{if isset($account_error)}
+          <label class="error fi-alert">{echo $account_error}</label>{/if}
+          <input type="email" name="email" placeholder="Váš@email.cz" required="required"/>{if isset($email_error)}
+          <label class="error fi-alert">{echo $email_error}</label>{/if}
+          <input type="password" name="password" placeholder="Vaše heslo" required="required"/>{if isset($password_error)}
+          <label class="error fi-alert">{echo $password_error}</label>{/if}
+          <input type="submit" name="submitLogin" value="Přihlásit"/><br/><br/><span>Zaregistrujte se a vytvořte si účet<a href="/registrace">&nbsp;zde</a></span>
+          <input type="hidden" name="csrf" id="csrf" value="{echo $token}"/>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>

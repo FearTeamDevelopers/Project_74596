@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="CACHE-CONTROL" content="no-store">
+
+        <link href="/public/images/favico.jpg" rel="Shortcut Icon" type="image/x-icon"/>
+        <link href="/public/css/custom/reset.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/plugins/grid.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/plugins/lightbox.css" rel="stylesheet"  type="text/css" />
+        <link href="/public/css/custom/styleAdmin.min.css" media="screen" rel="stylesheet" type="text/css" />
+        <link href="/public/css/plugins/jquery.cropit.css" media="screen" rel="stylesheet" type="text/css" />
+
+        <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
+
+        <title>TJ Sokol - Administrace</title>
+    </head>
+    <body lang="cs">
+        <div class="header radius3">
+            <div class="headerinner">
+                <a href="/admin/"><img src="/public/images/admin/logo_admin.png" alt="" height="45"/></a>
+
+                <div class="headright">
+                    <div class="headercolumn">&nbsp;</div>
+
+                    <div id="userPanel" class="headercolumn">
+                        <a href="#" class="userinfo radius2">
+                            <img src="/public/images/admin/avatar.png" alt="" class="radius2" />
+                            <span><strong>{echo $authUser->getFirstname()." ".$authUser->getLastname()}</strong></span>
+                        </a>
+                        <div class="userdrop">
+                            <ul>
+                                <li><a href="/admin/user/updateprofile/">Profil</a></li>
+                                <li><a href="/admin/logout">Odhlásit se</a></li>
+                            </ul>
+                        </div><!--userdrop-->
+                    </div><!--headercolumn-->
+                </div><!--headright-->
+
+            </div><!--headerinner-->
+        </div><!--header-->
+        <!-- END OF HEADER -->
+
+        <!-- START OF MAIN CONTENT -->
+        <div class="mainwrapper">
+            <div class="mainwrapperinner">
+                <div class="mainleft">
+                    <div class="mainleftinner">
+                        <div class="leftmenu">
+                            {include menu.phtml}
+                        </div><!--leftmenu-->
+                        <div id="togglemenuleft"><a></a></div>
+                    </div><!--mainleftinner-->
+                </div><!--mainleft-->
+
+                <div class="maincontent noright">
+                    {include notifications.phtml}
+
+                    <div class="maincontentinner container_16">
+                        {yield action}
+                    </div><!--maincontentinner-->
+
+                    <div class="footer">
+                        <p>Administrace v2.4.0</p>
+                    </div><!--footer-->
+
+                </div><!--maincontent-->
+            </div><!--mainwrapperinner-->
+        </div><!--mainwrapper-->
+        <!-- END OF MAIN CONTENT -->
+
+        <div id="loader"><img src="/public/images/loaders/loader6.gif" alt="Loading..." />Nahrávám...</div>
+
+        <div id="dialog" title=""><p></p></div>
+        <div id="deleteDialog" title="Chcete pokračovat?"><p></p></div>
+
+        <!--[if lt IE 9]>
+            <script type="text/javascript" src="/public/js/plugins/html5.js"></script>
+        <![endif]-->
+
+        <script type="text/javascript" src="/public/js/plugins/jquery.dataTables.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/ckeditor/ckeditor.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery.cropit.min.js"></script>
+        <script type="text/javascript" src="/public/js/custom/generalAdmin.js" id="mainCusScr" async></script>
+    </body>
+</html>

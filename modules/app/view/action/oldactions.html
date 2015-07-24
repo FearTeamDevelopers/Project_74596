@@ -1,0 +1,28 @@
+
+<section class="wrapper akce singlePage">
+  <header class="row">
+    <h2>Proběhlé akce</h2>
+  </header>
+  <section class="row container">
+    {if !empty($actions)}
+    {foreach $action in $actions}
+    <article>
+      <div class="date">
+        <div class="den">{echo \App\Helper\DateFormater::g2dn($action->getStartDate())}</div>
+        <div class="mesic">{echo \App\Helper\DateFormater::g2mn($action->getStartDate())}</div>
+      </div>
+      <header>
+        <h3>{echo $action->getTitle()}</h3><span> <small>{echo "Vytvořil: ".$action->getUserAlias().", ".\App\Helper\DateFormater::t2d($action->getCreated())}</small></span>
+      </header>
+      <div class="body">
+        <div>{echo html_entity_decode($action->getShortBody())}</div><a href="/akce/r/{echo $action->getUrlKey()}">čti více</a>
+      </div>
+    </article>{/foreach}
+    {/if}
+  </section>{if  $pagecount > 1}
+  <section class="pager row">
+    {if $currentpage !=1}
+    {if $currentpage !=2}<a href="{echo $pagerpathprefix}/p/1{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><<</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}"><</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage-2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 2}</a>{/if}<a href="{echo $pagerpathprefix}/p/{echo $currentpage-1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage - 1}</a>{/if}<a href="#" class="active">{echo $currentpage}</a>{if $currentpage != $pagecount}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 1}</a>{if $currentpage != $pagecount - 1}<a href="{echo $pagerpathprefix}/p/{echo $currentpage+2}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">{echo $currentpage + 2}</a><a href="{echo $pagerpathprefix}/p/{echo $currentpage+1}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">></a><a href="{echo $pagerpathprefix}/p/{echo $pagecount}{echo isset($pagerpathpostfix)? $pagerpathpostfix:""}">>></a>{/if}
+    {/if}
+  </section>{/if}
+</section>

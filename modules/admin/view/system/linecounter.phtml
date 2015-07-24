@@ -1,0 +1,25 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/system/">Hlavní</a></li>
+    <li><a href="/admin/system/settings/">Nastavení</a></li>
+    <li><a href="/admin/system/showadminlog/">Admin log</a></li>
+    <li class="current"><a href="#">Line Counter</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Line Counter</span></h2>
+    </div><!--contenttitle-->
+
+    <div>
+        {echo number_format($totallines, 0, '.', ' ')} lines in the current folder
+        <br>
+        {script $codelines = $totallines - $filecounter["gen"]["commentedLines"] - $filecounter["gen"]["blankLines"]}
+        {echo number_format($codelines, 0, '.', ' ')} actual lines of code (not a comment or blank line)
+        <br><br>
+
+        {foreach $val in $filecounter["gen"]}
+            {echo ucfirst($val_i).": ".number_format($val, 0, '.', ' ')}
+            <br/>
+        {/foreach}
+    </div>
+</div>

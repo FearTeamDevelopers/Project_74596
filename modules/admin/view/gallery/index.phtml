@@ -1,0 +1,53 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Galerie</a></li>
+    <li><a href="/admin/gallery/add/">Nová Galerie</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="image"><span>Galerie</span></h2>
+    </div><!--contenttitle-->
+
+    <table class="stdtable">
+        <colgroup>
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Název</td>
+                <td class="head1">Typ</td>
+                <td class="head0">Autor</td>
+                <td class="head1">Vytvořeno</td>
+                <td class="head0">Stav</td>
+                <td class="head1">&nbsp;</td>
+            </tr> 
+        </thead>
+
+        <tbody>
+            {if !empty($galleries)}
+                {foreach $gallery in $galleries}
+                    <tr>
+                        <td>{echo $gallery->getTitle()}</td>
+                        <td>
+                            {if $gallery->isPublic == 0}Soukromá{/if}
+                            {else}Veřejná{/else}
+                        </td>
+                        <td>{echo $gallery->getUserAlias()}</td>
+                        <td>{echo $gallery->getCreated()}</td>
+                        <td>
+                            {if ($gallery->active)}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
+                            {if ($gallery->getUserId() == $authUser->getId())}<span class="infoLabel infoLabelGray">Moje</span>{/if}
+                        </td>
+                        <td>
+                            <a href="/admin/gallery/detail/{echo $gallery->id}" class="btn btn_image2">
+                                <span>Vstoupit do galerie</span>
+                            </a>
+                        </td>
+                    </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>

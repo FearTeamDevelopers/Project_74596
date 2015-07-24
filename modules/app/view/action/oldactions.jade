@@ -1,0 +1,20 @@
+section.wrapper.akce.singlePage
+   header.row
+      h2 Proběhlé akce
+   section.row.container
+      |{if !empty($actions)}
+      |{foreach $action in $actions}
+      article
+         .date
+            .den {echo \App\Helper\DateFormater::g2dn($action->getStartDate())}
+            .mesic {echo \App\Helper\DateFormater::g2mn($action->getStartDate())}
+         header
+            h3 {echo $action->getTitle()}
+            span 
+                small {echo "Vytvořil: ".$action->getUserAlias().", ".\App\Helper\DateFormater::t2d($action->getCreated())}
+         .body
+            div {echo html_entity_decode($action->getShortBody())}
+            a(href!='/akce/r/{echo $action->getUrlKey()}') čti více
+      |{/foreach}
+      |{/if}
+   include ../components/pager

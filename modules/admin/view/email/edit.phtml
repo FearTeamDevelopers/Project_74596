@@ -1,0 +1,112 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/email/">Šablony</a></li>
+    <li><a href="/admin/email/send/">Email</a></li>
+    <li><a href="/admin/email/add/">Nová šablona</a></li>
+    <li class="current"><a href="#">Editovat šablonu</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($template)}
+<div class="content">
+    <div class="widgetbox">
+        <div class="contenttitle radiusbottom0">
+            <h2 class="table"><span>Základní info</span></h2>
+        </div><!--contenttitle-->
+
+        <form class="stdform stdform2" method="post" action="#">
+            <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+            <p>
+                <label>Název šablony*</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('title', array($template,'title'), true)}
+                    {if isset($errors["title"])}
+                    <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Předmět</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::textInput('subject', array($template,'subject'), true)}
+                    {if isset($errors["subject"])}
+                    <label class="error">{echo join("<br/>", $errors["subject"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p>
+                <label>Text*</label>
+                <span class="field">
+                    <textarea rows="20" name="text" id="ckeditor">{echo $template->body}</textarea>
+                    {if isset($errors["body"])}
+                    <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-text">Smazat</button>
+                    <button id="text-new-paragraph">Nový odstavec</button>
+                    <button id="text-link-to-gallery">Odkaz na galerii</button>
+                    <button id="text-link-to-action">Odkaz na akci</button>
+                    <button id="text-link-to-news">Odkaz na novinku</button>
+                    <button id="text-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+            <p>
+                <label>Text EN*</label>
+                <span class="field">
+                    <textarea rows="20" name="texten" id="ckeditor2">{echo $template->bodyEn}</textarea>
+                    {if isset($errors["bodyEn"])}
+                    <label class="error">{echo join("<br/>", $errors["bodyEn"])}</label>
+                    {/if}
+                    <br/>
+                    <button id="clear-texten">Smazat</button>
+                    <button id="texten-new-paragraph">Nový odstavec</button>
+                    <button id="texten-link-to-gallery">Odkaz na galerii</button>
+                    <button id="texten-link-to-action">Odkaz na akci</button>
+                    <button id="texten-link-to-news">Odkaz na novinku</button>
+                    <button id="texten-link-to-content">Odkaz na stránku</button>
+                </span>
+            </p>
+
+            <br/>
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Systémové info</span></h2>
+            </div><!--contenttitle-->
+            <p>
+                <label>Aktivní</label>
+                <span class="field">
+                    <select name="active" class="width80">
+                        {if $template->active}
+                        <option value="0">Neaktivní</option>
+                        <option value="1" selected>Aktivní</option>
+                        {/if}{else}
+                        <option value="0" selected>Neaktivní</option>
+                        <option value="1">Aktivní</option>
+                        {/else}
+                    </select>
+                </span>
+            </p>
+            {if $isSuperAdmin}
+            <p>
+                <label>Typ</label>
+                <span class="field">
+                    <select class="width80" name="type">
+                        {if $template->type == 1}
+                        <option value="1">Běžná</option>
+                        <option value="2">Systémová</option>
+                        {/if}{else}
+                        <option value="1">Běžná</option>
+                        <option value="2" selected>Systémová</option>
+                        {/else}
+                    </select>
+                </span>
+            </p>
+            {/if}
+            <p class="stdformbutton">
+                <input name="submitEditEmailTemplate" type="submit" value="Uložit" class="submit radius2" />
+            </p>
+        </form>
+    </div>
+</div>
+<br class="clear-all"/>
+<div id="insert-dialog"><p></p></div>
+<script type="text/javascript" src="/public/js/custom/news.js"></script>
+{/if}

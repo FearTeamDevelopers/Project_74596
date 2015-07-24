@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="CACHE-CONTROL" content="no-store">
+        <meta name="robots" content="NOINDEX,NOFOLLOW">
+
+        <link href="/public/images/favico.jpg" rel="icon" type="image/x-icon"/>
+        <link href="/public/css/custom/styleAdmin.min.css" media="screen" rel="stylesheet" type="text/css" />
+
+        <!--[if lt IE 9]> 
+            <script type="text/javascript" src="/public/js/plugins/html5.js"></script>
+        <![endif]-->
+        <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
+        
+
+        <title>TJ Sokol - Administrace</title>
+    </head>
+    <body lang="cs">
+        <div class="maincontent noright">
+            {include notifications.phtml}
+        </div>
+
+        <div class="loginbox radius3">
+            <div class="loginboxinner radius3">
+                <div class="loginheader">
+                    <h1 class="bebas">Sign In</h1>
+                    <div class="logo"><img src="/public/images/admin/logo_admin.png" alt="" /></div>
+                </div><!--loginheader-->
+
+                <div class="loginform">
+                    <div class="loginerror">
+                        {if isset($account_error)}
+                        <p>
+                            {echo $account_error}
+                        </p>
+                        {/if}
+                        {if isset($email_error)}
+                        <p>
+                            {echo $email_error}
+                        </p>
+                        {/if}
+                        {if isset($password_error)}
+                        <p>
+                            {echo $password_error}
+                        </p>
+                        {/if}
+                    </div>
+                    <form id="login" action="#" method="post">
+                        <p>
+                            <label for="email" class="bebas">Email</label>
+                            <input type="email" id="email" name="email" class="radius2" required autofocus/>
+                        </p>
+                        <p>
+                            <label for="password" class="bebas">Heslo</label>
+                            <input type="password" id="password" name="password" class="radius2" required/>
+                        </p>
+                        <p>
+                            <input class="submit" name="submitLogin" type="submit" value="Přihlásit se" />
+                        </p>
+                    </form>
+                </div><!--loginform-->
+            </div><!--loginboxinner-->
+        </div><!--loginbox-->
+    </body>
+</html>

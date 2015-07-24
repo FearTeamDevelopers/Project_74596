@@ -1,0 +1,47 @@
+<ul class="maintabmenu">
+    <li class="current"><a href="#">Stránky</a></li>
+    {if $isAdmin}<li><a href="/admin/content/add/">Přidat stránku</a></li>{/if}
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Obsah Webu</span></h2>
+    </div><!--contenttitle-->
+
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Název stránky</td>
+                <td class="head1">Klíčová slova</td>
+                <td class="head0">Poslední změna</td>
+                <td class="head1">Vytvořeno</td>
+                <td class="head0">Stav</td>
+                <td class="head1">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            {if !empty($content)}
+                {foreach $page in $content}
+                    <tr>
+                        <td>{echo $page->title}</td>
+                        <td>{echo $page->keywords}</td>
+                        <td>{echo $page->modified}</td>
+                        <td>{echo $page->created}</td>
+                        <td>
+                            {if $page->active}<span class="infoLabel infoLabelGreen">Publikováno</span>{/if}
+                            {else}<span class="infoLabel infoLabelGray">Neaktivní</span>{/else}
+                        </td>
+                        <td>
+                            {if $isAdmin}<a href="/admin/content/edit/{echo $page->id}" class="btn btn3 btn_pencil" title="Upravit"></a>{/if}
+                        </td>
+                    </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>

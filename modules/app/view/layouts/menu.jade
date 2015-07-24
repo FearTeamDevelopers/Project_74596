@@ -1,0 +1,74 @@
+a(href='#').showMenu Menu
+nav
+   ul
+      li
+         a(href='#').dropdown O nás
+         ul
+            li
+               a(href='/o-nas') Potápěčské centrum
+            li
+               a(href='/klub-hastrman') Klub sportovních potápěčů
+            li
+               a(href='/apnea-tym') Apnea tým
+      li
+         a(href='/novinky') Novinky
+      li
+         a(href='/akce') Akce
+      li
+         a(href='/reportaze') Reportáže
+      li
+         a(href='/kurzy').dropdown Kurzy
+         ul.kurzy
+            li
+               a(href='/kurzy/cmas') CMAS
+            li
+               a(href='/kurzy/tdi') TDI
+            li
+               a(href='/kurzy/sdi') SDI
+            li
+               a(href='/kurzy/udi') UDI
+            li
+               a(href='/apnea-diving-international') Apnea
+      li
+         a(href='#').dropdown Služby
+         ul
+            li
+               a(href='/sluzby/plneni-lahvi') Plnění lahví
+            li
+               a(href='/sluzby/pujcovna-potapecske-vystroje') Půjčovna potápěčské výstroje
+            li
+               a(href='/sluzby/prodej-nove-vystroje') Prodej nové výstroje
+            li
+               a(href='/sluzby/prace-pod-vodou') Práce pod vodou
+            li
+               a(href='/sluzby/servis-potapecske-techniky') Servis potápěčské techniky
+      li
+         a(href='/galerie').galerie Galerie
+      li
+         a(href='/bazar') Bazar
+      li
+         a(href='#').dropdown Odkazy
+         ul
+            li
+               a(href='/odkazy') Zajímavé stránky
+            li
+               a(href='/bazen') Bazén
+      li
+         a(href='#').dropdown Ostatní
+         ul
+            li
+               a(href='/technika') Technika
+            li
+               a(href='/pojisteni') Pojišťění
+      |{if !isset($authUser)}
+      li
+         a(href='/prihlasit', title='Přihlásit se').fi-torso.galerie
+      |{/if}{else}
+      li
+         a(href='#').dropdown.fi-power
+         ul
+            li
+               a(href='/muj-profil') Můj profil
+            li
+               a(href='/odhlasit') Odhlásit se
+      |{/else}

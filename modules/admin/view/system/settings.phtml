@@ -1,0 +1,33 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/system/">Hlavní</a></li>
+    <li class="current"><a href="#">Nastavení</a></li>
+    {if $isSuperAdmin}<li><a href="/admin/system/showadminlog/">Admin log</a></li>{/if}
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Nastavení aplikace</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+        {if !empty($config)}
+            {foreach $conf in $config}
+            <p>
+                <label>{echo $conf->getTitle()}</label>
+                <span class="field">
+                    <textarea name="{echo $conf->getXkey()}" rows="1" class="width80">{echo $conf->getValue()}</textarea>
+                    {if isset($errors[$conf->getXkey()])}
+                        <label class="error">{echo join("<br/>", $errors[$conf->getXkey()])}</label>
+                    {/if}
+                </span>
+            </p>
+            {/foreach}
+        {/if}
+
+        <p class="stdformbutton">
+            <input name="submitEditSet" type="submit" value="Uložit" class="submit radius2" />
+            <input type="reset" class="reset radius2" value="Reset" />
+        </p>
+    </form>
+</div>

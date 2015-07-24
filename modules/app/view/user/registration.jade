@@ -1,0 +1,47 @@
+section.wrapper.login.singlePage
+   .row
+      .small-12.medium-12.large-12.columns
+         .container
+            header
+               h2.fi-check Registrace
+            form(method='post',action='#')
+               |{if isset($errors["firstname"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["firstname"])}
+               |{/if}
+               |{echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '', 'Jméno')}
+
+               |{if isset($errors["lastname"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["lastname"])}
+               |{/if}
+               |{echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '', 'Příjmení')}
+
+               |{if isset($errors["phoneNumber"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["phoneNumber"])}
+               |{/if}
+               input(type='tel',placeholder='Kontaktní telefon', name='phone',value!='{echo isset($user)? $user->phoneNumber: ""}')
+
+               |{if isset($errors["email"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["email"])}
+               |{/if}
+               input(type='email',placeholder='Kontaktní email', name='email',value!='{echo isset($user)? $user->email: ""}' required)
+
+               |{if isset($errors["password"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["password"])}
+               |{/if}
+               input(type='password',placeholder='Heslo',pattern=".{5,}",title='min. 5 znaků', name='password' required)
+
+               |{if isset($errors["password2"])}
+               label.error.fi-alert
+                  |{echo join("<br/>", $errors["password2"])}
+               |{/if}
+               input(type='password',placeholder='Ověření hesla',pattern=".{5,}",title='min. 5 znaků', name='password2' required)
+
+               input(type='submit', name='register', value='Registrovat')
+
+               input(type="hidden", name="csrf", id="csrf", value!="{echo $token}")
+               input(type="hidden", name="submstoken", id="submstoken", value!="{echo $submstoken}")

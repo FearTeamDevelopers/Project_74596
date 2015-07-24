@@ -1,0 +1,84 @@
+.homepage
+	|{if !empty($reports)}
+	section.wrapper
+		.row.container
+			header
+				h3.fi-list Reportáže
+			.container-box
+				|{foreach $report in $reports}
+				a(href!='/reportaze/r/{echo $report->getUrlKey()}')
+					|{if $report_i == 0}
+					article.report.large-9.medium-12.small-12
+						img(src!='{echo $report->getImgMain()}')
+						.info
+							h2 {echo $report->getTitle()}
+							span {echo "Vytvořil: ".$report->getUserAlias().", ".\App\Helper\DateFormater::t2dt($report->getCreated())}
+							div {echo html_entity_decode($report->getShortBody())}
+					|{/if}{else}
+					article.report.large-3.medium-4.small-6
+
+						img(src!='{echo $report->imgThumb}')
+						.info
+							h3 {echo $report->getTitle()}
+							span {echo "Vytvořil: ".$report->getUserAlias()}<br/>
+							span {echo \App\Helper\DateFormater::t2d($report->getCreated())}
+					|{/else}
+				|{/foreach}
+		.moreWrap
+			a(href='/reportaze')
+				.more
+					span Zobrazit více
+	|{/if}
+	| {if !empty($news)}
+	section.wrapper.blue
+		.row.container
+			header
+				h3.fi-results Novinky
+			.container-box
+				| {foreach $new in $news}
+				.large-6.medium-6.small-12.columns
+					article.indexNew.fi-paperclip
+						header
+							a(href!='/novinky/r/{echo $new->getUrlKey()}')
+								h4 {echo $new->getTitle()}
+						div {echo html_entity_decode($new->getShortBody())}
+				| {/foreach}
+			.moreWrap
+				a(href='/novinky')
+					.more.blue
+						span Zobrazit více
+	| {/if}
+	|{if !empty($actions)}
+	section.wrapper
+		.row.container
+			header
+				h3.fi-compass Akce
+			.container-box#wrapper
+				#carousel
+					|{foreach $action in $actions}
+					a.large-4.medium-6.small-12(href!='/akce/r/{echo $action->getUrlKey()}')
+						article
+							header
+								h4 {echo $action->getTitle()}
+								span.datum Kdy: {echo \App\Helper\DateFormater::t2d($action->getStartDate())}
+							div {echo html_entity_decode($action->getShortBody())}
+					|{/foreach}
+			.moreWrap
+				a(href='/akce')
+					.more
+						span Další akce
+	|{/if}
+	|{if !empty($partners)}
+	section.wrapper.blue
+		.row.container
+			header
+				h3.fi-torso-business Partneři
+			.container-box.partneri
+				#carousel2
+					|{foreach $partner in $partners}
+					article.partner
+						img(src!='{echo $partner->getLogo()}')
+						.info
+							a(href!="{echo $partner->web}", target='_blank') {echo $partner->getTitle()}
+					|{/foreach}
+	|{/if}

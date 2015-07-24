@@ -1,0 +1,77 @@
+
+<div class="homepage">{if !empty($reports)}
+  <section class="wrapper">
+    <div class="row container">
+      <header>
+        <h3 class="fi-list">Reportáže</h3>
+      </header>
+      <div class="container-box">{foreach $report in $reports}<a href="/reportaze/r/{echo $report->getUrlKey()}">{if $report_i == 0}
+          <article class="report large-9 medium-12 small-12"><img src="{echo $report->getImgMain()}"/>
+            <div class="info">
+              <h2>{echo $report->getTitle()}</h2><span>{echo "Vytvořil: ".$report->getUserAlias().", ".\App\Helper\DateFormater::t2dt($report->getCreated())}</span>
+              <div>{echo html_entity_decode($report->getShortBody())}</div>
+            </div>
+          </article>{/if}{else}
+          <article class="report large-3 medium-4 small-6"><img src="{echo $report->imgThumb}"/>
+            <div class="info">
+              <h3>{echo $report->getTitle()}</h3><span>{echo "Vytvořil: ".$report->getUserAlias()}<br/></span><span>{echo \App\Helper\DateFormater::t2d($report->getCreated())}</span>
+            </div>
+          </article>{/else}</a>{/foreach}</div>
+    </div>
+    <div class="moreWrap"><a href="/reportaze">
+        <div class="more"><span>Zobrazit více</span></div></a></div>
+  </section>{/if}
+  {if !empty($news)}
+  <section class="wrapper blue">
+    <div class="row container">
+      <header>
+        <h3 class="fi-results">Novinky</h3>
+      </header>
+      <div class="container-box">{foreach $new in $news}
+        <div class="large-6 medium-6 small-12 columns">
+          <article class="indexNew fi-paperclip">
+            <header><a href="/novinky/r/{echo $new->getUrlKey()}">
+                <h4>{echo $new->getTitle()}</h4></a></header>
+            <div>{echo html_entity_decode($new->getShortBody())}</div>
+          </article>
+        </div>{/foreach}
+      </div>
+      <div class="moreWrap"><a href="/novinky">
+          <div class="more blue"><span>Zobrazit více</span></div></a></div>
+    </div>
+  </section>{/if}
+  {if !empty($actions)}
+  <section class="wrapper">
+    <div class="row container">
+      <header>
+        <h3 class="fi-compass">Akce</h3>
+      </header>
+      <div id="wrapper" class="container-box">
+        <div id="carousel">{foreach $action in $actions}<a href="/akce/r/{echo $action->getUrlKey()}" class="large-4 medium-6 small-12">
+            <article>
+              <header>
+                <h4>{echo $action->getTitle()}</h4><span class="datum">Kdy: {echo \App\Helper\DateFormater::t2d($action->getStartDate())}</span>
+              </header>
+              <div>{echo html_entity_decode($action->getShortBody())}</div>
+            </article></a>{/foreach}</div>
+      </div>
+      <div class="moreWrap"><a href="/akce">
+          <div class="more"><span>Další akce</span></div></a></div>
+    </div>
+  </section>{/if}
+  {if !empty($partners)}
+  <section class="wrapper blue">
+    <div class="row container">
+      <header>
+        <h3 class="fi-torso-business">Partneři</h3>
+      </header>
+      <div class="container-box partneri">
+        <div id="carousel2">{foreach $partner in $partners}
+          <article class="partner"><img src="{echo $partner->getLogo()}"/>
+            <div class="info"><a href="{echo $partner->web}" target="_blank">{echo $partner->getTitle()}</a></div>
+          </article>{/foreach}
+        </div>
+      </div>
+    </div>
+  </section>{/if}
+</div>

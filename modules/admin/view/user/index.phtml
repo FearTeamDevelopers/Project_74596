@@ -1,0 +1,51 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Uživatelé</a></li>
+    <li><a href="/admin/user/add/">Nový uživatel</a></li>
+    <li><a href="/admin/user/help/">Nápověda</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Uživatelé</span></h2>
+    </div><!--contenttitle-->
+
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Jméno</td><td class="head1">Příjmení</td>
+                <td class="head0">Email</td><td class="head1">Vytvořeno</td>
+                <td class="head0">Stav</td><td class="head1">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+
+            {if (!empty($users))}
+                {foreach $user in $users}
+                    <tr>
+                        <td>{echo $user->getFirstname()}</td>
+                        <td>{echo $user->getLastname()}</td>
+                        <td>{echo $user->getEmail()}</td>
+                        <td>{echo $user->getCreated()}</td>
+                        <td>
+                            {if ($user->active)}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
+                            {if ($user->blocked)}<span class="infoLabel infoLabelGray">Zablokovaný</span>{/if}
+                            {if $user->getRole() == "role_admin"}<span class="infoLabel infoLabelBlue">Admin</span>{/if}
+                        </td>
+
+                        <td>
+                            <a href="/admin/user/edit/{echo $user->id}" class="btn btn3 btn_pencil" title="Upravit"></a> 
+                            <a href="/admin/user/delete/{echo $user->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                            <a href="/admin/user/forcepasswordreset/{echo $user->id}" class="btn btn3 btn_key" title="Vygenerovat nové heslo"></a>
+                        </td>
+                    </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,18 @@
+
+<section class="wrapper singlePage">
+  <div class="row">
+    <div class="container large-8 medium-10 small-12 centerBlock mv30">
+      <header>
+        <h2 class="fi-clipboard-pencil">Feedback</h2>
+      </header>
+      <div>Vaše návrhy a nápady, jak naše stránky ještě vylepšit. Nebo pokud někde něco nefunguje, tak nám o tom napište.</div>
+      <form method="POST" action="#" class="mv30">{if isset($errors["message"])}
+        <label class="error">{echo join("<br/>", $errors["message"])}</label>{/if}
+        <textarea name="message" required="required" rows="7">{echo \App\Helper\FormPrinter::iset($feedback,'message')}</textarea>
+        <input type="submit" name="submitFeedback" value="Odeslat" class="more"/>
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}"/>
+        <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}"/>
+      </form>
+    </div>
+  </div>
+</section>

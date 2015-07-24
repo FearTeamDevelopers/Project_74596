@@ -1,0 +1,107 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Můj profil</a></li>
+</ul>
+
+{if isset($user)}
+<div class="content">
+    <form class="stdform stdform2" method="post" action="#">
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+
+        <div class="contenttitle radiusbottom0">
+            <h2 class="form"><span>Osobní údaje</span></h2>
+        </div>
+        <p>
+            <label>Jméno*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true)}
+                {if isset($errors["firstname"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["firstname"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Příjmení*</label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true)}
+                {if isset($errors["lastname"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["lastname"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Telefon</label>
+            <span class="field">
+                <input type="tel" name="phone" class="width80" value="{echo $user->phoneNumber}" />
+                {if isset($errors["phoneNumber"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["phoneNumber"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Notifikace</label>
+            <span class="field">
+                <input type="checkbox" name="actionNotification" value="1" {if $user->getNewActionNotification}checked="checked"{/if}/><span>Chci dostávat emailové oznámení o nových akcích</span><br/>
+            </span>
+        </p>
+
+        <br/>
+        <div class="contenttitle radiusbottom0">
+            <h2 class="form"><span>Přihlašovací údaje</span></h2>
+        </div>
+        <p>
+            <label>Email*</label>
+            <span class="field">
+                <input required type="email" name="email" class="width80" value="{echo $user->email}" />
+                {if isset($errors["email"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["email"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Původní heslo</label>
+            <span class="field">
+                <input type="password" name="oldpass" class="width80" value=""/>
+                {if isset($errors["oldpass"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["oldpass"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Heslo</label>
+            <span class="field">
+                <input type="password" name="password" class="width80" value=""/>
+                {if isset($errors["password"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["password"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Potvrdit heslo</label>
+            <span class="field">
+                <input type="password" name="password2" class="width80" value=""/>
+                {if isset($errors["password2"])}
+                <label class="error">
+                    {echo join("<br/>", $errors["password2"])}
+                </label>
+                {/if}
+            </span>
+        </p>
+
+        <p class="stdformbutton">
+            <input type="submit" name="submitUpdateProfile" value="Uložit" class="submit radius2" />
+        </p>
+    </form>
+</div>
+{/if}

@@ -1,0 +1,67 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/action/">Akce</a></li>
+    <li><a href="/admin/action/add/">Přidat Akci</a></li>
+    <li><a href="/admin/action/edit/{echo $action->getId()}">Upravit Akci</a></li>
+    <li class="current"><a href="#">Komentáře k akci</a></li>
+    <li><a href="/admin/action/help/">Nápověda</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Komentáře</span></h2>
+    </div><!--contenttitle-->
+
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+        <colgroup>
+            <col class="con0" /><col class="con1" />
+            <col class="con0" /><col class="con1" />
+            <col class="con0" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Id</td><td class="head1">Autor</td>
+                <td class="head0">Text</td><td class="head1">Vytvořeno</td>
+                <td class="head0">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            {if (!empty($comments))}
+                {macro showReplies($replies)}
+                    {foreach $reply in $replies}
+                        <tr>
+                            <td>=></td>
+                            <td>{echo $reply->getFirstname()." ".$reply->getLastname()}</td>
+                            <td>{echo $reply->getBody()}</td>
+                            <td>{echo $reply->getCreated()}</td>
+
+                            <td>
+                                <a href="/admin/comment/delete/{echo $reply->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                            </td>
+                        </tr>
+                        {if !empty($reply->_replies)}
+                            {echo showReplies($reply->_replies)}
+                        {/if}
+                    {/foreach}
+                {/macro}
+
+                {foreach $comment in $comments}
+                    <tr>
+                        <td>{echo $comment->getId()}</td>
+                        <td>{echo $comment->getFirstname()." ".$comment->getLastname()}</td>
+                        <td>{echo $comment->getBody()}</td>
+                        <td>{echo $comment->getCreated()}</td>
+                        
+                        <td>
+                            <a href="/admin/comment/delete/{echo $comment->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                        </td>
+                    </tr>
+                    
+                    {if !empty($comment->_replies)}
+                        {echo showReplies($comment->_replies)}
+                    {/if}
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,37 @@
+<div class="widgetbox">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Odkaz</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2 nosubmit" method="post" action="#" >
+        <p>
+            <label>Text odkazu</label>
+            <span class="field">
+                <input type="text" name="link-name" id="link-name" />
+            </span>
+        </p>
+        <p>
+            <label>Stránka</label>
+            <span class="field">
+                <select id="content" class="width99">
+                    {if !empty($contents)}
+                        {foreach $content in $contents}
+                        <option value="{echo $content->getUrlKey()}">{echo $content->getTitle()}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Cíl odkazu</label>
+            <span class="field">
+                <select id="link-target" class="width99">
+                    <option value="_self">Aktuální</option>
+                    <option value="_blank">Nový panel</option>
+                    <option value="_top">Top</option>
+                    <option value="_parent">Parent</option>
+                </select>
+            </span>
+        </p>
+    </form>
+</div>

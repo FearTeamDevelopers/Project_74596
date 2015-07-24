@@ -1,0 +1,67 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Novinky</a></li>
+    <li><a href="/admin/news/add/">Přidat novinku</a></li>
+    <li><a href="/admin/news/help/">Nápověda</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="image"><span>Novinky</span></h2>
+    </div><!--contenttitle-->
+
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+    <input type="hidden" name="type" id="type" value="news" />
+    {if $isAdmin}
+    <div class="tableoptions">
+        <select class="radius3" name="selection">
+            <option value="1">Označené</option>
+            <option value="2">Aktuální stránka</option>
+        </select>
+        <select class="radius3" name="action">
+            <option value="activate">Aktivovat</option>
+            <option value="deactivate">Deaktivovat</option>
+            <option value="approve">Schválit</option>
+            <option value="reject">Zamítnout</option>
+            <option value="delete">Smazat</option>
+        </select> &nbsp;
+        <a class="btn btn_document ajax-massaction" href="/admin/news/massaction/"><span>Proveď</span></a>
+    </div><!--tableoptions-->
+    {/if}
+
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable2">
+        <colgroup>
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0 width50">Id</td>
+                <td class="head1">Název</td>
+                <td class="head0">Autor</td>
+                <td class="head1">Vytvořeno</td>
+                <td class="head0">Stav</td>
+                <td class="head1">V archivu</td>
+                <td class="head0">&nbsp;</td>
+            </tr>
+        </thead>
+    </table>
+    {if $isAdmin}
+    <div class="tableoptions">
+        <select class="radius3" name="selection">
+            <option value="1">Označené</option>
+            <option value="2">Aktuální stránka</option>
+        </select>
+        <select class="radius3" name="action">
+            <option value="activate">Aktivovat</option>
+            <option value="deactivate">Deaktivovat</option>
+            <option value="approve">Schválit</option>
+            <option value="reject">Zamítnout</option>
+            <option value="delete">Smazat</option>
+        </select> &nbsp;
+        <a class="btn btn_document ajax-massaction" href="/admin/news/massaction/"><span>Proveď</span></a>
+    </div><!--tableoptions-->
+    {/if}
+</div>
+<br class="clear-all"/><br />

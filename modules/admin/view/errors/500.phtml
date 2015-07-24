@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>500 Internal Server Error</title>
+        <!---CSS Files-->
+        <link rel="stylesheet" href="/public/css/custom/errorStyle.min.css" />
+    </head>
+    <body lang="cs">
+        <div class="content container_12">
+            <h1 id="error-heading">500</h1>
+            <p id="error-desc">Unexpected error has been detected.<br><br>
+                Please wait while the technician restart our crashing servers.</p>
+            <p id="error-back">Please try again in a few minutes. <a href="/">Go Home</a>
+            </p>
+        </div>
+        <div class='content container_12'>
+            <?php if (ENV == 'dev' || ENV == 'qa'): ?>
+                <pre><?php print_r($e); ?></pre>
+            <?php endif; ?>
+        </div>
+        <div class="footer container_12">
+            <p class="grid_12">THCFrame Error Page</p>
+        </div>
+    </body>
+</html>

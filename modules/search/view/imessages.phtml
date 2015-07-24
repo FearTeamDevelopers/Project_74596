@@ -1,0 +1,17 @@
+{if !empty($imessages)}
+    {foreach $message in $imessages}
+        {if $message->getMessageType() == "info"}
+        <div class="notification msginfo">
+            <p>{echo $message->getBody()}</p>
+        </div>
+        {/if}{elseif $message->getMessageType() == "warning"}
+        <div class="notification msgalert">
+            <p>{echo $message->getBody()}</p>
+        </div>
+        {/elseif}{else}
+        <div class="notification msgerror">
+            <p>{echo $message->getBody()}</p>
+        </div>
+        {/else}
+    {/foreach}
+{/if}

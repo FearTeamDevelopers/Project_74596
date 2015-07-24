@@ -1,0 +1,55 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/redirect/">Přesměrování</a></li>
+    <li><a href="/admin/redirect/">Přidat přesměrování</a></li>
+    <li class="current"><a href="#">Upravit přesměrování</a></li>
+</ul><!--maintabmenu-->
+
+{if isset($redirect)}
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Upravit přesměrování</span></h2>
+    </div><!--contenttitle-->
+
+    <form class="stdform stdform2" method="post" action="#" >
+        <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+        <p>
+            <label>Modul</label>
+            <span class="field">
+                <select class="width80" name="module">
+                    {if !empty($modules)}
+                        {foreach $module in $modules}
+                            {script $sel=""}
+                            {if $module == $redirect->module}
+                                {script $sel="selected"}
+                            {/if}
+                            <option value="{echo strtolower($module)}" {echo $sel}>{echo $module}</option>
+                        {/foreach}
+                    {/if}
+                </select>
+            </span>
+        </p>
+        <p>
+            <label>Z URL*</label>
+            <span class="field">
+                <input class="width80" type="text" name="fromurl" value="{echo $redirect->fromPath}" />
+                {if isset($errors["fromPath"])}
+                <label class="error">{echo join("<br/>", $errors["fromPath"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Na URL*</label>
+            <span class="field">
+                <input class="width80" type="text" name="tourl" value="{echo $redirect->toPath}" />
+                {if isset($errors["toPath"])}
+                <label class="error">{echo join("<br/>", $errors["toPath"])}</label>
+                {/if}
+            </span>
+        </p>
+       
+        <p class="stdformbutton">
+            <input name="submitEditRedirect" type="submit" value="Uložit" class="submit radius2" />
+        </p>
+    </form>
+</div>
+{/if}

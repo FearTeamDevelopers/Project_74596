@@ -1,0 +1,14 @@
+section.wrapper.singlePage
+    .row
+        .container.large-8.medium-10.small-12.centerBlock.mv30
+            header
+                h2.fi-clipboard-pencil Feedback
+            div Vaše návrhy a nápady, jak naše stránky ještě vylepšit. Nebo pokud někde něco nefunguje, tak nám o tom napište.
+            form(method='POST' action='#').mv30
+                |{if isset($errors["message"])}
+                label.error {echo join("<br/>", $errors["message"])}
+                |{/if}
+                textarea(name='message', required, rows=7) {echo \App\Helper\FormPrinter::iset($feedback,'message')}
+                input(type='submit' name='submitFeedback' value='Odeslat').more
+                input(type="hidden", name="csrf", id="csrf", value!="{echo $token}")
+                input(type="hidden", name="submstoken", id="submstoken", value!="{echo $submstoken}")

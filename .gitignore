@@ -1,0 +1,17 @@
+/application/configuration/config_live.ini
+/application/configuration/config_qa.ini
+/application/configuration/maindb.sql
+/application/configuration/searchdb.sql
+/application/configuration/testdata.sql
+/application/logs/
+/public/uploads/
+/temp/cache/
+/temp/db/
+/nbproject/
+/sitemap.xml
+/.idea/
+/.htaccess_backup.txt
+/public/js/plugins/filemanager/files/
+/prepros.cfg
+/node_modules/
+/gulpfile.js

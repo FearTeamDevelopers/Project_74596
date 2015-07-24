@@ -1,0 +1,46 @@
+<ul class="maintabmenu multipletabmenu">
+    <li class="current"><a href="#">Přesměrování</a></li>
+    <li><a href="/admin/redirect/add/">Přidat přesměrování</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+    <div class="contenttitle radiusbottom0">
+        <h2 class="table"><span>Přesměrování</span></h2>
+    </div><!--contenttitle-->
+
+    <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+    <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+        <colgroup>
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+            <col class="con0" /> <col class="con1" />
+        </colgroup>
+        <thead>
+            <tr>
+                <td class="head0">Id</td>
+                <td class="head1">Modul</td>
+                <td class="head0">Z URL</td>
+                <td class="head1">Na URL</td>
+                <td class="head0">Vytvořen</td>
+                <td class="head1">&nbsp;</td>
+            </tr>
+        </thead>
+        <tbody>
+            {if !empty($redirects)}
+                {foreach $redirect in $redirects}
+                    <tr>
+                        <td>{echo $redirect->getId()}</td>
+                        <td>{echo $redirect->getModule()}</td>
+                        <td>{echo $redirect->getFromPath()}</td>
+                        <td>{echo $redirect->getToPath()}</td>
+                        <td>{echo $redirect->getCreated()}</td>
+                        <td>
+                            <a href="/admin/redirect/edit/{echo $redirect->getId()}" class="btn btn3 btn_pencil" title="Upravit"></a>
+                            <a href="/admin/redirect/delete/{echo $redirect->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                        </td>
+                    </tr>
+                {/foreach}
+            {/if}
+        </tbody>
+    </table>
+</div>
