@@ -107,9 +107,12 @@ class ActionController extends Controller
             self::redirect('/nenalezeno');
         }
 
+        $attendance = \App\Model\AttendanceModel::fetchUsersByActionId($action->getId());
+        
         $this->_checkMetaData($layoutView, $action);
         $view->set('action', $action)
                 ->set('comment', null)
+                ->set('attendance', $attendance)
                 ->set('submstoken', $this->_mutliSubmissionProtectionToken());
         
         if (RequestMethods::post('submitAddComment')) {
@@ -254,4 +257,46 @@ class ActionController extends Controller
                 ->set('act', $act);
     }
 
+    /**
+     * 
+     * @param type $actionId
+     * @param type $type
+     * @before _secured, _member
+     */
+    public function attendance($actionId, $type)
+    {
+        $this->_disableView();
+        
+        if($type != \App\Model\AttendanceModel::ACCEPT ||
+                $type != \App\Model\AttendanceModel::REJECT ||
+                $type != \App\Model\AttendanceModel::MAYBE){
+            echo $this->lang('COMMON_FAIL');
+            exit;
+        }
+        
+        $action = \App\Model\ActionModel::first(array('id = ?' => (int)$actionId));
+        
+        if (NULL === $action) {
+            echo $this->lang('NOT_FOUND');
+        }else{
+            $attendance = new \App\Model\AttendanceModel(array(
+                'userId' => $this->getUser()->getId(),
+                'resourceId' => $action->getId(),
+                'type' => (int)$type,
+                'comment' => RequestMethods::post('attcomment')
+            ));
+            
+            if($attendance->validate()){
+                $attendance->save();
+                $this->getCache()->invalidate();
+
+                Event::fire('app.log', array('success', 'Attendance - '.$type.' - action '.$action->getId().' by user: '.$this->getUser()->getId()));
+                echo 'success';
+            } else {
+                Event::fire('app.log', array('fail', 'Errors: '.  json_encode($attendance->getErrors())));
+                echo $this->lang('COMMON_FAIL');
+            }
+        }
+    }
+    
 }

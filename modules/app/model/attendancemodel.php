@@ -10,6 +10,10 @@ use THCFrame\Model\Model;
 class AttendanceModel extends Model
 {
 
+    const ACCEPT = 1;
+    const REJECT = 2;
+    const MAYBE = 3;
+    
     /**
      * @readwrite
      */
