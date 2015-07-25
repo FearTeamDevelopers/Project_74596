@@ -112,8 +112,7 @@ class ActionController extends Controller
         $this->_checkMetaData($layoutView, $action);
         $view->set('action', $action)
                 ->set('comment', null)
-                ->set('attendance', $attendance)
-                ->set('submstoken', $this->_mutliSubmissionProtectionToken());
+                ->set('attendance', $attendance);
         
         if (RequestMethods::post('submitAddComment')) {
             if ($this->_checkCSRFToken() !== true &&

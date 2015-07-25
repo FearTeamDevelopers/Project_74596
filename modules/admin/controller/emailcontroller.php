@@ -62,8 +62,7 @@ class EmailController extends Controller
             $templates = \Admin\Model\EmailTemplateModel::fetchAllCommonActive();
         }
         
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('email', null)
+        $view->set('email', null)
                 ->set('templates', $templates);
         
         if (RequestMethods::post('submitSendEmail')) {
@@ -156,8 +155,7 @@ class EmailController extends Controller
     {
         $view = $this->getActionView();
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('template', null);
+        $view->set('template', null);
 
         if (RequestMethods::post('submitAddEmailTemplate')) {
             if ($this->_checkCSRFToken() !== true &&

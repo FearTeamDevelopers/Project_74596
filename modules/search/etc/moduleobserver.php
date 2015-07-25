@@ -56,6 +56,7 @@ class ModuleObserver implements SubscriberInterface
             'controller' => $controller,
             'action' => $action,
             'result' => $result,
+            'httpreferer' => RequestMethods::getHttpReferer(),
             'params' => $paramStr
         ));
 
@@ -76,7 +77,12 @@ class ModuleObserver implements SubscriberInterface
         $route = $router->getLastRoute();
         
         $security = Registry::get('security');
-        $userId = $security->getUser()->getWholeName();
+        $user = $security->getUser();
+        if ($user === null) {
+            $userId = 'annonymous';
+        } else {
+            $userId = $user->getWholeName() . ':' . $user->getId();
+        }
 
         $module = $route->getModule();
         $controller = $route->getController();

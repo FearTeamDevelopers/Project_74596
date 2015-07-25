@@ -92,6 +92,15 @@ class Controller extends BaseController
     }
 
     /**
+     * Disable view, used for ajax calls
+     */
+    protected function _disableView()
+    {
+        $this->_willRenderActionView = false;
+        $this->_willRenderLayoutView = false;
+    }
+    
+    /**
      * 
      * @param type $body
      * @param type $subject
@@ -285,6 +294,7 @@ class Controller extends BaseController
                     ->set('env', ENV)
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 
@@ -293,6 +303,7 @@ class Controller extends BaseController
                     ->set('env', ENV)
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 

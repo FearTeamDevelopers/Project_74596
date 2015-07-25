@@ -156,8 +156,7 @@ class NewsController extends Controller
         
         $this->_checkMetaData($layoutView, $news);
         $view->set('news', $news)
-                ->set('comment', null)
-                ->set('submstoken', $this->_mutliSubmissionProtectionToken());
+                ->set('comment', null);
         
         if (RequestMethods::post('submitAddComment')) {
             if ($this->_checkCSRFToken() !== true &&

@@ -50,14 +50,13 @@ class SystemController extends Controller
 
         $canonical = 'http://' . $this->getServerHost() . '/feedback';
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('feedback', null);
+        $view->set('feedback', null);
         $layoutView->set('canonical', $canonical)
                 ->set('metatitle', 'Hastrman - Feedback');
 
         if (RequestMethods::post('submitFeedback')) {
             if ($this->_checkCSRFToken() !== true &&
-                    $this->_checkMutliSubmissionProtectionToken(RequestMethods::post('submstoken')) !== true) {
+                    $this->_checkMutliSubmissionProtectionToken() !== true) {
                 self::redirect('/feedback');
             }
             

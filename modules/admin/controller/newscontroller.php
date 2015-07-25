@@ -172,8 +172,7 @@ class NewsController extends Controller
                 array('id', 'created', 'modified'), array('created' => 'DESC'), 10);
 
         $view->set('news', $news)
-                ->set('concepts', $newsConcepts)
-                ->set('submstoken', $this->_mutliSubmissionProtectionToken());
+                ->set('concepts', $newsConcepts);
 
         if (RequestMethods::post('submitAddNews')) {
             if ($this->_checkCSRFToken() !== true &&

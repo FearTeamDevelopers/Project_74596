@@ -70,8 +70,6 @@ class GalleryController extends Controller
     {
         $view = $this->getActionView();
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken());
-
         if (RequestMethods::post('submitAddGallery')) {
             if ($this->_checkCSRFToken() !== true &&
                     $this->_checkMutliSubmissionProtectionToken() !== true) {
@@ -320,8 +318,7 @@ class GalleryController extends Controller
             self::redirect('/admin/gallery/');
         }
 
-        $view->set('gallery', $gallery)
-                ->set('submstoken', $this->_mutliSubmissionProtectionToken());
+        $view->set('gallery', $gallery);
 
         if (RequestMethods::post('submitAddPhoto')) {
             if ($this->_checkCSRFToken() !== true &&

@@ -30,13 +30,13 @@ class ModuleObserver implements SubscriberInterface
     public function appLog()
     {
         $params = func_get_args();
+        
         $security = Registry::get('security');
         $user = $security->getUser();
-        
-        if(null === $user){
+        if ($user === null) {
             $userId = 'annonymous';
-        }else{
-            $userId = $user->getWholeName();
+        } else {
+            $userId = $user->getWholeName() . ':' . $user->getId();
         }
 
         $router = Registry::get('router');

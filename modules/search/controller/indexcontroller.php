@@ -36,15 +36,6 @@ class IndexController extends Controller
             'columns' => array('urlKey', 'keywords', 'metaDescription', 'title', 'created'),
             'textColumns' => array('keywords', 'metaDescription'),
             'previewColumns' => array('metaDescription', 'created')),
-        'tb_report' => array(
-            'model' => 'App\Model\ReportModel',
-            'modelLabel' => 'Reportáže',
-            'where' => array('active = 1', 'approved = 1'),
-            'path' => '/reportaze/r/',
-            'identifier' => 'urlKey',
-            'columns' => array('urlKey', 'keywords', 'metaDescription', 'title', 'created'),
-            'textColumns' => array('keywords', 'metaDescription'),
-            'previewColumns' => array('metaDescription', 'created')),
         'tb_pagecontent' => array(
             'model' => 'App\Model\PageContentModel',
             'modelLabel' => 'Obsah webu - statické stránky',
@@ -176,8 +167,7 @@ class IndexController extends Controller
      */
     public function buildIndex()
     {
-        $this->willRenderActionView = false;
-        $this->willRenderLayoutView = false;
+        $this->_disableView();
 
         Event::fire('search.log', array('success', 'Building search index'));
         //ini_set('max_execution_time', 1800);
@@ -263,7 +253,7 @@ class IndexController extends Controller
             $this->_resertConnections();
             $body = 'Error while building index: ' . $ex->getMessage();
             Event::fire('search.log', array('fail', $body));
-            $this->_sendEmail($body, 'ERROR: Search buildIndex', null, 'cron@hastrman.cz');
+            $this->_sendEmail($body.PHP_EOL.$ex->getTraceAsString(), 'ERROR: Search buildIndex', null, 'cron@hastrman.cz');
         }
     }
 
@@ -363,7 +353,7 @@ class IndexController extends Controller
             $this->_resertConnections();
             $body = 'Error while building index: ' . $ex->getMessage();
             Event::fire('search.log.user', array('fail', $body));
-            $this->_sendEmail($body, 'ERROR: Search buildIndex', null, 'cron@hastrman.cz');
+            $this->_sendEmail($body.PHP_EOL.$ex->getTraceAsString(), 'ERROR: Search buildIndex', null, 'cron@hastrman.cz');
         }
     }
 

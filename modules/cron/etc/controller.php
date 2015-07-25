@@ -65,6 +65,15 @@ class Controller extends BaseController
     }
 
     /**
+     * Disable view, used for ajax calls
+     */
+    protected function _disableView()
+    {
+        $this->_willRenderActionView = false;
+        $this->_willRenderLayoutView = false;
+    }
+    
+    /**
      * 
      * @param type $body
      * @param type $subject

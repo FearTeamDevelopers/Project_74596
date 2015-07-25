@@ -290,6 +290,7 @@ class Controller extends BaseController
                     ->set('isParticipant', $this->isParticipant())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 
@@ -300,6 +301,7 @@ class Controller extends BaseController
                     ->set('isParticipant', $this->isParticipant())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 

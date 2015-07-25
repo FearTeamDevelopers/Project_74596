@@ -222,7 +222,7 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
 .maintabmenu li.current a:hover, .maintabmenu li.ui-state-active a:hover { text-shadow: none; }
 
 .content { 
-    padding-top: 20px; border: 1px solid #ddd; background: #fff; margin-top: -1px; position: relative; line-height: 21px; 
+    padding-top: 20px; padding-bottom: 20px; border: 1px solid #ddd; background: #fff; margin-top: -1px; position: relative; line-height: 21px; 
     -moz-border-radius: 0 2px 2px 2px; -webkit-border-radius: 0 2px 2px 2px; border-radius: 0 2px 2px 2px;
     -moz-box-shadow: 1px 1px 2px #eee; -webkit-box-shadow: 1px 1px 2px #eee; box-shadow: 1px 1px 2px #eee;
     overflow: hidden;

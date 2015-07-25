@@ -118,6 +118,8 @@ class IndexController extends Controller
      */
     public function cronDailyDatabaseBackup()
     {
+        $this->_disableView();
+        
         $path = APP_PATH . '/temp/db/day/';
         $this->_removeOldFiles($path);
 
@@ -134,7 +136,9 @@ class IndexController extends Controller
         } catch (\THCFrame\Database\Exception\Mysqldump $ex) {
             Event::fire('cron.log', array('fail', 'Database backup',
                 'Error: ' . $ex->getMessage()));
-            $this->_sendEmail('Error while creating database backup: ' . $ex->getMessage(), 'ERROR: Cron databaseBackup', null, 'cron@hastrman.cz');
+            
+            $message = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
+            $this->_sendEmail('Error while creating database backup: ' . $message, 'ERROR: Cron databaseBackup', null, 'cron@hastrman.cz');
         }
     }
 
@@ -145,6 +149,8 @@ class IndexController extends Controller
      */
     public function cronMonthlyDatabaseBackup()
     {
+        $this->_disableView();
+        
         $path = APP_PATH . '/temp/db/month/';
 
         $dump = new Mysqldump();
@@ -160,7 +166,9 @@ class IndexController extends Controller
         } catch (\THCFrame\Database\Exception\Mysqldump $ex) {
             Event::fire('cron.log', array('fail', 'Database backup',
                 'Error: ' . $ex->getMessage()));
-            $this->_sendEmail('Error while creating database backup: ' . $ex->getMessage(), 'ERROR: Cron databaseBackup', null, 'cron@hastrman.cz');
+            
+            $message = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
+            $this->_sendEmail('Error while creating database backup: ' . $message, 'ERROR: Cron databaseBackup', null, 'cron@hastrman.cz');
         }
     }
 
@@ -171,6 +179,8 @@ class IndexController extends Controller
      */
     public function cronDatabaseProdToTest()
     {
+        $this->_disableView();
+        
         $starttime = microtime(true);
 
         $dbDataPath = APP_PATH . '/temp/db/data/';
@@ -249,7 +259,9 @@ class IndexController extends Controller
         } catch (\THCFrame\Database\Exception\Mysqldump $ex) {
             Event::fire('cron.log', array('fail', 'Database clone to test',
                 'Error: ' . $ex->getMessage()));
-            $this->_sendEmail('Error: ' . $ex->getMessage(), 'ERROR: Cron clone production database', null, 'cron@hastrman.cz');
+            
+            $message = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
+            $this->_sendEmail('Error: ' . $message, 'ERROR: Cron clone production database', null, 'cron@hastrman.cz');
         }
     }
 
@@ -260,6 +272,8 @@ class IndexController extends Controller
      */
     public function cronGenerateSitemap()
     {
+        $this->_disableView();
+        
         $xml = '<?xml version="1.0" encoding="UTF-8"?>
         <urlset
             xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
@@ -275,7 +289,6 @@ class IndexController extends Controller
             $pageContent = \App\Model\PageContentModel::all(array('active = ?' => true));
             $redirects = RedirectModel::all(array('module = ?' => 'app'));
             $news = \App\Model\NewsModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
-            $reports = \App\Model\ReportModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
             $actions = \App\Model\ActionModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
 
             $redirectArr = array();
@@ -331,13 +344,15 @@ class IndexController extends Controller
                 }
             }
 
-            file_put_contents('./sitemap.xml', $xml . $pageContentXml . $articlesXml . $xmlEnd);
+            @file_put_contents('./sitemap.xml', $xml . $pageContentXml . $articlesXml . $xmlEnd);
             $this->_resertConnections();
             Event::fire('cron.log', array('success', 'Links count: ' . $linkCounter));
         } catch (\Exception $ex) {
             $this->_resertConnections();
             Event::fire('cron.log', array('fail', 'Error while creating sitemap file: ' . $ex->getMessage()));
-            $this->_sendEmail('Error while creating sitemap file: ' . $ex->getMessage(), 'ERROR: Cron generateSitemap', null, 'cron@hastrman.cz');
+            
+            $message = $ex->getMessage().PHP_EOL.$ex->getTraceAsString();
+            $this->_sendEmail('Error while creating sitemap file: ' . $message, 'ERROR: Cron generateSitemap', null, 'cron@hastrman.cz');
         }
     }
 
@@ -348,6 +363,8 @@ class IndexController extends Controller
      */
     public function systemCheck()
     {
+        $this->_disableView();
+        
         $connHandler = Registry::get('database');
         $dbIdents = $connHandler->getIdentifications();
         foreach ($dbIdents as $id) {

@@ -35,12 +35,13 @@ class ModuleObserver implements SubscriberInterface
 
         $router = Registry::get('router');
         $route = $router->getLastRoute();
-        $security = Registry::get('security');
         
-        if ($security->getUser() === null) {
+        $security = Registry::get('security');
+        $user = $security->getUser();
+        if ($user === null) {
             $userId = 'annonymous';
         } else {
-            $userId = $security->getUser()->getWholeName() . ':' . $security->getUser()->getId();
+            $userId = $user->getWholeName() . ':' . $user->getId();
         }
 
         $module = $route->getModule();
@@ -86,12 +87,13 @@ class ModuleObserver implements SubscriberInterface
 
         $router = Registry::get('router');
         $route = $router->getLastRoute();
+        
         $security = Registry::get('security');
-
-        if ($security->getUser() === null) {
+        $user = $security->getUser();
+        if ($user === null) {
             $userId = 'annonymous';
         } else {
-            $userId = $security->getUser()->getWholeName() . ':' . $security->getUser()->getId();
+            $userId = $user->getWholeName() . ':' . $user->getId();
         }
 
         $module = $route->getModule();

@@ -36,8 +36,7 @@ class RedirectController extends Controller
         $view = $this->getActionView();
         $modules = Core::getModuleNames();
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('modules', $modules);
+        $view->set('modules', $modules);
 
         if (RequestMethods::post('submitAddRedirect')) {
             if ($this->_checkCSRFToken() !== true &&

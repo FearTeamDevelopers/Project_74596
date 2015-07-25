@@ -293,6 +293,7 @@ class Controller extends BaseController
                     ->set('env', ENV)
                     ->set('isMember', $this->isMember())
                     ->set('isParticipant', $this->isParticipant())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 
@@ -301,6 +302,7 @@ class Controller extends BaseController
                     ->set('env', ENV)
                     ->set('isMember', $this->isMember())
                     ->set('isParticipant', $this->isParticipant())
+                    ->set('submstoken', $this->_mutliSubmissionProtectionToken())
                     ->set('token', $this->_security->getCSRF()->getToken());
         }
 

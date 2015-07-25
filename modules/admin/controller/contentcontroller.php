@@ -53,8 +53,7 @@ class ContentController extends Controller
     {
         $view = $this->getActionView();
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('content', null);
+        $view->set('content', null);
 
         if (RequestMethods::post('submitAddContent')) {
             if ($this->_checkCSRFToken() !== true &&

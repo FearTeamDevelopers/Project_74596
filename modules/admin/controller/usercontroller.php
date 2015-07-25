@@ -117,8 +117,7 @@ class UserController extends Controller
         $view = $this->getActionView();
         $user = null;
 
-        $view->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                ->set('user', $user);
+        $view->set('user', $user);
 
         if (RequestMethods::post('submitAddUser')) {
             if ($this->_checkCSRFToken() !== true &&

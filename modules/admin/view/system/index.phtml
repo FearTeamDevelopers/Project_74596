@@ -5,7 +5,7 @@
 </ul><!--maintabmenu-->
 <div class="content">
 
-    <div class="one_fourth">
+    <div class="grid_4">
         <div class="contenttitle"><h2 class="form"><span>Smazat cache</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/clearcache/">
             <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
@@ -14,27 +14,28 @@
             </p>
         </form>
     </div>
-    <div class="one_fourth">
+    
+    <div class="grid_5">
         <div class="contenttitle"><h2 class="form"><span>Zálohovat databázi</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/createdatabasebackup/">
             <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
             <p class="stdformbutton">
-                Spouštěno automaticky každý den v 2:30<br/>
                 <input name="createBackup" type="submit" value="Vytvořit zálohu" class="submit radius2" />
+                Spouštěno automaticky každý den v 2:30
             </p>
         </form>
     </div>
-    <div class="one_fourth">
+    <div class="grid_5">
         <div class="contenttitle"><h2 class="form"><span>Aktualizovat sitemap.xml</span></h2></div>
         <form class="stdform stdform2" method="post" action="/admin/system/generateSitemap/">
             <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
             <p class="stdformbutton">
-                Spouštěno automaticky každý den v 3:00<br/>
                 <input name="generateSitemap" type="submit" value="Aktualizovat sitemap.xml" class="submit radius2" />
+                Spouštěno automaticky každý den v 3:00
             </p>
         </form>
     </div>
-  
+    
+    <div class="clear"></div>  
 </div><!--widgetcontent-->
 
-<br class="clear-all" />

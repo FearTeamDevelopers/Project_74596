@@ -207,8 +207,7 @@ class ActionController extends Controller
                 array('id', 'created', 'modified'), array('created' => 'DESC'), 10);
 
         $view->set('action', $action)
-                ->set('concepts', $actionConcepts)
-                ->set('submstoken', $this->_mutliSubmissionProtectionToken());
+                ->set('concepts', $actionConcepts);
 
         if (RequestMethods::post('submitAddAction')) {
             if ($this->_checkCSRFToken() !== true &&
