@@ -117,7 +117,9 @@ class UserController extends Controller
         $view = $this->getActionView();
         $user = null;
 
-        $view->set('user', $user);
+        $roles = array_keys($this->getSecurity()->getAuthorization()->getRoleManager()->getRoles());
+        $view->set('user', $user)
+                ->set('roles', $roles);
 
         if (RequestMethods::post('submitAddUser')) {
             if ($this->_checkCSRFToken() !== true &&
@@ -281,7 +283,9 @@ class UserController extends Controller
             self::redirect('/admin/user/');
         }
 
-        $view->set('user', $user);
+        $roles = array_keys($this->getSecurity()->getAuthorization()->getRoleManager()->getRoles());
+        $view->set('user', $user)
+                ->set('roles', $roles);
 
         if (RequestMethods::post('submitEditUser')) {
             if ($this->_checkCSRFToken() !== true) {

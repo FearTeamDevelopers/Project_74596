@@ -36,7 +36,7 @@ section.wrapper.profil.singlePage
                      label.error.fi-alert
                         | {echo join("<br/>", $errors["firstname"])}
                      | {/if}
-                     |{echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '')}
+                     |{echo \App\Helper\FormPrinter::input('text', 'firstname', array($user,'firstname'), array('required'=>true))}
                tr
                   td
                      span Příjmení:
@@ -45,7 +45,7 @@ section.wrapper.profil.singlePage
                      label.error.fi-alert
                         |{echo join("<br/>", $errors["lastname"])}
                      |{/if}
-                     |{echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '')}
+                     |{echo \App\Helper\FormPrinter::input('text', 'lastname', array($user,'lastname'), array('required'=>true))}
                tr
                   td
                      span Telefon:
@@ -54,7 +54,7 @@ section.wrapper.profil.singlePage
                      label.error.fi-alert
                         |{echo join("<br/>", $errors["phoneNumber"])}
                      |{/if}
-                     input(type='tel', name='phone',value!='{echo isset($user)? $user->phoneNumber: ""}')
+                     |{echo \App\Helper\FormPrinter::input('tel', 'phone', array($user,'phoneNumber'))}
                tr
                   td
                      span Email:
@@ -63,7 +63,7 @@ section.wrapper.profil.singlePage
                      label.error.fi-alert
                         |{echo join("<br/>", $errors["email"])}
                      |{/if}
-                     input(type='email', name='email',value!='{echo isset($user)? $user->email: ""}' required)
+                     |{echo \App\Helper\FormPrinter::input('email', 'email', array($user,'email'), array('required'=>true))}
                tr
                   td
                      span Původní heslo:

@@ -1,0 +1,150 @@
+<ul class="maintabmenu multipletabmenu">
+    <li><a href="/admin/action/">Akce</a></li>
+    <li class="current"><a href="#">Docházka</a></li>
+    <li><a href="/admin/action/add/">Přidat Akci</a></li>
+    <li><a href="/admin/action/help/">Nápověda</a></li>
+</ul><!--maintabmenu-->
+
+<div class="content">
+
+    <div class="tabs">
+        <ul>
+            <li><a href="#percent">Docházka %</a></li>
+            <li><a href="#month">Docházka - tréninky</a></li>
+        </ul>
+
+        <div id="percent">
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Docházka %</span></h2>
+            </div><!--contenttitle-->
+            <form class="stdform stdform2" method="post" action="#" >
+                <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+                <p>
+                    <label>Typ</label>
+                    <span class="field">
+                        <select name="actiontype" class="width20">
+                            {foreach $type in \App\Model\ActionModel::getTypes()}
+                                {script $sel=""}
+                                {if $type_i == $selectedtype}
+                                    {script $sel="selected"}
+                                {/if}
+                                <option value="{echo $type_i}" {echo $sel}>{echo $type}</option>
+                            {/foreach}
+                        </select>
+                        <input name="submitLoadActionType" type="submit" value="Načíst" class="submit radius2" />
+                    </span>
+                </p>
+            </form>
+            <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+                <colgroup>
+                    <col class="con0" /><col class="con1" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <td class="head0">Jméno</td><td class="head1">Docházka %</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if (!empty($attendance))}
+                        {foreach $att in $attendance}
+                        <tr>
+                            <td>{echo $att_i}</td>
+                            <td>{echo $att}</td>
+                        </tr>
+                        {/foreach}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="month">
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Docházka - tréninky</span></h2>
+            </div><!--contenttitle-->
+            <form class="stdform stdform2" method="post" action="/admin/action/showattendance/#month" >
+                <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+                <p>
+                    <label>Měsíc - Rok</label>
+                    <span class="field">
+                        <select name="month" class="width20">
+                            {foreach $month in $monthnames}
+                                {script $sel=""}
+                                {if $month_i == $selectedmonth}
+                                    {script $sel="selected"}
+                                {/if}
+                                <option value="{echo $month_i}" {echo $sel}>{echo $month}</option>
+                            {/foreach}
+                        </select>
+                        
+                        <select name="year" class="width20">
+                            <option value="2015">2015</option><option value="2016">2016</option>
+                        </select>
+
+                        <input name="submitLoadAtt" type="submit" value="Načíst" class="submit radius2" />
+                    </span>
+                </p>
+            </form>
+
+            <table cellpadding="0" cellspacing="0" border="0" class="attendtable">
+                <thead>
+                    <tr>
+                        {if !empty($calendar)}
+                            <td>Jméno</td>
+                            {foreach $time in $calendar}
+                                <td class="width100">{echo $time["day"]."<br/>".$time["dayname"]}</td>
+                            {/foreach}
+                        {/if}
+                    </tr>
+                </thead>
+                <tbody>
+                    {foreach $user in $monthattend}
+                    <tr>
+                        <td>
+                            {script $username = explode("|", $user_i)}
+                            {echo $username[1]}
+                        </td>
+                        
+                        {script $j=1;$c=count($user);$tc=1;}
+                        {foreach $att in $user}
+                            {script $parts = explode("|", $att_i);}
+                            {script $day = explode("-", $parts[1]);}
+                            
+                            {for $i=$j $i<=$calendar[1]["daysofmonth"] $i++}
+                                {if $day[2] == $i}
+                                    {if $parts[0] == \App\Model\ActionModel::TYPE_TRAINING}
+                                        {if $att["type"] == 1}
+                                            <td class="bg-green">T</td>
+                                        {/if}{elseif $att["type"] == 2}
+                                            <td class="bg-red" title="{echo $att["comment"]}">T</td>
+                                        {/elseif}{else}
+                                            <td class="bg-orange">T</td>
+                                        {/else}
+                                    {/if}{elseif $parts[0] == \App\Model\ActionModel::TYPE_MATCH}
+                                        {if $att["type"] == 1}
+                                            <td class="bg-green">Z</td>
+                                        {/if}{elseif $att["type"] == 2}
+                                            <td class="bg-red" title="{echo $att["comment"]}>Z</td>
+                                        {/elseif}{else}
+                                            <td class="bg-orange">Z</td>
+                                        {/else}
+                                    {/elseif}
+                                    {script break;}
+                                {/if}{else}
+                                    <td></td>
+                                {/else}
+                            {/for}
+                            
+                            {script $j=$day[2]+1;$tc++;}
+                            {if $tc-1 == $c}
+                                {for $i=$j $i<=$calendar[1]["daysofmonth"] $i++}
+                                    <td></td>
+                                {/for}
+                            {/if}
+                        {/foreach}
+                    </tr>
+                    {/foreach}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

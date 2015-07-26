@@ -327,6 +327,13 @@ button,input,select,textarea { font-size: 13px; font-family: Arial, Helvetica, s
     -moz-box-shadow: 1px 1px 2px #ddd; -webkit-box-shadow: 1px 1px 2px #ddd; box-shadow: 1px 1px 2px #ddd; font-size: 13px; color: #666; 
 }
 
+.attendtable thead tr td {text-align: center;}
+.attendtable thead tr td:first-child {width: 300px;}
+.attendtable tbody tr td {text-align: center;}
+.attendtable tbody tr td.bg-green {background-color: green;}
+.attendtable tbody tr td.bg-red {background-color: red;}
+.attendtable tbody tr td.bg-orange {background-color: orange;}
+
 /***** DYNAMIC TABLE *****/
 .dataTables_wrapper { position: relative; color: #555;}
 .dataTables_length, .dataTables_paginate { background: #eee url(../../images/admin/titlebg.png) repeat-x top left; border: 1px solid #ccc; border-top: 0; padding: 8px; }
@@ -845,6 +852,7 @@ a.btn_table { background-position: -82px -480px; }
 .padding0 { padding: 0 !important; }
 .width50 { width: 50px !important; }
 .width100 { width: 100px !important; }
+.width200 { width: 200px !important; }
 .stdform .vsmallinput { width: 60px; }
 .floatleft { float: left; }
 .floatright { float: right; }

@@ -1,5 +1,6 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/action/">Akce</a></li>
+    <li><a href="/admin/action/showattendance/">Docházka</a></li>
     <li class="current"><a href="#">Přidat Akci</a></li>
     <li><a href="/admin/action/help/">Nápověda</a></li>
 </ul><!--maintabmenu-->
@@ -7,29 +8,29 @@
 <div class="content">
     <div class="widgetbox">
         {if !empty($concepts)}
-            <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>Koncepty</span></h2>
-            </div><!--contenttitle-->
-            <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
-                <colgroup>
-                    <col class="con0" /> <col class="con1" />
-                </colgroup>
-                <thead>
-                    <tr>
-                        <td class="head0">Vytvořen</td>
-                        <td class="head1">Poslední změna</td>
-                        <td class="head0">&nbsp;</td>
-                    </tr>
-                </thead>
-                {foreach $concept in $concepts}
+        <div class="contenttitle radiusbottom0">
+            <h2 class="table"><span>Koncepty</span></h2>
+        </div><!--contenttitle-->
+        <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+            <colgroup>
+                <col class="con0" /> <col class="con1" />
+            </colgroup>
+            <thead>
                 <tr>
-                    <td>{echo $concept->getCreated()}</td>
-                    <td>{echo $concept->getModified()}</td>
-                    <td><a href="/admin/action/loadconcept/{echo $concept->getId()}" class="btn btn3 btn_pencil ajaxLoadConcept" title="Načíst concept"></a>
-                        <a href="/admin/concept/delete/{echo $concept->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat concept"></a></td>
+                    <td class="head0">Vytvořen</td>
+                    <td class="head1">Poslední změna</td>
+                    <td class="head0">&nbsp;</td>
                 </tr>
-                {/foreach}
-            </table>
+            </thead>
+            {foreach $concept in $concepts}
+            <tr>
+                <td>{echo $concept->getCreated()}</td>
+                <td>{echo $concept->getModified()}</td>
+                <td><a href="/admin/action/loadconcept/{echo $concept->getId()}" class="btn btn3 btn_pencil ajaxLoadConcept" title="Načíst concept"></a>
+                    <a href="/admin/concept/delete/{echo $concept->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat concept"></a></td>
+            </tr>
+            {/foreach}
+        </table>
         {/if}
         <div class="contenttitle radiusbottom0">
             <h2 class="table"><span>Základní info</span></h2>
@@ -43,7 +44,7 @@
             <p>
                 <label>Název*</label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('title', array($action,'title'), true)}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'title', array($action,'title'), array('required'=>true))}
                     {if isset($errors["title"])}
                     <label class="error">{echo join("<br/>", $errors["title"])}</label>
                     {/if}
@@ -52,7 +53,7 @@
             <p>
                 <label>Pořadí<small>Max. 99</small></label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('rank', array($action,'rank',1))}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($action,'rank',1))}
                     {if isset($errors["rank"])}
                     <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                     {/if}
@@ -96,8 +97,8 @@
             <p>
                 <label>Datum - začátek</label>
                 <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::textInput('datestart', array($action,'startDate'), false, 'width20 datepicker2')}
-                    Čas: {echo \Admin\Helper\FormPrinter::timeInput('timestart', array($action,'startTime'), false, 'width20')}
+                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'datestart', array($action,'startDate'), array('class'=>'width20 datepicker2'))}
+                    Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timestart', array($action,'startTime'), array('class'=>'width20'))}
 
                     {if isset($errors["startDate"])}
                     <label class="error">{echo join("<br/>", $errors["startDate"])}</label>
@@ -110,8 +111,8 @@
             <p>
                 <label>Datum - konec</label>
                 <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::textInput('dateend', array($action,'endDate'), false, 'width20 datepicker3')}
-                    Čas: {echo \Admin\Helper\FormPrinter::timeInput('timeend', array($action,'endTime'), false, 'width20')}
+                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'dateend', array($action,'endDate'), array('class'=>'width20 datepicker2'))}
+                    Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timeend', array($action,'endTime'), array('class'=>'width20'))}
 
                     {if isset($errors["endDate"])}
                     <label class="error">{echo join("<br/>", $errors["endDate"])}</label>
@@ -122,21 +123,20 @@
                 </span>
             </p>
             <p>
-            <label>Typ</label>
-            <span class="field">
-                <select name="type" class="width80">
-                    <option value="0">-- Vybrat --</option>
-                    <option value="1">Trénink</option>
-                    <option value="2">Zápas</option>
-                    <option value="3">Party Hard</option>
-                </select>
-                {if isset($errors["type"])}
-                <label class="error">
-                    {echo join("<br/>", $errors["type"])}
-                </label>
-                {/if}
-            </span>
-        </p>
+                <label>Typ</label>
+                <span class="field">
+                    <select name="type" class="width80">
+                        {foreach $type in \App\Model\ActionModel::getTypes()}
+                        <option value="{echo $type_i}">{echo $type}</option>
+                        {/foreach}
+                    </select>
+                    {if isset($errors["type"])}
+                    <label class="error">
+                        {echo join("<br/>", $errors["type"])}
+                    </label>
+                    {/if}
+                </span>
+            </p>
 
             <br/>
             <div class="contenttitle radiusbottom0">
@@ -145,7 +145,7 @@
             <p>
                 <label>Meta-název</label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('metatitle', array($action,'metaTitle'), false, 'width80', "Výchozí hodnota: stejná jako Název")}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'metatitle', array($action,'metaTitle'), array('placeholder'=>'Výchozí hodnota: stejná jako Název'))}
                     {if isset($errors["metaTitle"])}
                     <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                     {/if}
@@ -164,7 +164,7 @@
             <p>
                 <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('keywords', array($action,'keywords'), false, 'width80', "Oddělovač: mezera")}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'keywords', array($action,'keywords'), array('placeholder'=>"Oddělovač: mezera"))}
                     {if isset($errors["keywords"])}
                     <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
                     {/if}

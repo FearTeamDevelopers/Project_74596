@@ -83,7 +83,7 @@ class Controller extends BaseController
             }
 
             if (null === $sendFrom) {
-                $message->setFrom('info@hastrman.cz');
+                $message->setFrom('info@sokol.cz');
             } else {
                 $message->setFrom($sendFrom);
             }

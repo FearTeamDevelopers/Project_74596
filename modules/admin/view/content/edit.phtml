@@ -15,9 +15,9 @@
             <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
 
             <p>
-                <label>Název stránky</label>
+                <label>Název stránky*</label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('page', array($content,'title'), true)}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'page', array($content,'title'), array('required'=>true))}
                     {if isset($errors["title"])}
                     <label class="error">{echo join("<br/>", $errors["title"])}</label>
                     {/if}
@@ -26,7 +26,7 @@
             <p>
                 <label>Text*</label>
                 <span class="field">
-                    <textarea rows="20" name="text" id="ckeditor">{echo $content->body}</textarea>
+                    <textarea rows="20" name="text" id="ckeditor">{echo \Admin\Helper\FormPrinter::iset($content,'body')}</textarea>
                     {if isset($errors["body"])}
                     <label class="error">{echo join("<br/>", $errors["body"])}</label>
                     {/if}
@@ -45,28 +45,28 @@
                 <h2 class="table"><span>Metadata</span></h2>
             </div><!--contenttitle-->
             <p>
-                <label>Meta-Název</label>
-                <span class="field" >
-                    {echo \Admin\Helper\FormPrinter::textInput('metatitle', array($content,'metaTitle'), false, 'width80', "Výchozí hodnota: stejná jako Název")}
+                <label>Meta-název</label>
+                <span class="field">
+                    {echo \Admin\Helper\FormPrinter::input('text', 'metatitle', array($content,'metaTitle'), array('placeholder'=>'Výchozí hodnota: stejná jako Název'))}
                     {if isset($errors["metaTitle"])}
                     <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                     {/if}
                 </span>
             </p>
             <p>
-                <label>Meta-Popis</label>
+                <label>Meta-popis</label>
                 <span class="field">
-                    <textarea rows="5" name="metadescription" class="width80">{echo \Admin\Helper\FormPrinter::iset($content,'metaDescription')}</textarea>
+                    <textarea rows="5" name="metadescription" class="width80" >{echo \Admin\Helper\FormPrinter::iset($content,'metaDescription')}</textarea>
                     {if isset($errors["metaDescription"])}
                     <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
                     {/if}
+                    <br/>
                 </span>
             </p>
-
             <p>
                 <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('keywords', array($content,'keywords'), false, 'width80', "Oddělovač: mezera")}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'keywords', array($content,'keywords'), array('placeholder'=>"Oddělovač: mezera"))}
                     {if isset($errors["keywords"])}
                     <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
                     {/if}

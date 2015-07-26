@@ -10,6 +10,36 @@ use THCFrame\Model\Model;
 class ActionModel extends Model
 {
 
+    const TYPE_SELECT = 0;
+    const TYPE_TRAINING = 1;
+    const TYPE_MATCH = 2;
+    const TYPE_PARTY = 3;
+    
+    const STATE_WAITING = 0;
+    const STATE_APPROVED = 1;
+    const STATE_REJECTED = 2;
+    
+    /**
+     *
+     * @var array 
+     */
+    private static $_typesConv = array(
+        self::TYPE_SELECT => '-- Vybrat --',
+        self::TYPE_TRAINING => 'Trénink',
+        self::TYPE_MATCH => 'Zápas',
+        self::TYPE_PARTY => 'Party Hard'
+    );
+    
+    /**
+     *
+     * @var type 
+     */
+    private static $_statesConv = array(
+        self::STATE_WAITING => 'Čeká na shválení',
+        self::STATE_APPROVED => 'Schváleno',
+        self::STATE_REJECTED => 'Zamítnuto'
+    );
+    
     /**
      * @readwrite
      */
@@ -345,5 +375,25 @@ class ActionModel extends Model
     public static function fetchByUrlKey($urlKey)
     {
         return self::first(array('active = ?' => true, 'approved' => 1, 'urlKey = ?' => $urlKey));
+    }
+    
+    /**
+     * Return action types
+     * 
+     * @return array
+     */
+    public static function getTypes()
+    {
+        return self::$_typesConv;
+    }
+    
+    /**
+     * Return action states
+     * 
+     * @return array
+     */
+    public static function getStates()
+    {
+        return self::$_statesConv;
     }
 }

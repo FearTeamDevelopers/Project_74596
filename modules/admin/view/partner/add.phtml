@@ -16,7 +16,7 @@
         <p>
             <label>Partner*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('title', array($partner,'title'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'title', array($partner,'title'), array('required'=>true))}
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
@@ -34,8 +34,7 @@
         <p>
             <label>WWW*</label>
             <span class="field">
-                <input type="url" required name="web" class="width80" 
-                       value="{echo isset($partner)? $partner->web: ""}"/>
+                {echo \Admin\Helper\FormPrinter::input('url', 'web', array($partner,'web'), array('required'=>true))}
                 {if isset($errors["web"])}
                 <label class="error">{echo join("<br/>", $errors["web"])}</label>
                 {/if}
@@ -52,7 +51,7 @@
         <p>
             <label>Pořadí<small>Max. 99</small></label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('rank', array($partner,'rank',1))}
+                {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($partner,'rank',1))}
                 {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}

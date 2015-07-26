@@ -18,7 +18,7 @@
         <p>
             <label>Název*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('title', array($gallery,'title'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'title', array($gallery,'title'), array('required'=>true))}
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
@@ -41,21 +41,22 @@
                 </select>
             </span>
         </p>
-        <p>
-            <label>Pořadí<small>Max. 99</small></label>
-            <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('rank', array($gallery,'rank',1))}
-                {if isset($errors["rank"])}
-                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
-                {/if}
-            </span>
-        </p>
+        
         <p>
             <label>Popis*</label>
             <span class="field">
                 <textarea class="width80" name="description" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($gallery,'description')}</textarea>
                 {if isset($errors["description"])}
                 <label class="error">{echo join("<br/>", $errors["description"])}</label>
+                {/if}
+            </span>
+        </p>
+        <p>
+            <label>Pořadí<small>Max. 99</small></label>
+            <span class="field">
+                {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($gallery,'rank',1))}
+                {if isset($errors["rank"])}
+                <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
             </span>
         </p>

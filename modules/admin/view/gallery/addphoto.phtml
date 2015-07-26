@@ -20,7 +20,9 @@
         <p>
             <label>Popis</label>
             <span class="field">
-                <textarea rows="5" name="description" class="width80">{echo \Admin\Helper\FormPrinter::iset($photo,'description')}</textarea>
+                <textarea rows="5" name="description" class="width80">
+                    {echo \Admin\Helper\FormPrinter::iset($photo,'description')}
+                </textarea>
                 {if isset($errors["description"])}
                 <label class="error">{echo join("<br/>", $errors["description"])}</label>
                 {/if}
@@ -29,7 +31,7 @@
         <p>
             <label>Pořadí<small>Max. 99</small></label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('rank', array($photo,'rank',1))}
+                {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($photo,'rank',1))}
 
                 {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>

@@ -2,6 +2,9 @@
 
 namespace THCFrame\Date;
 
+/**
+ * 
+ */
 class Date
 {
 
@@ -11,6 +14,9 @@ class Date
     const SYSTEM_BASE_DATETIME_FORMAT = 'Y-m-d H:i:s';
     const SYSTEM_BASE_DATE_FORMAT = 'Y-m-d';
     const SYSTEM_BASE_TIME_FORMAT = 'H:i:s';
+    
+    const FULL_MONTHS_NAMES = 1;
+    const SHORT_MONTHS_NAMES = 2;
 
     private static $_instance = null;
 
@@ -42,6 +48,32 @@ class Date
         $date = new \DateTime($datetime);
 
         return $date->getTimestamp();
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getEnMonths($type = 1)
+    {
+        if($type == self::FULL_MONTHS_NAMES){
+            return array(1 => 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+        }else{
+            return array(1 => 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec');
+        }
+    }
+    
+    /**
+     * 
+     * @return array
+     */
+    public function getCzMonths($type = 1)
+    {
+        if($type == self::FULL_MONTHS_NAMES){
+            return array(1 => 'Leden', 'Únor', 'Březen', 'Duben', 'Květen', 'Červen', 'Červenec', 'Srpen', 'Září', 'Říjen', 'Listopad', 'Prosinec');
+        }else{
+            return array(1 => 'Led', 'Úno', 'Bře', 'Dub', 'Kvě', 'Čer', 'Čec', 'Srp', 'Zář', 'Říj', 'Lis', 'Pro');
+        }
     }
 
     /**
@@ -211,4 +243,83 @@ class Date
         return $date->format($format);
     }
 
+    /**
+     * Return days of month
+     * 
+     * @param int $month
+     * @param int $year
+     * @return array
+     */
+    public function getMonthDays($month = null, $year = null)
+    {
+        if ($month === null || $month === '') {
+            $month = date('m');
+        }
+        
+        if($year === null || $year === ''){
+            $year = date('Y');
+        }
+
+        $days = array();
+        $daysOfMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);
+
+        for ($i = 1; $i <= $daysOfMonth; $i++) {
+            $tm = mktime(0, 0, 0, $month, $i, $year);
+            $days[$i] = array(
+                'day' => date('d', $tm),
+                'dayname' => date('D', $tm),
+                'weekofyear' => date('W', $tm),
+                'month' => date('F', $tm),
+                'daysofmonth' => $daysOfMonth
+            );
+        }
+        
+        return $days;
+    }
+    
+    /**
+     * Return first day of month
+     * 
+     * @param int $month
+     * @param int $year
+     * @return date
+     */
+    public function getFirstDayOfMonth($month = null, $year = null)
+    {
+        if ($month === null) {
+            $month = date('m');
+        }
+        
+        if($year === null){
+            $year = date('Y');
+        }
+        
+        $firstDayUTS = mktime(0, 0, 0, $month, 1, $year);
+        $firstDay = date('Y-m-d', $firstDayUTS);
+        
+        return $firstDay;
+    }
+    
+    /**
+     * Return last day of month
+     * 
+     * @param int $month
+     * @param int $year
+     * @return date
+     */
+    public function getLastDayOfMonth($month = null, $year = null)
+    {
+        if ($month === null) {
+            $month = date('m');
+        }
+        
+        if($year === null){
+            $year = date('Y');
+        }
+        
+        $lastDayUTS = mktime(0, 0, 0, $month, date('t'), $year);
+        $lastDay = date('Y-m-d', $lastDayUTS);
+        
+        return $lastDay;
+    }
 }

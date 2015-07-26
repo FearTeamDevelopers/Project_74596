@@ -107,7 +107,7 @@ class IndexController extends Controller
         
         $this->getLayoutView()
                 ->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Stránka nenalezena');
+                ->set('metatitle', 'TJ Sokol - Stránka nenalezena');
     }
 
     /**
@@ -146,6 +146,6 @@ class IndexController extends Controller
         }
         
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Hledat');
+                ->set('metatitle', 'TJ Sokol - Hledat');
     }
 }

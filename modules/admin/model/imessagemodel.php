@@ -10,6 +10,20 @@ use THCFrame\Model\Model;
 class ImessageModel extends Model
 {
 
+    const TYPE_INFO = 1;
+    const TYPE_WARNING = 2;
+    const TYPE_ERROR = 3;
+    
+    /**
+     *
+     * @var array 
+     */
+    private static $_typesConv = array(
+        self::TYPE_INFO => 'Info',
+        self::TYPE_WARNING => 'Warning',
+        self::TYPE_ERROR => 'Error'
+    );
+    
     /**
      * @readwrite
      */
@@ -36,10 +50,10 @@ class ImessageModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 20
+     * @type tinyint
+     * @index
      * 
-     * @validate alpha, max(20)
+     * @validate max(3)
      * @label typ
      */
     protected $_messageType;
@@ -163,5 +177,15 @@ class ImessageModel extends Model
     public static function fetchActive()
     {
         return self::all(array('displayFrom <= ?' => date('Y-m-d', time()), 'displayTo >= ?' => date('Y-m-d', time()), 'active = ?' => true));
+    }
+    
+    /**
+     * Get imessage types
+     * 
+     * @return array
+     */
+    public static function getTypes()
+    {
+        return self::$_typesConv;
     }
 }

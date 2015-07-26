@@ -52,7 +52,7 @@ class SystemController extends Controller
 
         $view->set('feedback', null);
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Feedback');
+                ->set('metatitle', 'TJ Sokol - Feedback');
 
         if (RequestMethods::post('submitFeedback')) {
             if ($this->_checkCSRFToken() !== true &&
@@ -60,7 +60,7 @@ class SystemController extends Controller
                 self::redirect('/feedback');
             }
             
-            $userAlias = $this->getUser() !== null ? $this->getUser()->getWholeName() : '';
+            $userAlias = $this->getUser() !== null ? $this->getUser()->getWholeName() : 'anonym';
             $feedback = new \App\Model\FeedbackModel(array(
                 'userAlias' => $userAlias,
                 'message' => RequestMethods::post('message')

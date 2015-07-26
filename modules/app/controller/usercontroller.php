@@ -112,7 +112,7 @@ class UserController extends Controller
         $view->set('user', $user);
 
         $this->getLayoutView()
-                ->set('metatitle', 'Hastrman - Registrace')
+                ->set('metatitle', 'TJ Sokol - Registrace')
                 ->set('canonical', $canonical);
 
         if (RequestMethods::post('register')) {
@@ -181,7 +181,7 @@ class UserController extends Controller
                     $emailTemplate = \Admin\Model\EmailTemplateModel::first(array('title = ?' => 'Aktivovace účtu'));
                     $emailBody = str_replace('{TOKEN}', $actToken, $emailTemplate->getBody());
 
-                    if ($this->_sendEmail($emailBody, 'Hastrman - Registrace', $user->getEmail(), 'registrace@hastrman.cz')) {
+                    if ($this->_sendEmail($emailBody, 'TJ Sokol - Registrace', $user->getEmail(), 'registrace@hastrman.cz')) {
                         Event::fire('app.log', array('success', 'User Id with email activation: ' . $uid));
                         $view->successMessage('Registrace byla úspěšná. Na uvedený email byl zaslán odkaz k aktivaci účtu.');
                     } else {
@@ -218,7 +218,7 @@ class UserController extends Controller
         $user = \App\Model\UserModel::first(array('id = ?' => $this->getUser()->getId()));
 
         $this->getLayoutView()
-                ->set('metatile', 'Hastrman - Můj profil')
+                ->set('metatile', 'TJ Sokol - Můj profil')
                 ->set('canonical', $canonical);
         $view->set('user', $user);
 

@@ -88,7 +88,7 @@ class ActionController extends Controller
                 ->set('pagecount', $actionsPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Akce');
+                ->set('metatitle', 'TJ Sokol - Akce');
     }
 
     /**
@@ -185,7 +185,7 @@ class ActionController extends Controller
                 ->set('pagecount', $actionsPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Akce - Archiv');
+                ->set('metatitle', 'TJ Sokol - Akce - Archiv');
     }
 
     /**
@@ -229,7 +229,7 @@ class ActionController extends Controller
                 ->set('pagecount', $actionsPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Akce - Proběhlé');
+                ->set('metatitle', 'TJ Sokol - Akce - Proběhlé');
     }
 
     /**

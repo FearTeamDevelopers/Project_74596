@@ -13,19 +13,10 @@
         <p>
             <label>Název*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('title', array($gallery,'title'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'title', array($gallery,'title'), array('required'=>true))}
                 {if isset($errors["title"])}
                 <label class="error">{echo join("<br/>", $errors["title"])}</label>
                 {/if}
-            </span>
-        </p>
-        <p>
-            <label>Veřejná/soukromá</label>
-            <span class="field">
-                <select class="width80" name="public">
-                    <option value="0">Soukromá</option>
-                    <option value="1" selected>Veřejná</option>
-                </select>
             </span>
         </p>
         <p>
@@ -40,11 +31,19 @@
         <p>
             <label>Pořadí<small>Max. 99</small></label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('rank', array($gallery,'rank',1))}
-
-s                {if isset($errors["rank"])}
+                {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($gallery,'rank',1))}
+                {if isset($errors["rank"])}
                 <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                 {/if}
+            </span>
+        </p>
+        <p>
+            <label>Veřejná/soukromá</label>
+            <span class="field">
+                <select class="width80" name="public">
+                    <option value="0">Soukromá</option>
+                    <option value="1" selected>Veřejná</option>
+                </select>
             </span>
         </p>
         <p class="stdformbutton">

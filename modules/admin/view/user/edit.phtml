@@ -15,7 +15,7 @@
         <p>
             <label>Jméno*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'firstname', array($user,'firstname'), array('required'=>true))}
                 {if isset($errors["firstname"])}
                 <label class="error">
                     {echo join("<br/>", $errors["firstname"])}
@@ -26,7 +26,7 @@
         <p>
             <label>Příjmení*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'lastname', array($user,'lastname'), array('required'=>true))}
                 {if isset($errors["lastname"])}
                 <label class="error">
                     {echo join("<br/>", $errors["lastname"])}
@@ -37,7 +37,7 @@
         <p>
             <label>Telefon</label>
             <span class="field">
-                <input type="tel" name="phone" class="width80" value="{echo $user->phoneNumber}" />
+                {echo \Admin\Helper\FormPrinter::input('tel', 'phone', array($user,'phoneNumber'))}
                 {if isset($errors["phoneNumber"])}
                 <label class="error">
                     {echo join("<br/>", $errors["phoneNumber"])}
@@ -59,7 +59,7 @@
         <p>
             <label>Email*</label>
             <span class="field">
-                <input required type="email" name="email" class="width80" value="{echo $user->email}" />
+                {echo \Admin\Helper\FormPrinter::input('email', 'email', array($user,'email'), array('required'=>true))}
                 {if isset($errors["email"])}
                 <label class="error">
                     {echo join("<br/>", $errors["email"])}
@@ -134,28 +134,14 @@
             <label>Role</label>
             <span class="field">
                 <select name="role" class="width80">
-                    {if $user->role == "role_superadmin"}
-                    <option value="role_member">Člen</option>
-                    <option value="role_participant">Člen s přístupem do administrace</option>
-                    <option value="role_admin">Admin</option>
-                    <option value="role_superadmin" selected>Super Admin</option>
-                    {/if}
-                    {elseif $user->role == "role_admin"}
-                    <option value="role_member">Člen</option>
-                    <option value="role_participant">Člen s přístupem do administrace</option>
-                    <option value="role_admin" selected>Admin</option>
-                    <option value="role_superadmin">Super Admin</option>
-                    {/elseif}{elseif $user->role == "role_participant"}
-                    <option value="role_member">Člen</option>
-                    <option value="role_participant" selected>Člen s přístupem do administrace</option>
-                    <option value="role_admin">Admin</option>
-                    <option value="role_superadmin">Super Admin</option>
-                    {/elseif}{else}
-                    <option value="role_member" selected>Člen</option>
-                    <option value="role_participant">Člen s přístupem do administrace</option>
-                    <option value="role_admin">Admin</option>
-                    <option value="role_superadmin">Super Admin</option>
-                    {/else}
+                    {foreach $role in $roles}
+                        {script $sel=""}
+                        {if $role == $user->getRole()}
+                            {script $sel="selected"}
+                        {/if}
+
+                        <option value="{echo $role}" {echo $sel}>{echo $role}</option>
+                    {/foreach}
                 </select>
                 {if isset($errors["role"])}
                 <label class="error">

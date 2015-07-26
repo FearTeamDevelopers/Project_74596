@@ -1,31 +1,29 @@
 
 <section class="wrapper login singlePage">
-  <div class="row">
-    <div class="small-12 medium-12 large-12 columns">
-      <div class="container">
-        <header>
-          <h2 class="fi-check">Registrace</h2>
-        </header>
-        <form method="post" action="#">{if isset($errors["firstname"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["firstname"])}</label>{/if}
-          {echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '', 'Jméno')}
-          {if isset($errors["lastname"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["lastname"])}</label>{/if}
-          {echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '', 'Příjmení')}
-          {if isset($errors["phoneNumber"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["phoneNumber"])}</label>{/if}
-          <input type="tel" placeholder="Kontaktní telefon" name="phone" value="{echo isset($user)? $user->phoneNumber: ""}"/>{if isset($errors["email"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["email"])}</label>{/if}
-          <input type="email" placeholder="Kontaktní email" name="email" value="{echo isset($user)? $user->email: ""}" required="required"/>{if isset($errors["password"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["password"])}</label>{/if}
-          <input type="password" placeholder="Heslo" pattern=".{5,}" title="min. 5 znaků" name="password" required="required"/>{if isset($errors["password2"])}
-          <label class="error fi-alert">{echo join("<br/>", $errors["password2"])}</label>{/if}
-          <input type="password" placeholder="Ověření hesla" pattern=".{5,}" title="min. 5 znaků" name="password2" required="required"/>
-          <input type="submit" name="register" value="Registrovat"/>
-          <input type="hidden" name="csrf" id="csrf" value="{echo $token}"/>
-          <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}"/>
-        </form>
-      </div>
+    <div class="row">
+        <div class="small-12 medium-12 large-12 columns">
+            <div class="container">
+                <header>
+                    <h2 class="fi-check">Registrace</h2>
+                </header>
+                <form method="post" action="#">
+                    {if isset($errors["firstname"])}<label class="error fi-alert">{echo join("<br/>", $errors["firstname"])}</label>{/if}
+                    {echo \App\Helper\FormPrinter::input('text', 'firstname', array($user,'firstname'), array('required'=>true, 'placeholder'=>'Jméno'))}
+                    {if isset($errors["lastname"])}<label class="error fi-alert">{echo join("<br/>", $errors["lastname"])}</label>{/if}
+                    {echo \App\Helper\FormPrinter::input('text', 'lastname', array($user,'lastname'), array('required'=>true, 'placeholder'=>'Příjmení'))}
+                    {if isset($errors["phoneNumber"])}<label class="error fi-alert">{echo join("<br/>", $errors["phoneNumber"])}</label>{/if}
+                    {echo \App\Helper\FormPrinter::input('tel', 'phone', array($user,'phoneNumber'), array('placeholder'=>'Kontaktní telefon'))}
+                    {if isset($errors["email"])}<label class="error fi-alert">{echo join("<br/>", $errors["email"])}</label>{/if}
+                    {echo \App\Helper\FormPrinter::input('email', 'email', array($user,'email'), array('required'=>true, 'placeholder'=>'Kontaktní email'))}
+                    {if isset($errors["password"])}<label class="error fi-alert">{echo join("<br/>", $errors["password"])}</label>{/if}
+                    <input type="password" placeholder="Heslo" pattern=".{5,}" title="min. 5 znaků" name="password" required="required"/>
+                    {if isset($errors["password2"])}<label class="error fi-alert">{echo join("<br/>", $errors["password2"])}</label>{/if}
+                    <input type="password" placeholder="Ověření hesla" pattern=".{5,}" title="min. 5 znaků" name="password2" required="required"/>
+                    <input type="submit" name="register" value="Registrovat"/>
+                    <input type="hidden" name="csrf" id="csrf" value="{echo $token}"/>
+                    <input type="hidden" name="submstoken" id="submstoken" value="{echo $submstoken}"/>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </section>

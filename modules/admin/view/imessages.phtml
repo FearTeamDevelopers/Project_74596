@@ -1,10 +1,10 @@
 {if !empty($imessages)}
     {foreach $message in $imessages}
-        {if $message->getMessageType() == "info"}
+        {if $message->getMessageType() == \Admin\Model\ImessageModel::TYPE_INFO}
         <div class="notification msginfo">
             <p>{echo $message->getBody()}</p>
         </div>
-        {/if}{elseif $message->getMessageType() == "warning"}
+        {/if}{elseif $message->getMessageType() == \Admin\Model\ImessageModel::TYPE_WARNING}
         <div class="notification msgalert">
             <p>{echo $message->getBody()}</p>
         </div>

@@ -7,6 +7,7 @@ use THCFrame\Request\RequestMethods;
 use THCFrame\Events\Events as Event;
 use THCFrame\Registry\Registry;
 use THCFrame\Core\StringMethods;
+use THCFrame\Date\Date;
 
 /**
  * 
@@ -174,7 +175,7 @@ class ActionController extends Controller
 
             if(!empty($users)){
                 foreach($users as $user){
-                    $this->_sendEmail($emailBody, 'Hastrman - Akce - '.$action->getTitle(), $user->getEmail());
+                    $this->_sendEmail($emailBody, 'Sokol - Akce - '.$action->getTitle(), $user->getEmail());
                 }
             }
         }
@@ -837,6 +838,7 @@ class ActionController extends Controller
     }
     
     /**
+     * Show comments for specific action
      * 
      * @before _secured, _admin
      * @param int $id
@@ -857,6 +859,40 @@ class ActionController extends Controller
         
         $view->set('comments', $comments)
                 ->set('action', $action);
+    }
+
+    /**
+     * Show attendance total percentual or month by month
+     * 
+     * @before _secured, _admin
+     */
+    public function showAttendance()
+    {
+        $view = $this->getActionView();
+        $type = RequestMethods::post('actiontype', \App\Model\ActionModel::TYPE_TRAINING);
+
+        $attendance = \App\Model\AttendanceModel::fetchPercentAttendance($type);
+        $monthNames = Date::getInstance()->getCzMonths(Date::FULL_MONTHS_NAMES);
+
+        $view->set('attendance', $attendance)
+                ->set('selectedtype', $type)
+                ->set('monthnames', $monthNames);
+
+        if (RequestMethods::post('submitLoadAtt')) {
+            if ($this->_checkCSRFToken() !== true) {
+                self::redirect('/admin/action/');
+            }
+
+            $month = RequestMethods::post('month');
+            $year = RequestMethods::post('year');
+
+            $days = Date::getInstance()->getMonthDays($month, $year);
+            $monthAttendance = \App\Model\AttendanceModel::fetchMonthAttendance($month, $year);
+
+            $view->set('calendar', $days)
+                    ->set('selectedmonth', $month)
+                    ->set('monthattend', $monthAttendance);
+        }
     }
 
 }

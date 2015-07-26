@@ -9,25 +9,25 @@ section.wrapper.login.singlePage
                label.error.fi-alert
                   |{echo join("<br/>", $errors["firstname"])}
                |{/if}
-               |{echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '', 'Jméno')}
+               |{echo \App\Helper\FormPrinter::input('text', 'firstname', array($user,'firstname'), array('required'=>true, 'placeholder'=>'Jméno'))}
 
                |{if isset($errors["lastname"])}
                label.error.fi-alert
                   |{echo join("<br/>", $errors["lastname"])}
                |{/if}
-               |{echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '', 'Příjmení')}
+               |{echo \App\Helper\FormPrinter::input('text', 'lastname', array($user,'lastname'), array('required'=>true, 'placeholder'=>'Příjmení'))}
 
                |{if isset($errors["phoneNumber"])}
                label.error.fi-alert
                   |{echo join("<br/>", $errors["phoneNumber"])}
                |{/if}
-               input(type='tel',placeholder='Kontaktní telefon', name='phone',value!='{echo isset($user)? $user->phoneNumber: ""}')
+               |{echo \App\Helper\FormPrinter::input('tel', 'phone', array($user,'phoneNumber'), array('placeholder'=>'Kontaktní telefon'))}
 
                |{if isset($errors["email"])}
                label.error.fi-alert
                   |{echo join("<br/>", $errors["email"])}
                |{/if}
-               input(type='email',placeholder='Kontaktní email', name='email',value!='{echo isset($user)? $user->email: ""}' required)
+               |{echo \App\Helper\FormPrinter::input('email', 'email', array($user,'email'), array('required'=>true, 'placeholder'=>'Kontaktní email'))}
 
                |{if isset($errors["password"])}
                label.error.fi-alert

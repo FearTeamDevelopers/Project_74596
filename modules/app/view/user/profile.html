@@ -34,28 +34,28 @@
             <td><span>Jméno:</span></td>
             <td>{if isset($errors["firstname"])}
               <label class="error fi-alert">{echo join("<br/>", $errors["firstname"])}</label>{/if}
-              {echo \App\Helper\FormPrinter::textInput('firstname', array($user,'firstname'), true, '')}
+              {echo \App\Helper\FormPrinter::input('text', 'firstname', array($user,'firstname'), array('required'=>true))}
             </td>
           </tr>
           <tr>
             <td><span>Příjmení:</span></td>
             <td>{if isset($errors["lastname"])}
               <label class="error fi-alert">{echo join("<br/>", $errors["lastname"])}</label>{/if}
-              {echo \App\Helper\FormPrinter::textInput('lastname', array($user,'lastname'), true, '')}
+              {echo \App\Helper\FormPrinter::input('text', 'lastname', array($user,'lastname'), array('required'=>true))}
             </td>
           </tr>
           <tr>
             <td><span>Telefon:</span></td>
             <td>{if isset($errors["phoneNumber"])}
               <label class="error fi-alert">{echo join("<br/>", $errors["phoneNumber"])}</label>{/if}
-              <input type="tel" name="phone" value="{echo isset($user)? $user->phoneNumber: ""}"/>
+              {echo \App\Helper\FormPrinter::input('tel', 'phone', array($user,'phoneNumber'))}
             </td>
           </tr>
           <tr>
             <td><span>Email:</span></td>
             <td>{if isset($errors["email"])}
               <label class="error fi-alert">{echo join("<br/>", $errors["email"])}</label>{/if}
-              <input type="email" name="email" value="{echo isset($user)? $user->email: ""}" required="required"/>
+              {echo \App\Helper\FormPrinter::input('email', 'email', array($user,'email'), array('required'=>true))}
             </td>
           </tr>
           <tr>

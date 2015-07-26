@@ -44,7 +44,7 @@
             <p>
                 <label>Název*</label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('title', array($news,'title'), true)}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'title', array($news,'title'), array('required'=>true))}
                     {if isset($errors["title"])}
                     <label class="error">{echo join("<br/>", $errors["title"])}</label>
                     {/if}
@@ -53,7 +53,7 @@
             <p>
                 <label>Pořadí<small>Max. 99</small></label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('rank', array($news,'rank',1))}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($news,'rank',1))}
                     {if isset($errors["rank"])}
                     <label class="error">{echo join("<br/>", $errors["rank"])}</label>
                     {/if}
@@ -62,7 +62,7 @@
             <p>
                 <label>Teaser*<small>Max. 750 znaků</small></label>
                 <span class="field">
-                    <textarea rows="20" name="shorttext" id="ckeditor2">{echo $news->shortBody}</textarea>
+                    <textarea rows="20" name="shorttext" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($news,'shortBody')}</textarea>
                     {if isset($errors["shortBody"])}
                     <label class="error">{echo join("<br/>", $errors["shortBody"])}</label>
                     {/if}
@@ -80,7 +80,7 @@
             <p>
                 <label>Text*</label>
                 <span class="field">
-                    <textarea rows="20" name="text" id="ckeditor">{echo $news->body}</textarea>
+                    <textarea name="text" id="ckeditor">{echo \Admin\Helper\FormPrinter::iset($news,'body')}</textarea>
                     {if isset($errors["body"])}
                     <label class="error">{echo join("<br/>", $errors["body"])}</label>
                     {/if}
@@ -117,19 +117,14 @@
                 <label>Schváleno</label>
                 <span class="field">
                     <select name="approve" class="width80">
-                        {if $news->approved == 0}
-                        <option value="0" selected>Čeká na shválení</option>
-                        <option value="1">Schváleno</option>
-                        <option value="2">Zamítnuto</option>
-                        {/if}{elseif $news->approved == 1}
-                        <option value="0">Čeká na shválení</option>
-                        <option value="1" selected>Schváleno</option>
-                        <option value="2">Zamítnuto</option>
-                        {/elseif}{else}
-                        <option value="0">Čeká na shválení</option>
-                        <option value="1">Schváleno</option>
-                        <option value="2" selected>Zamítnuto</option>
-                        {/else}
+                        {foreach $type in \App\Model\NewsModel::getStates()}
+                            {script $sel=""}
+                            {if $type_i == $news->approved}
+                                {script $sel="selected"}
+                            {/if}
+                        
+                            <option value="{echo $type_i}" {echo $sel}>{echo $type}</option>
+                        {/foreach}
                     </select>
                 </span>
             </p>
@@ -155,7 +150,7 @@
             <p>
                 <label>Meta-název</label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('metatitle', array($news,'metaTitle'), false, 'width80', "Výchozí hodnota: stejná jako Název")}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'metatitle', array($news,'metaTitle'), array('placeholder'=>'Výchozí hodnota: stejná jako Název'))}
                     {if isset($errors["metaTitle"])}
                     <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
                     {/if}
@@ -174,7 +169,7 @@
             <p>
                 <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
                 <span class="field">
-                    {echo \Admin\Helper\FormPrinter::textInput('keywords', array($news,'keywords'), false, 'width80', "Oddělovač: mezera")}
+                    {echo \Admin\Helper\FormPrinter::input('text', 'keywords', array($news,'keywords'), array('placeholder'=>"Oddělovač: mezera"))}
                     {if isset($errors["keywords"])}
                     <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
                     {/if}

@@ -15,7 +15,7 @@
         <p>
             <label>Title*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('title', array($imessage,'title'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'title', array($imessage,'title'), array('required'=>true))}
                 {if isset($errors["title"])}
                 <label class="error">
                     {echo join("<br/>", $errors["title"])}
@@ -27,19 +27,14 @@
             <label>Typ*</label>
             <span class="field">
                 <select name="mtype" class="width80">
-                    {if $imessage->getMessageType() == "info"}
-                    <option value="info" selected>Info</option>
-                    <option value="warning">Warning</option>
-                    <option value="error">Error</option>
-                    {/if}{elseif $imessage->getMessageType() == "warning"}
-                    <option value="info">Info</option>
-                    <option value="warning" selected>Warning</option>
-                    <option value="error">Error</option>
-                    {/elseif}{else}
-                    <option value="info">Info</option>
-                    <option value="warning">Warning</option>
-                    <option value="error" selected>Error</option>
-                    {/else}
+                    {foreach $type in \Admin\Model\ImessageModel::getTypes()}
+                        {script $sel=""}
+                        {if $type_i == $imessage->actionType}
+                            {script $sel="selected"}
+                        {/if}
+
+                        <option value="{echo $type_i}" {echo $sel}>{echo $type}</option>
+                    {/foreach}
                 </select>
                 {if isset($errors["messageType"])}
                 <label class="error">
@@ -62,7 +57,7 @@
         <p>
             <label>Zobrazovat od*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('dfrom', array($imessage,'displayFrom'), false, 'width40 datepicker')}
+                {echo \Admin\Helper\FormPrinter::input('text', 'dfrom', array($imessage,'displayFrom'), array('class'=>'width40 datepicker'))}
                 {if isset($errors["displayFrom"])}
                 <label class="error">
                     {echo join("<br/>", $errors["displayFrom"])}
@@ -73,7 +68,7 @@
         <p>
             <label>Zobrazovat do*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('dto', array($imessage,'displayTo'), false, 'width40 datepicker2')}
+                {echo \Admin\Helper\FormPrinter::input('text', 'dto', array($imessage,'displayTo'), array('class'=>'width40 datepicker2'))}
                 {if isset($errors["displayTo"])}
                 <label class="error">
                     {echo join("<br/>", $errors["displayTo"])}

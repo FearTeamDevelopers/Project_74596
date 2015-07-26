@@ -14,7 +14,7 @@
         <p>
             <label>Title*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('title', array($imessage,'title'), true)}
+                {echo \Admin\Helper\FormPrinter::input('text', 'title', array($imessage,'title'), array('required'=>true))}
                 {if isset($errors["title"])}
                 <label class="error">
                     {echo join("<br/>", $errors["title"])}
@@ -26,9 +26,9 @@
             <label>Typ*</label>
             <span class="field">
                 <select name="mtype" class="width80">
-                    <option value="info">Info</option>
-                    <option value="warning">Warning</option>
-                    <option value="error">Error</option>
+                    {foreach $type in \Admin\Model\ImessageModel::getTypes()}
+                        <option value="{echo $type_i}">{echo $type}</option>
+                    {/foreach}
                 </select>
                 {if isset($errors["messageType"])}
                 <label class="error">
@@ -51,7 +51,7 @@
         <p>
             <label>Zobrazovat od*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('dfrom', array($imessage,'displayFrom'), false, 'width60 datepicker')}
+                {echo \Admin\Helper\FormPrinter::input('text', 'dfrom', array($imessage,'displayFrom'), array('class'=>'width40 datepicker'))}
                 {if isset($errors["displayFrom"])}
                 <label class="error">
                     {echo join("<br/>", $errors["displayFrom"])}
@@ -62,7 +62,7 @@
         <p>
             <label>Zobrazovat do*</label>
             <span class="field">
-                {echo \Admin\Helper\FormPrinter::textInput('dto', array($imessage,'displayTo'), false, 'width60 datepicker2')}
+                {echo \Admin\Helper\FormPrinter::input('text', 'dto', array($imessage,'displayTo'), array('class'=>'width40 datepicker2'))}
                 {if isset($errors["displayTo"])}
                 <label class="error">
                     {echo join("<br/>", $errors["displayTo"])}

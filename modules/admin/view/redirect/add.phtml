@@ -26,7 +26,7 @@
         <p>
             <label>Z URL*</label>
             <span class="field">
-                <input class="width80" type="text" name="fromurl" value="{echo isset($redirect)? $redirect->fromPath: ""}" />
+                {echo \Admin\Helper\FormPrinter::input('text', 'fromurl', array($redirect,'fromPath'))}
                 {if isset($errors["fromPath"])}
                 <label class="error">{echo join("<br/>", $errors["fromPath"])}</label>
                 {/if}
@@ -35,7 +35,7 @@
         <p>
             <label>Na URL*</label>
             <span class="field">
-                <input class="width80" type="text" name="tourl" value="{echo isset($redirect)? $redirect->toPath: ""}" />
+                {echo \Admin\Helper\FormPrinter::input('text', 'tourl', array($redirect,'toPath'))}
                 {if isset($errors["toPath"])}
                 <label class="error">{echo join("<br/>", $errors["toPath"])}</label>
                 {/if}

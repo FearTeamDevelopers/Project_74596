@@ -85,7 +85,7 @@ class NewsController extends Controller
                 ->set('pagecount', $newsPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Novinky');
+                ->set('metatitle', 'TJ Sokol - Novinky');
     }
 
     /**
@@ -135,7 +135,7 @@ class NewsController extends Controller
                 ->set('pagecount', $newsPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Novinky - Archiv');
+                ->set('metatitle', 'TJ Sokol - Novinky - Archiv');
     }
     
     /**

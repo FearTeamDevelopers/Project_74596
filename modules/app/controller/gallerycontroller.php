@@ -54,7 +54,7 @@ class GalleryController extends Controller
                 ->set('pagecount', $galleryPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Galerie');
+                ->set('metatitle', 'TJ Sokol - Galerie');
     }
 
     /**
@@ -89,7 +89,7 @@ class GalleryController extends Controller
                 ->set('pagecount', $photosPageCount);
 
         $layoutView->set('canonical', $canonical)
-                ->set('metatitle', 'Hastrman - Galerie - ' . $gallery->getTitle());
+                ->set('metatitle', 'TJ Sokol - Galerie - ' . $gallery->getTitle());
     }
     
     /**
@@ -116,7 +116,7 @@ class GalleryController extends Controller
 
         $layoutView->set('canonical', $canonical)
                 ->set('includejssorslider', 1)
-                ->set('metatitle', 'Hastrman - Galerie - ' . $gallery->getTitle());
+                ->set('metatitle', 'TJ Sokol - Galerie - ' . $gallery->getTitle());
     }
 
 }
