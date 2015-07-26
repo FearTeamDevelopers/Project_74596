@@ -85,66 +85,66 @@
                 </p>
             </form>
 
-            <table cellpadding="0" cellspacing="0" border="0" class="attendtable">
-                <thead>
-                    <tr>
-                        {if !empty($calendar)}
+            {if !empty($calendar)}
+                <table cellpadding="0" cellspacing="0" border="0" class="attendtable">
+                    <thead>
+                        <tr>
                             <td>Jméno</td>
                             {foreach $time in $calendar}
                                 <td class="width100">{echo $time["day"]."<br/>".$time["dayname"]}</td>
                             {/foreach}
-                        {/if}
-                    </tr>
-                </thead>
-                <tbody>
-                    {foreach $user in $monthattend}
-                    <tr>
-                        <td>
-                            {script $username = explode("|", $user_i)}
-                            {echo $username[1]}
-                        </td>
-                        
-                        {script $j=1;$c=count($user);$tc=1;}
-                        {foreach $att in $user}
-                            {script $parts = explode("|", $att_i);}
-                            {script $day = explode("-", $parts[1]);}
-                            
-                            {for $i=$j $i<=$calendar[1]["daysofmonth"] $i++}
-                                {if $day[2] == $i}
-                                    {if $parts[0] == \App\Model\ActionModel::TYPE_TRAINING}
-                                        {if $att["type"] == 1}
-                                            <td class="bg-green">T</td>
-                                        {/if}{elseif $att["type"] == 2}
-                                            <td class="bg-red" title="{echo $att["comment"]}">T</td>
-                                        {/elseif}{else}
-                                            <td class="bg-orange">T</td>
-                                        {/else}
-                                    {/if}{elseif $parts[0] == \App\Model\ActionModel::TYPE_MATCH}
-                                        {if $att["type"] == 1}
-                                            <td class="bg-green">Z</td>
-                                        {/if}{elseif $att["type"] == 2}
-                                            <td class="bg-red" title="{echo $att["comment"]}>Z</td>
-                                        {/elseif}{else}
-                                            <td class="bg-orange">Z</td>
-                                        {/else}
-                                    {/elseif}
-                                    {script break;}
-                                {/if}{else}
-                                    <td></td>
-                                {/else}
-                            {/for}
-                            
-                            {script $j=$day[2]+1;$tc++;}
-                            {if $tc-1 == $c}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {foreach $user in $monthattend}
+                        <tr>
+                            <td>
+                                {script $username = explode("|", $user_i)}
+                                {echo $username[1]}
+                            </td>
+
+                            {script $j=1;$c=count($user);$tc=1;}
+                            {foreach $att in $user}
+                                {script $parts = explode("|", $att_i);}
+                                {script $day = explode("-", $parts[1]);}
+
                                 {for $i=$j $i<=$calendar[1]["daysofmonth"] $i++}
-                                    <td></td>
+                                    {if $day[2] == $i}
+                                        {if $parts[0] == \App\Model\ActionModel::TYPE_TRAINING}
+                                            {if $att["type"] == 1}
+                                                <td class="bg-green">T</td>
+                                            {/if}{elseif $att["type"] == 2}
+                                                <td class="bg-red" title="{echo $att["comment"]}">T</td>
+                                            {/elseif}{else}
+                                                <td class="bg-orange">T</td>
+                                            {/else}
+                                        {/if}{elseif $parts[0] == \App\Model\ActionModel::TYPE_MATCH}
+                                            {if $att["type"] == 1}
+                                                <td class="bg-green">Z</td>
+                                            {/if}{elseif $att["type"] == 2}
+                                                <td class="bg-red" title="{echo $att["comment"]}>Z</td>
+                                            {/elseif}{else}
+                                                <td class="bg-orange">Z</td>
+                                            {/else}
+                                        {/elseif}
+                                        {script break;}
+                                    {/if}{else}
+                                        <td></td>
+                                    {/else}
                                 {/for}
-                            {/if}
+
+                                {script $j=$day[2]+1;$tc++;}
+                                {if $tc-1 == $c}
+                                    {for $i=$j $i<=$calendar[1]["daysofmonth"] $i++}
+                                        <td></td>
+                                    {/for}
+                                {/if}
+                            {/foreach}
+                        </tr>
                         {/foreach}
-                    </tr>
-                    {/foreach}
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            {/if}
         </div>
     </div>
 </div>

@@ -876,6 +876,7 @@ class ActionController extends Controller
 
         $view->set('attendance', $attendance)
                 ->set('selectedtype', $type)
+                ->set('selectedmonth', date('m'))
                 ->set('monthnames', $monthNames);
 
         if (RequestMethods::post('submitLoadAtt')) {
