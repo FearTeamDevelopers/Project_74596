@@ -59,4 +59,25 @@ return array(
     'SYSTEM_DELETE_CACHE' => 'Cache byla úspěšně smazána',
     'SYSTEM_DB_BACKUP' => 'Záloha databáze byla vytvořena',
     'SYSTEM_DB_BACKUP_FAIL' => 'Nepodařilo se vytvořit zálohu databáze',
+    
+    
+    //controller customs
+    'TITLE_DEFAULT' => 'Sokol',
+    'TITLE_DEFAULT_ADMIN' => 'Sokol - Administrace',
+    'TITLE_ACTION_INDEX' => 'Akce',
+    'TITLE_ACTION_ADD' => 'Akce - Přidat',
+    'TITLE_ACTION_EDIT' => 'Akce - Upravit',
+    'TITLE_ACTION_COMMENTS' => 'Akce - Komentáře',
+    'TITLE_ACTION_ATTEND' => 'Akce - Účast',
+    
+    'TITLE_NEWS_INDEX' => 'Novinky',
+    'TITLE_NEWS_ADD' => 'Novinky - Přidat',
+    'TITLE_NEWS_EDIT' => 'Novinky - Upravit',
+    'TITLE_NEWS_COMMENTS' => 'Novinky - Komentáře',
+    
+    'TITLE_USER_LOGIN' => 'Přihlásit se',
+    'TITLE_USER_INDEX' => 'Uživatelé',
+    'TITLE_USER_ADD' => 'Uživatelé - Přidat',
+    'TITLE_USER_EDIT' => 'Uživatelé - Upravit',
+    'TITLE_USER_PROFILE' => 'Můj Profil',
 );

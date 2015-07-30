@@ -189,7 +189,8 @@ class ActionController extends Controller
      */
     public function index()
     {
-        
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_ACTION_INDEX'));
     }
 
     /**
@@ -200,6 +201,9 @@ class ActionController extends Controller
     public function add()
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_ACTION_ADD'));
+        
         $action = $this->_checkForObject();
 
         $actionConcepts = \Admin\Model\ConceptModel::all(array(
@@ -268,7 +272,9 @@ class ActionController extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
-
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_ACTION_EDIT'));
+        
         $action = $this->_checkForObject();
 
         if (null === $action) {
@@ -846,7 +852,9 @@ class ActionController extends Controller
     public function showComments($id)
     {
         $view = $this->getActionView();
-
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_ACTION_COMMENTS'));
+        
         $action = \App\Model\ActionModel::first(array('id = ?' => (int) $id), array('id'));
 
         if (null === $action) {
@@ -855,7 +863,7 @@ class ActionController extends Controller
             self::redirect('/admin/action/');
         }
 
-        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($action->getId(), 'action');
+        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($action->getId(), \App\Model\CommentModel::RESOURCE_ACTION);
         
         $view->set('comments', $comments)
                 ->set('action', $action);
@@ -869,6 +877,9 @@ class ActionController extends Controller
     public function showAttendance()
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_ACTION_ATTEND'));
+        
         $type = RequestMethods::post('actiontype', \App\Model\ActionModel::TYPE_TRAINING);
 
         $attendance = \App\Model\AttendanceModel::fetchPercentAttendance($type);

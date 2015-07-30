@@ -162,15 +162,11 @@ class CommentModel extends Model
      */
     public static function fetchCommentsByResourceAndType($resourceId, $type)
     {
-        if (!array_key_exists(strtolower($type), self::$_resourceConv)) {
-            return null;
-        }
-
         $query = self::getQuery(array('cm.*'))
                 ->join('tb_user', 'cm.userId = us.id', 'us', 
                         array('us.firstname', 'us.lastname'))
                 ->where('cm.resourceId = ?', (int) $resourceId)
-                ->where('cm.type = ?', self::$_resourceConv[$type])
+                ->where('cm.type = ?', (int)$type)
                 ->where('cm.replyTo = ?', 0)
                 ->order('cm.created', 'desc');
 

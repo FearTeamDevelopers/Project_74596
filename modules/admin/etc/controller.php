@@ -121,6 +121,9 @@ class Controller extends BaseController
         $this->_cache = Registry::get('cache');
         $this->_config = Registry::get('configuration');
         $this->_lang = Lang::getInstance();
+        
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_DEFAULT_ADMIN'));
 
         // schedule disconnect from database 
         Event::add('framework.controller.destruct.after', function($name) {

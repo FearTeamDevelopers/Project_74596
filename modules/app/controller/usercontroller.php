@@ -35,7 +35,7 @@ class UserController extends Controller
         $canonical = 'http://' . $this->getServerHost() . '/prihlasit';
 
         $this->getLayoutView()
-                ->set('metatitle', 'Sokol - Přihlásit se')
+                ->setTitle('Sokol - Přihlásit se')
                 ->set('canonical', $canonical);
 
         if (RequestMethods::post('submitLogin')) {

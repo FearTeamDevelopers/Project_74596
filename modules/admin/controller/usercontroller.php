@@ -101,7 +101,9 @@ class UserController extends Controller
     public function index()
     {
         $view = $this->getActionView();
-
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_USER_INDEX'));
+        
         $users = \App\Model\UserModel::fetchAll();
 
         $view->set('users', $users);
@@ -115,6 +117,9 @@ class UserController extends Controller
     public function add()
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_USER_ADD'));
+        
         $user = null;
 
         $roles = array_keys($this->getSecurity()->getAuthorization()->getRoleManager()->getRoles());
@@ -196,6 +201,8 @@ class UserController extends Controller
     public function updateProfile()
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_USER_PROFILE'));
 
         $user = \App\Model\UserModel::first(
                         array('active = ?' => true, 'id = ?' => $this->getUser()->getId()));
@@ -271,6 +278,9 @@ class UserController extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_USER_EDIT'));
+        
         $user = \App\Model\UserModel::first(array('id = ?' => (int) $id));
 
         if (NULL === $user) {

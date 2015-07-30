@@ -59,4 +59,24 @@ return array(
     'SYSTEM_DELETE_CACHE' => 'Cache has been successfully deleted',
     'SYSTEM_DB_BACKUP' => 'Database backup has been successfully created',
     'SYSTEM_DB_BACKUP_FAIL' => 'Database backup could not be created',
+    
+    //controller customs
+    'TITLE_DEFAULT' => 'Sokol',
+    'TITLE_DEFAULT_ADMIN' => 'Sokol - Administration',
+    'TITLE_ACTION_INDEX' => 'Actions',
+    'TITLE_ACTION_ADD' => 'Action - Add',
+    'TITLE_ACTION_EDIT' => 'Action - Edit',
+    'TITLE_ACTION_COMMENTS' => 'Action - Comments',
+    'TITLE_ACTION_ATTEND' => 'Action - Attendance',
+    
+    'TITLE_NEWS_INDEX' => 'News',
+    'TITLE_NEWS_ADD' => 'News - Add',
+    'TITLE_NEWS_EDIT' => 'News - Edit',
+    'TITLE_NEWS_COMMENTS' => 'News - Comments',
+    
+    'TITLE_USER_LOGIN' => 'Log In',
+    'TITLE_USER_INDEX' => 'Users',
+    'TITLE_USER_ADD' => 'User - Add',
+    'TITLE_USER_EDIT' => 'User - Edit',
+    'TITLE_USER_PROFILE' => 'My Profile',
 );

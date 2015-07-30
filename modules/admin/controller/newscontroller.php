@@ -153,7 +153,8 @@ class NewsController extends Controller
      */
     public function index()
     {
-        
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_NEWS_INDEX'));
     }
 
     /**
@@ -164,6 +165,9 @@ class NewsController extends Controller
     public function add()
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_NEWS_ADD'));
+        
         $news = $this->_checkForObject();
 
         $newsConcepts = \Admin\Model\ConceptModel::all(array(
@@ -232,7 +236,9 @@ class NewsController extends Controller
     public function edit($id)
     {
         $view = $this->getActionView();
-
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_NEWS_EDIT'));
+        
         $news = $this->_checkForObject();
 
         if (null === $news) {
@@ -801,6 +807,8 @@ class NewsController extends Controller
     public function showComments($id)
     {
         $view = $this->getActionView();
+        $this->getLayoutView()
+                ->setTitle($this->lang('TITLE_NEWS_COMMENTS'));
 
         $news = \App\Model\NewsModel::first(array('id = ?' => (int) $id), array('id'));
 
@@ -810,7 +818,7 @@ class NewsController extends Controller
             self::redirect('/admin/action/');
         }
 
-        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($news->getId(), 'news');
+        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($news->getId(), \App\Model\CommentModel::RESOURCE_NEWS);
 
         $view->set('comments', $comments)
                 ->set('news', $news);
