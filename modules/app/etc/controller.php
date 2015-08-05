@@ -180,11 +180,11 @@ class Controller extends BaseController
             if ($mailer->send($message)) {
                 return true;
             } else {
-                Event::fire('admin.log', array('fail', 'No email sent'));
+                Event::fire('app.log', array('fail', 'No email sent'));
                 return false;
             }
         } catch (\Exception $ex) {
-            Event::fire('admin.log', array('fail', 'Error while sending email: ' . $ex->getMessage()));
+            Event::fire('app.log', array('fail', 'Error while sending email: ' . $ex->getMessage()));
             return false;
         }
     }

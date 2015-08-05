@@ -166,7 +166,7 @@ class EmailController extends Controller
             $errors = array();
             $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
-            for ($i = 1; $i <= 50; $i++) {
+            for ($i = 1; $i <= 50; $i+=$i) {
                 if ($this->_checkUrlKey($urlKeyCh)) {
                     break;
                 } else {

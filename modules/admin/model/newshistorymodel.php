@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace Admin\Model;
 
 use THCFrame\Model\Model;
 use THCFrame\Registry\Registry;

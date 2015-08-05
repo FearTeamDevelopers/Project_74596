@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Model;
+namespace Admin\Model;
 
 use THCFrame\Model\Model;
 use THCFrame\Registry\Registry;
@@ -10,13 +10,13 @@ use THCFrame\Request\RequestMethods;
 /**
  * 
  */
-class ActionHistoryModel extends Model
+class PageContentHistoryModel extends Model
 {
 
     /**
      * @readwrite
      */
-    protected $_alias = 'ach';
+    protected $_alias = 'pch';
 
     /**
      * @column
@@ -108,8 +108,8 @@ class ActionHistoryModel extends Model
      */
     public static function fetchAll()
     {
-        $query = self::getQuery(array('ach.*'))
-                ->join('tb_user', 'ach.editedBy = us.id', 'us', 
+        $query = self::getQuery(array('pch.*'))
+                ->join('tb_user', 'pch.editedBy = us.id', 'us', 
                         array('us.firstname', 'us.lastname'));
         
         return self::initialize($query);
@@ -122,10 +122,10 @@ class ActionHistoryModel extends Model
      */
     public static function fetchWithLimit($limit = 10)
     {
-        $query = self::getQuery(array('ach.*'))
-                ->join('tb_user', 'ach.editedBy = us.id', 'us', 
+        $query = self::getQuery(array('pch.*'))
+                ->join('tb_user', 'pch.editedBy = us.id', 'us',
                         array('us.firstname', 'us.lastname'))
-                ->order('ach.created', 'desc')
+                ->order('pch.created', 'desc')
                 ->limit((int)$limit);
 
         return self::initialize($query);
@@ -134,11 +134,11 @@ class ActionHistoryModel extends Model
     /**
      * Check differences between two objects
      * 
-     * @param \App\Model\ActionModel $original
-     * @param \App\Model\ActionModel $edited
+     * @param \App\Model\PageContentModel $original
+     * @param \App\Model\PageContentModel $edited
      * @return void
      */
-    public static function logChanges(\App\Model\ActionModel $original, \App\Model\ActionModel $edited)
+    public static function logChanges(\App\Model\PageContentModel $original, \App\Model\PageContentModel $edited)
     {
         $sec = Registry::get('security');
         $user = $sec->getUser();
@@ -176,9 +176,9 @@ class ActionHistoryModel extends Model
         
         if($historyRecord->validate()){
             $historyRecord->save();
-            Event::fire('admin.log', array('success', 'Action '. $original->getId().' changes saved'));
+            Event::fire('admin.log', array('success', 'PageContent '. $original->getId().' changes saved'));
         }else{
-            Event::fire('admin.log', array('fail', 'Action history errors: ' . json_encode($historyRecord->getErrors())));
+            Event::fire('admin.log', array('fail', 'PageContent history errors: ' . json_encode($historyRecord->getErrors())));
         }
     }
 }

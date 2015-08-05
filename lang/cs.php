@@ -45,6 +45,7 @@ return array(
     'ACCOUNT_LOCKED' => 'Účet je uzamknut',
     'ACCOUNT_INACTIVE' => 'Účet ještě nebyl aktivován',
     'ACCOUNT_EXPIRED' => 'Platnost účtu vypršela',
+    'ACCOUNT_ACTIVATED' => 'Účet byl aktivován',
     
     'REGISTRATION_SUCCESS' => 'Registrace byla úspěšná',
     'REGISTRATION_EMAIL_SUCCESS' => 'Registrace byla úspěšná. Na uvedený email byl zaslán odkaz k aktivaci účtu',

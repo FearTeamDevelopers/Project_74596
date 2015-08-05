@@ -142,7 +142,7 @@ class ContentController extends Controller
 
             if (empty($errors) && $content->validate()) {
                 $content->save();
-                \App\Model\PageContentHistoryModel::logChanges($originalContent, $content);
+                \Admin\Model\PageContentHistoryModel::logChanges($originalContent, $content);
                 $this->getCache()->invalidate();
                 
                 Event::fire('admin.log', array('success', 'Content id: ' . $id));

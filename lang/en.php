@@ -45,6 +45,7 @@ return array(
     'ACCOUNT_LOCKED' => 'The account is locked',
     'ACCOUNT_INACTIVE' => 'The account has not been activated yet',
     'ACCOUNT_EXPIRED' => 'The account has expired',
+    'ACCOUNT_ACTIVATED' => 'The account has been activated',
     
     'REGISTRATION_SUCCESS' => 'Registration has been successfull',
     'REGISTRATION_EMAIL_SUCCESS' => 'Registration has been successfull. Confirm your e-mail address and activate your account',

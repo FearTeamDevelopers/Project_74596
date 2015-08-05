@@ -58,7 +58,7 @@ class NewsController extends Controller
     {
         $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 50; $i+=$i) {
             if ($this->_checkUrlKey($urlKeyCh)) {
                 break;
             } else {
@@ -275,7 +275,7 @@ class NewsController extends Controller
 
             if (empty($this->_errors) && $news->validate()) {
                 $news->save();
-                \App\Model\NewsHistoryModel::logChanges($originalNews, $news);
+                \Admin\Model\NewsHistoryModel::logChanges($originalNews, $news);
                 $this->getCache()->invalidate();
                 \Admin\Model\ConceptModel::deleteAll(array('id = ?' => RequestMethods::post('conceptid')));
 

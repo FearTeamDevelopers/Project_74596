@@ -59,7 +59,7 @@ class ActionController extends Controller
     {
         $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 50; $i+=$i) {
             if ($this->_checkUrlKey($urlKeyCh)) {
                 break;
             } else {
@@ -312,7 +312,7 @@ class ActionController extends Controller
 
             if (empty($this->_errors) && $action->validate()) {
                 $action->save();
-                \App\Model\ActionHistoryModel::logChanges($originalAction, $action);
+                \Admin\Model\ActionHistoryModel::logChanges($originalAction, $action);
                 $this->getCache()->invalidate();
                 \Admin\Model\ConceptModel::deleteAll(array('id = ?' => RequestMethods::post('conceptid')));
 

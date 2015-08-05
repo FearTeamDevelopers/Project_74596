@@ -72,11 +72,16 @@ class UserController extends Controller
                     self::redirect('/');
                 } catch (\THCFrame\Security\Exception\UserBlocked $ex) {
                     $view->set('account_error', $this->lang('ACCOUNT_LOCKED'));
+                    Event::fire('app.log', array('fail', sprintf('Account locked for %s', $email)));
                 } catch (\THCFrame\Security\Exception\UserInactive $ex) {
                     $view->set('account_error', $this->lang('ACCOUNT_INACTIVE'));
+                    Event::fire('app.log', array('fail', sprintf('Account inactive for %s', $email)));
                 } catch (\THCFrame\Security\Exception\UserExpired $ex) {
                     $view->set('account_error', $this->lang('ACCOUNT_EXPIRED'));
+                    Event::fire('app.log', array('fail', sprintf('Account expired for %s', $email)));
                 } catch (\Exception $e) {
+                    Event::fire('app.log', array('fail', 'Exception: ' . $e->getMessage()));
+                    
                     if (ENV == 'dev') {
                         $view->set('account_error', $e->getMessage());
                     } else {
@@ -123,7 +128,7 @@ class UserController extends Controller
             $errors = array();
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
-                $errors['password2'] = array('Hesla se neshodují');
+                $errors['password2'] = array($this->lang('PASS_DOESNT_MATCH'));
             }
 
             $email = \App\Model\UserModel::first(
@@ -131,7 +136,7 @@ class UserController extends Controller
             );
 
             if ($email) {
-                $errors['email'] = array('Tento email je již použit');
+                $errors['email'] = array($this->lang('EMAIL_IS_TAKEN'));
             }
 
             if (PasswordManager::strength(RequestMethods::post('password')) <= 0.5) {
@@ -149,7 +154,7 @@ class UserController extends Controller
             }
 
             $actToken = Rand::randStr(50);
-            for ($i = 1; $i <= 75; $i++) {
+            for ($i = 1; $i <= 75; $i+=$i) {
                 if ($this->_checkEmailActToken($actToken)) {
                     break;
                 } else {
@@ -178,21 +183,21 @@ class UserController extends Controller
                 $uid = $user->save();
 
                 if ($verifyEmail) {
-                    $emailTemplate = \Admin\Model\EmailTemplateModel::first(array('title = ?' => 'Aktivovace účtu'));
+                    $emailTemplate = \Admin\Model\EmailTemplateModel::first(array('urlkey = ?' => 'account-activation'));
                     $emailBody = str_replace('{TOKEN}', $actToken, $emailTemplate->getBody());
 
                     if ($this->_sendEmail($emailBody, 'TJ Sokol - Registrace', $user->getEmail(), 'registrace@hastrman.cz')) {
                         Event::fire('app.log', array('success', 'User Id with email activation: ' . $uid));
-                        $view->successMessage('Registrace byla úspěšná. Na uvedený email byl zaslán odkaz k aktivaci účtu.');
+                        $view->successMessage($this->lang('REGISTRATION_EMAIL_SUCCESS'));
                     } else {
                         Event::fire('app.log', array('fail', 'Email not send for User Id: ' . $uid));
                         $user->delete();
-                        $view->errorMessage('Nepodařilo se odeslat aktivační email, opakujte registraci později');
+                        $view->errorMessage($this->lang('REGISTRATION_EMAIL_FAIL'));
                         self::redirect('/');
                     }
                 } else {
                     Event::fire('app.log', array('success', 'User Id: ' . $uid));
-                    $view->successMessage('Registrace byla úspěšná');
+                    $view->successMessage($this->lang('REGISTRATION_SUCCESS'));
                 }
 
                 self::redirect('/');
@@ -228,7 +233,7 @@ class UserController extends Controller
             }
 
             if (RequestMethods::post('password') !== RequestMethods::post('password2')) {
-                $errors['password2'] = array('Hesla se neshodují');
+                $errors['password2'] = array($this->lang('PASS_DOESNT_MATCH'));
             }
 
             if (RequestMethods::post('email') != $user->email) {
@@ -237,7 +242,7 @@ class UserController extends Controller
                 );
 
                 if ($email) {
-                    $errors['email'] = array('Tento email je již použit');
+                    $errors['email'] = array($this->lang('EMAIL_IS_TAKEN'));
                 }
             }
 
@@ -289,7 +294,7 @@ class UserController extends Controller
 
         if ($user->activateAccount()) {
             Event::fire('app.log', array('success', 'User Id: ' . $user->getId()));
-            $view->successMessage('Účet byl aktivován');
+            $view->successMessage($this->lang('ACCOUNT_ACTIVATED'));
             self::redirect('/');
         } else {
             Event::fire('app.log', array('fail', 'User Id: ' . $user->getId(),

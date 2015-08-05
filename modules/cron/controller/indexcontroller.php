@@ -238,7 +238,7 @@ class IndexController extends Controller
 
                         $sql = 'INSERT INTO ' . trim($query);
                         $db->execute($sql);
-                        $i++;
+                        $i+=$i;
 
                         if ($i == 500) {
                             $db = $this->_resertTestConnection();
