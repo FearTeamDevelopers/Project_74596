@@ -154,9 +154,12 @@ class NewsController extends Controller
             self::redirect('/nenalezeno');
         }
         
+        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($news->getId(), \App\Model\CommentModel::RESOURCE_NEWS);
+        
         $this->_checkMetaData($layoutView, $news);
         $view->set('news', $news)
-                ->set('comment', null);
+                ->set('newcomment', null)
+                ->set('comments', $comments);
         
         if (RequestMethods::post('submitAddComment')) {
             if ($this->_checkCSRFToken() !== true &&
@@ -184,7 +187,7 @@ class NewsController extends Controller
                 Event::fire('app.log', array('fail', 'Errors: '.  json_encode($comment->getErrors())));
                 $view->set('errors', $comment->getErrors())
                     ->set('submstoken', $this->_revalidateMutliSubmissionProtectionToken())
-                    ->set('comment', $comment);
+                    ->set('newcomment', $comment);
             }
         }
     }

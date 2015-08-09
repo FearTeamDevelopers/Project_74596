@@ -323,6 +323,7 @@ class Template extends Base
         $tree = $this->_tree($array["all"]);
 
         $this->_code = $this->header . $this->_script($tree) . $this->footer;
+        $this->_code = str_replace(array('#(', ')#'), array('{', '}'), $this->_code);
         $this->_function = create_function("\$_data", $this->code);
 
         return $this;

@@ -59,7 +59,7 @@ class ActionController extends Controller
     {
         $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
-        for ($i = 1; $i <= 50; $i+=$i) {
+        for ($i = 1; $i <= 50; $i+=1) {
             if ($this->_checkUrlKey($urlKeyCh)) {
                 break;
             } else {
@@ -751,9 +751,9 @@ class ActionController extends Controller
                     $label .= "<span class='infoLabel infoLabelRed'>Neaktivní</span>";
                 }
 
-                if ($action->approved == 1) {
+                if ($action->approved == \App\Model\ActionModel::STATE_APPROVED) {
                     $label .= "<span class='infoLabel infoLabelGreen'>Schváleno</span>";
-                } elseif ($action->approved == 2) {
+                } elseif ($action->approved == \App\Model\ActionModel::STATE_REJECTED) {
                     $label .= "<span class='infoLabel infoLabelRed'>Zamítnuto</span>";
                 } else {
                     $label .= "<span class='infoLabel infoLabelOrange'>Čeká na schválení</span>";
@@ -780,6 +780,7 @@ class ActionController extends Controller
                 $tempStr = "\"";
                 if ($this->isAdmin() || $action->userId == $this->getUser()->getId()) {
                     $tempStr .= "<a href='/admin/action/showcomments/" . $action->id . "' class='btn btn3 btn_chat2' title='Zobrazit komentáře'></a>";
+                    $tempStr .= "<a href='/admin/action/getuserlist/" . $action->id . "' class='btn btn3 btn_users dialog' value='Účastníci' title='Zobrazit účastníky'></a>";
                     $tempStr .= "<a href='/admin/action/edit/" . $action->id . "' class='btn btn3 btn_pencil' title='Upravit'></a>";
                     $tempStr .= "<a href='/admin/action/delete/" . $action->id . "' class='btn btn3 btn_trash ajaxDelete' title='Smazat'></a>";
                 }
@@ -904,6 +905,39 @@ class ActionController extends Controller
             $view->set('calendar', $days)
                     ->set('selectedmonth', $month)
                     ->set('monthattend', $monthAttendance);
+        }
+    }
+    
+    /**
+     * 
+     * @before _secured, _participant
+     * @param type $actionId
+     */
+    public function getUserList($actionId)
+    {
+        $this->_disableView();
+        
+        $attUsers = \App\Model\AttendanceModel::fetchUsersByActionId($actionId);
+        $returnStr = '';
+        
+        if(!empty($attUsers)){
+            foreach ($attUsers as $key => $user){
+                $returnStr .= $user->getFirstname() . ' ' . $user->getLastname();
+                
+                if($user->getType() == \App\Model\AttendanceModel::ACCEPT){
+                    $returnStr .= ' - Zúčastní se'.PHP_EOL;
+                }elseif($user->getType() == \App\Model\AttendanceModel::REJECT){
+                    $returnStr .= ' - Nezúčastní se'.PHP_EOL;
+                }else{
+                    $returnStr .= ' - Neví'.PHP_EOL;
+                }
+            }
+
+            echo $returnStr;
+            exit;
+        } else {
+            echo 'Žádní účastníci';
+            exit;
         }
     }
 

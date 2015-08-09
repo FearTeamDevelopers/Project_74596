@@ -108,10 +108,12 @@ class ActionController extends Controller
         }
 
         $attendance = \App\Model\AttendanceModel::fetchUsersByActionId($action->getId());
+        $comments = \App\Model\CommentModel::fetchCommentsByResourceAndType($action->getId(), \App\Model\CommentModel::RESOURCE_ACTION);
         
         $this->_checkMetaData($layoutView, $action);
         $view->set('action', $action)
-                ->set('comment', null)
+                ->set('newcomment', null)
+                ->set('comments', $comments)
                 ->set('attendance', $attendance);
         
         if (RequestMethods::post('submitAddComment')) {
@@ -140,7 +142,7 @@ class ActionController extends Controller
                 Event::fire('app.log', array('fail', 'Errors: '.  json_encode($comment->getErrors())));
                 $view->set('errors', $comment->getErrors())
                     ->set('submstoken', $this->_revalidateMutliSubmissionProtectionToken())
-                    ->set('comment', $comment);
+                    ->set('newcomment', $comment);
             }
         }
     }

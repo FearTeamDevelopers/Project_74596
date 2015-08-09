@@ -68,6 +68,7 @@ jQuery(document).ready(function () {
             position: {my: 'center', at: 'top', of: window},
             buttons: {
                 Close: function () {
+                    jQuery('#dialog p').text('');
                     jQuery(this).dialog('close');
                 }
             }
@@ -187,6 +188,27 @@ jQuery(document).ready(function () {
                     },
                     "Ne": function () {
                         jQuery(this).dialog("close");
+                    }
+                }
+            });
+            return false;
+        });
+
+        jQuery('button.dialog, a.dialog').click(function () {
+            var href = jQuery(this).attr('href');
+            var val = jQuery(this).attr('value');
+
+            jQuery('#dialog p').load(href);
+
+            jQuery('#dialog').dialog({
+                title: val,
+                width: 600,
+                modal: true,
+                position: {my: 'center', at: 'top', of: window},
+                buttons: {
+                    Close: function () {
+                        jQuery('#dialog p').text('');
+                        jQuery(this).dialog('close');
                     }
                 }
             });

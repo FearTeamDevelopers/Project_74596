@@ -13,8 +13,7 @@ abstract class Driver extends Base
 {
     
     /**
-     * 
-     * @return \THCFrame\Cache\Driver
+     * @return \THCFrame\Logger\Driver
      */
     public function initialize()
     {

@@ -10,7 +10,7 @@
     <div class="tabs">
         <ul>
             <li><a href="#percent">Docházka %</a></li>
-            <li><a href="#month">Docházka - tréninky</a></li>
+            <li><a href="#month">Docházka - podle měsíců</a></li>
         </ul>
 
         <div id="percent">
@@ -59,7 +59,7 @@
 
         <div id="month">
             <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>Docházka - tréninky</span></h2>
+                <h2 class="table"><span>Docházka - podle měsíců</span></h2>
             </div><!--contenttitle-->
             <form class="stdform stdform2" method="post" action="/admin/action/showattendance/#month" >
                 <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
@@ -112,19 +112,19 @@
                                     {if $day[2] == $i}
                                         {if $parts[0] == \App\Model\ActionModel::TYPE_TRAINING}
                                             {if $att["type"] == 1}
-                                                <td class="bg-green">T</td>
+                                            <td class="bg-green"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
                                             {/if}{elseif $att["type"] == 2}
-                                                <td class="bg-red" title="{echo $att["comment"]}">T</td>
+                                                <td class="bg-red" title="{echo $att["comment"]}"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
                                             {/elseif}{else}
-                                                <td class="bg-orange">T</td>
+                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
                                             {/else}
                                         {/if}{elseif $parts[0] == \App\Model\ActionModel::TYPE_MATCH}
                                             {if $att["type"] == 1}
-                                                <td class="bg-green">Z</td>
+                                                <td class="bg-green"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
                                             {/if}{elseif $att["type"] == 2}
-                                                <td class="bg-red" title="{echo $att["comment"]}>Z</td>
+                                                <td class="bg-red" title="{echo $att["comment"]}><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
                                             {/elseif}{else}
-                                                <td class="bg-orange">Z</td>
+                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
                                             {/else}
                                         {/elseif}
                                         {script break;}

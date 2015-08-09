@@ -109,14 +109,18 @@ class AttendanceModel extends Model
      * @param type $userId
      * @return type
      */
-    public static function fetchActionsByUserId($userId)
+    public static function fetchActionsByUserId($userId, $future = false)
     {
-        $query = self::getQuery(array('at.type', 'at.comment'))
+        $query = self::getQuery(array('at.id', 'at.type', 'at.comment'))
                 ->join('tb_action', 'at.actionId = ac.id', 'ac', 
-                        array('ac.*'))
-                ->where('at.userId = ?', (int)$userId);
+                        array('ac.id' => 'acId','ac.title', 'ac.urlKey', 'ac.startDate', 'ac.endDate'))
+                ->where('at.userId = ?', (int)$userId)
+                ->order('ac.startDate', 'ASC');
         
-        print('<pre>'.print_r($query->assemble(), true).'</pre>');die;
+        if($future === true){
+            $query->where('ac.startDate >= ?', date('Y-m-d'));
+        }
+        
         return self::initialize($query);
     }
 
@@ -127,12 +131,12 @@ class AttendanceModel extends Model
      */
     public static function fetchUsersByActionId($actionId)
     {
-        $query = self::getQuery(array('at.type', 'at.comment'))
+        $query = self::getQuery(array('at.id', 'at.type', 'at.comment'))
                 ->join('tb_user', 'at.userId = us.id', 'us', 
-                        array('us.*'))
-                ->where('at.actionId = ?', (int)$actionId);
+                        array('us.id' => 'usId', 'us.firstname', 'us.lastname'))
+                ->where('at.actionId = ?', (int)$actionId)
+                ->order('us.lastname', 'ASC');
         
-        print('<pre>'.print_r($query->assemble(), true).'</pre>');die;
         return self::initialize($query);
     }
     
@@ -195,7 +199,7 @@ class AttendanceModel extends Model
             foreach($users as $user){
                 $attQ = self::getQuery(array('at.actionId', 'at.type', 'at.comment'))
                         ->join('tb_action', 'at.actionId = ac.id', 'ac',
-                                array('ac.actionType', 'ac.startDate', 'ac.endDate'))
+                                array('ac.actionType', 'ac.startDate', 'ac.endDate', 'ac.urlKey'))
                         ->where('at.userId = ?', $user->getUserId())
                         ->where('ac.startDate >= ?', $firstDay)
                         ->where('ac.startDate <= ?', $lastDay)

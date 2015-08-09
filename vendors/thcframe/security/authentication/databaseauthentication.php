@@ -9,6 +9,7 @@ use THCFrame\Security\Model\BasicUser;
 use THCFrame\Security\PasswordManager;
 use THCFrame\Core\Core;
 use THCFrame\Request\RequestMethods;
+use THCFrame\Registry\Registry;
 
 /**
  * DatabaseAuthentication verify user identity against database records
@@ -128,9 +129,7 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
      */
     public function authenticate($name, $pass)
     {
-        $errMessage = sprintf('%s and/or password are incorrect', ucfirst($this->_name));
-        $errMessageNotActive = 'Account is not active';
-        $errMessageBlock = 'Account is blocked. Try login after ' . ($this->_accountBlockTime / 60) . ' mins';
+        
 
         $user = \App\Model\UserModel::first(
                         array("{$this->_name} = ?" => $name), array('id', "{$this->_name}", "{$this->_pass}",
@@ -138,21 +137,23 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
                     'totalLoginAttempts', 'lastLoginAttempt', 'firstLoginAttempt'));
 
         if ($user === null) {
-            throw new Exception\UserNotExists($errMessage);
+            throw new Exception\UserNotExists();
         }
 
+        Registry::get('session')->set('userLastLogin', $user->getLastLogin());
+        
         $passVerify = PasswordManager::validatePassword($pass, $user->getPassword(), $user->getSalt());
 
         if ($passVerify === true) {
             if ($user instanceof BasicUser) {
                 if (!$user->isActive()) {
-                    throw new Exception\UserInactive($errMessageNotActive);
+                    throw new Exception\UserInactive();
                 } elseif ($user->isAccountExpired()) {
-                    throw new Exception\UserExpired($errMessage);
+                    throw new Exception\UserExpired();
                 } elseif ($user->isPasswordExpired()) {
-                    throw new Exception\UserPassExpired($errMessage);
+                    throw new Exception\UserPassExpired();
                 } elseif ($user->isBlocked()) {
-                    throw new Exception\UserBlocked($errMessageBlock);
+                    throw new Exception\UserBlocked();
                 } else {
                     $this->_successfullLogin($user);
                     return $this->_loadCompleteUser($user->getId());
@@ -162,7 +163,7 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
             }
         } else {
             if ($user->isBlocked()) {
-                throw new Exception\UserBlocked($errMessageBlock);
+                throw new Exception\UserBlocked();
             } elseif ($this->isBruteForce($user)) { //Brute force attack detection
                 $identifier = $this->_name;
                 Core::getLogger()->log(sprintf('Brute Force Attack Detected for account %s', $user->$identifier));

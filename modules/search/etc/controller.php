@@ -17,28 +17,28 @@ class Controller extends BaseController
 
     /**
      * Store security context object
-     * @var type 
+     * @var THCFrame\Security\Security 
      * @read
      */
     protected $_security;
 
     /**
      * Store initialized cache object
-     * @var type 
+     * @var THCFrame\Cache\Cache 
      * @read
      */
     protected $_cache;
 
     /**
      * Store configuration
-     * @var type 
+     * @var THCFrame\Configuration\Configuration 
      * @read
      */
     protected $_config;
-    
+
     /**
      * Store language extension
-     * @var type 
+     * @var THCFrame\Core\Lang 
      * @read
      */
     protected $_lang;

@@ -157,7 +157,7 @@ class UserController extends Controller
             $hash = PasswordManager::hashPassword(RequestMethods::post('password'), $salt);
 
             $actToken = Rand::randStr(50);
-            for ($i = 1; $i <= 75; $i+=$i) {
+            for ($i = 1; $i <= 75; $i+=1) {
                 if ($this->_checkEmailActToken($actToken)) {
                     break;
                 } else {

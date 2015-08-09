@@ -58,7 +58,7 @@ class NewsController extends Controller
     {
         $urlKey = $urlKeyCh = $this->_createUrlKey(RequestMethods::post('title'));
 
-        for ($i = 1; $i <= 50; $i+=$i) {
+        for ($i = 1; $i <= 50; $i+=1) {
             if ($this->_checkUrlKey($urlKeyCh)) {
                 break;
             } else {
@@ -708,9 +708,9 @@ class NewsController extends Controller
                     $label .= "<span class='infoLabel infoLabelRed'>Neaktivní</span>";
                 }
 
-                if ($_news->approved == 1) {
+                if ($_news->approved == \App\Model\NewsModel::STATE_APPROVED) {
                     $label .= "<span class='infoLabel infoLabelGreen'>Schváleno</span>";
-                } elseif ($_news->approved == 2) {
+                } elseif ($_news->approved == \App\Model\NewsModel::STATE_REJECTED) {
                     $label .= "<span class='infoLabel infoLabelRed'>Zamítnuto</span>";
                 } else {
                     $label .= "<span class='infoLabel infoLabelOrange'>Čeká na schválení</span>";

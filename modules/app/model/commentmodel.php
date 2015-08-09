@@ -183,6 +183,32 @@ class CommentModel extends Model
 
     /**
      * 
+     * @param type $actionId
+     * @param type $created
+     */
+    public static function fetchByTypeAndCreated($type, $resourceId, $created)
+    {
+        $types = array_values(self::$_resourceConv);
+        
+        if(!in_array($type, $types)){
+            return null;
+        }
+        
+        $query = self::getQuery(array('cm.*'))
+                ->join('tb_user', 'cm.userId = us.id', 'us', 
+                        array('us.firstname', 'us.lastname'))
+                ->where('cm.resourceId = ?', (int) $resourceId)
+                ->where('cm.created >= ?', (int) $created)
+                ->where('cm.type = ?', (int)$type)
+                ->order('cm.created', 'desc');
+
+        $comments = self::initialize($query);
+        
+        return $comments;
+    }
+    
+    /**
+     * 
      * @param type $id
      * @return type
      */

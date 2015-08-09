@@ -3,6 +3,7 @@
 namespace THCFrame\Logger\Driver;
 
 use THCFrame\Logger;
+use THCFrame\Registry\Registry;
 
 /**
  * File logger class
@@ -89,10 +90,20 @@ class File extends Logger\Driver
     public function log($message, $type = 'error', $flag = FILE_APPEND, $prependTime = true, $file = null)
     {
         if ($prependTime) {
-            $message = '[' . date('Y-m-d H:i:s', time()) . '] ' . $message;
+            $time = '[' . date('Y-m-d H:i:s', time()) . '] ';
+        }else{
+            $time = '';
         }
-
-        $message = $message . PHP_EOL;
+        
+        $user = Registry::get('security')->getUser();
+        
+        if($user === null){
+            $userName = '(annonymous) - ';
+        }else{
+            $userName = '('.$user->getWholeName().') - ';
+        }
+        
+        $message = $time.$userName.$message . PHP_EOL;
 
         if ($file !== null) {
             if (mb_strlen($file) > 50) {
