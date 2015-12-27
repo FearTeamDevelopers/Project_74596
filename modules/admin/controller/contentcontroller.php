@@ -57,7 +57,7 @@ class ContentController extends Controller
         $view->set('content', null);
 
         if (RequestMethods::post('submitAddContent')) {
-            if ($this->_checkCSRFToken() !== true &&
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true &&
                     $this->_checkMutliSubmissionProtectionToken() !== true) {
                 self::redirect('/admin/content/');
             }
@@ -120,7 +120,7 @@ class ContentController extends Controller
         $view->set('content', $content);
 
         if (RequestMethods::post('submitEditContent')) {
-            if ($this->_checkCSRFToken() !== true) {
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
                 self::redirect('/admin/content/');
             }
 

@@ -52,10 +52,19 @@ class Security extends Base implements SecurityInterface
 
     /**
      * Authenticated user object
+     * 
      * @readwrite
      * @var \THCFrame\Security\Model\BasicUserModel or null
      */
     protected $_user = null;
+
+    /**
+     * Session object
+     * 
+     * @read
+     * @var THCFrame\Session\Driver 
+     */
+    protected $_session;
 
     /**
      * 
@@ -73,26 +82,25 @@ class Security extends Base implements SecurityInterface
     protected function sessionFixationProtection()
     {
         $cookieBag = CookieBag::getInstance();
-        $session = Registry::get('session');
 
-        $sessionToken = $session->get('sessionFixationProtection', null);
+        $sessionToken = $this->_session->get('sessionFixationProtection', null);
         $cookieToken = $cookieBag->get('sessionFixationProtection', null);
-        
-        if($sessionToken === null && $cookieToken === null){
+
+        if ($sessionToken === null && $cookieToken === null) {
             $token = \THCFrame\Core\Rand::randStr(50);
-            $session->set('sessionFixationProtection', $token);
+            $this->_session->set('sessionFixationProtection', $token);
             $cookieBag->set('sessionFixationProtection', $token);
         }
-        
-        if($sessionToken !== $cookieToken){
+
+        if ($sessionToken !== $cookieToken) {
             throw new Exception\SessionFixationAttack('High posibility of session fixation attack');
-        }else{
+        } else {
             $token = \THCFrame\Core\Rand::randStr(50);
-            $session->set('sessionFixationProtection', $token);
+            $this->_session->set('sessionFixationProtection', $token);
             $cookieBag->set('sessionFixationProtection', $token);
         }
     }
-    
+
     /**
      * Method initialize security context. Check session for user token and
      * initialize authentication and authorization classes
@@ -101,16 +109,18 @@ class Security extends Base implements SecurityInterface
     {
         Event::fire('framework.security.initialize.before', array());
 
+        $this->_session = Registry::get('session');
+
         if (!empty($configuration->security)) {
-            $this->_csrf = new CSRF();
+            $this->_csrf = new CSRF($this->_session);
             $this->_passwordManager = new PasswordManager($configuration->security);
         } else {
             throw new \Exception('Error in configuration file');
         }
 
         $this->sessionFixationProtection();
-        
-        $user = Registry::get('session')->get('authUser');
+
+        $user = $this->_session->get('authUser');
 
         $authentication = new Authentication\Authentication();
         $this->_authentication = $authentication->initialize($configuration);
@@ -139,8 +149,7 @@ class Security extends Base implements SecurityInterface
         $user->password = null;
         $user->salt = null;
 
-        $session = Registry::get('session');
-        $session->set('authUser', $user)
+        $this->_session->set('authUser', $user)
                 ->set('lastActive', time());
 
         $this->_user = $user;
@@ -161,7 +170,7 @@ class Security extends Base implements SecurityInterface
      * 
      * @return THCFrame\Security\CSRF
      */
-    public function getCSRF()
+    public function getCsrf()
     {
         return $this->_csrf;
     }
@@ -182,14 +191,13 @@ class Security extends Base implements SecurityInterface
      */
     public function logout()
     {
-        $session = Registry::get('session');
-        $session->erase('authUser')
+        $this->_session->erase('authUser')
                 ->erase('lastActive')
                 ->erase('csrf');
-        
+
         BasicUserModel::deleteAuthenticationToken();
 
-        $this->_user = NULL;
+        $this->_user = null;
         @session_regenerate_id();
     }
 
@@ -263,7 +271,7 @@ class Security extends Base implements SecurityInterface
 
         return $plaintext_dec;
     }
-    
+
     /**
      * Function for user to log-in forcefully i.e without providing user-credentials
      * 
@@ -273,12 +281,12 @@ class Security extends Base implements SecurityInterface
      */
     public function forceLogin($userId)
     {
-        $user = \App\Model\UserModel::first(array('id = ?' => (int)$userId));
-        
-        if($user === null){
+        $user = \App\Model\UserModel::first(array('id = ?' => (int) $userId));
+
+        if ($user === null) {
             throw new Exception\UserNotExists('User not found');
         }
-        
+
         $this->setUser($user);
         return true;
     }
@@ -300,5 +308,5 @@ class Security extends Base implements SecurityInterface
             return null;
         }
     }
-    
+
 }

@@ -7,52 +7,12 @@ use THCFrame\Registry\Registry as Registry;
 use THCFrame\Controller\Controller as BaseController;
 use THCFrame\Core\StringMethods;
 use THCFrame\Request\RequestMethods;
-use THCFrame\Core\Lang;
 
 /**
  * Module specific controller class extending framework controller class.
  */
 class Controller extends BaseController
 {
-    /**
-     * Store security context object.
-     *
-     * @var THCFrame\Security\Security
-     * @read
-     */
-    protected $_security;
-
-    /**
-     * Store initialized cache object.
-     *
-     * @var THCFrame\Cache\Cache
-     * @read
-     */
-    protected $_cache;
-
-    /**
-     * Store configuration.
-     *
-     * @var THCFrame\Configuration\Configuration
-     * @read
-     */
-    protected $_config;
-    
-    /**
-     * Store server host name.
-     *
-     * @var string
-     * @read
-     */
-    protected $_serverHost;
-
-    /**
-     * Store language extension.
-     *
-     * @var THCFrame\Core\Lang
-     * @read
-     */
-    protected $_lang;
 
     /**
      * @param type $string
@@ -86,12 +46,6 @@ class Controller extends BaseController
     {
         parent::__construct($options);
 
-        $this->_security = Registry::get('security');
-        $this->_serverHost = RequestMethods::server('HTTP_HOST');
-        $this->_cache = Registry::get('cache');
-        $this->_config = Registry::get('configuration');
-        $this->_lang = Lang::getInstance();
-
         // schedule disconnect from database 
         Event::add('framework.controller.destruct.after', function ($name) {
             Registry::get('database')->disconnectAll();
@@ -103,12 +57,10 @@ class Controller extends BaseController
      */
     public function _secured()
     {
-        $session = Registry::get('session');
-
         //This line should be present only for DEV env
-        //$this->_security->forceLogin(1);
+        //$this->getSecurity()->forceLogin(1);
 
-        $user = $this->_security->getUser();
+        $user = $this->getSecurity()->getUser();
 
         if (!$user) {
             $this->_willRenderActionView = false;
@@ -117,13 +69,13 @@ class Controller extends BaseController
         }
 
         //5h inactivity till logout
-        if (time() - $session->get('lastActive') < 18000) {
-            $session->set('lastActive', time());
+        if (time() - $this->getSession()->get('lastActive') < 18000) {
+            $this->getSession()->set('lastActive', time());
         } else {
             $view = $this->getActionView();
 
             $view->infoMessage($this->lang('LOGIN_TIMEOUT'));
-            $this->_security->logout();
+            $this->getSecurity()->logout();
             self::redirect('/admin/login');
         }
     }
@@ -157,7 +109,7 @@ class Controller extends BaseController
      */
     public function _member()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_member') !== true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_member') !== true) {
             throw new \THCFrame\Security\Exception\Unauthorized($this->lang('ACCESS_DENIED'));
         }
     }
@@ -167,7 +119,7 @@ class Controller extends BaseController
      */
     protected function isMember()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_member') === true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_member') === true) {
             return true;
         } else {
             return false;
@@ -179,7 +131,7 @@ class Controller extends BaseController
      */
     public function _participant()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_participant') !== true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_participant') !== true) {
             throw new \THCFrame\Security\Exception\Unauthorized($this->lang('ACCESS_DENIED'));
         }
     }
@@ -189,7 +141,7 @@ class Controller extends BaseController
      */
     protected function isParticipant()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_participant') === true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_participant') === true) {
             return true;
         } else {
             return false;
@@ -201,7 +153,7 @@ class Controller extends BaseController
      */
     public function _admin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_admin') !== true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_admin') !== true) {
             throw new \THCFrame\Security\Exception\Unauthorized($this->lang('ACCESS_DENIED'));
         }
     }
@@ -211,7 +163,7 @@ class Controller extends BaseController
      */
     protected function isAdmin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_admin') === true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_admin') === true) {
             return true;
         } else {
             return false;
@@ -223,7 +175,7 @@ class Controller extends BaseController
      */
     public function _superadmin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') !== true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_superadmin') !== true) {
             throw new \THCFrame\Security\Exception\Unauthorized($this->lang('ACCESS_DENIED'));
         }
     }
@@ -233,7 +185,7 @@ class Controller extends BaseController
      */
     protected function isSuperAdmin()
     {
-        if ($this->_security->getUser() && $this->_security->isGranted('role_superadmin') === true) {
+        if ($this->getSecurity()->getUser() && $this->getSecurity()->isGranted('role_superadmin') === true) {
             return true;
         } else {
             return false;
@@ -249,25 +201,25 @@ class Controller extends BaseController
         $layoutView = $this->getLayoutView();
 
         if ($view) {
-            $view->set('authUser', $this->_security->getUser())
+            $view->set('authUser', $this->getSecurity()->getUser())
                     ->set('env', ENV)
                     ->set('isMember', $this->isMember())
                     ->set('isParticipant', $this->isParticipant())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
                     ->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                    ->set('token', $this->_security->getCSRF()->getToken());
+                    ->set('token', $this->getSecurity()->getCsrf()->getToken());
         }
 
         if ($layoutView) {
-            $layoutView->set('authUser', $this->_security->getUser())
+            $layoutView->set('authUser', $this->getSecurity()->getUser())
                     ->set('env', ENV)
                     ->set('isMember', $this->isMember())
                     ->set('isParticipant', $this->isParticipant())
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
                     ->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                    ->set('token', $this->_security->getCSRF()->getToken());
+                    ->set('token', $this->getSecurity()->getCsrf()->getToken());
         }
 
         parent::render();
@@ -278,7 +230,7 @@ class Controller extends BaseController
      */
     public function getUser()
     {
-        return $this->_security->getUser();
+        return $this->getSecurity()->getUser();
     }
 
     /**
@@ -291,4 +243,5 @@ class Controller extends BaseController
     {
         return $this->getLang()->_get($key, $args);
     }
+
 }

@@ -84,11 +84,6 @@ return array(
     'TITLE_NEWS_EDIT' => 'News - Edit',
     'TITLE_NEWS_COMMENTS' => 'News - Comments',
 
-    'TITLE_REPORT_INDEX' => 'Reports',
-    'TITLE_REPORT_ADD' => 'Reports - Add',
-    'TITLE_REPORT_EDIT' => 'Reports - Edit',
-    'TITLE_REPORT_COMMENTS' => 'Reports - Comments',
-
     'TITLE_USER_LOGIN' => 'Log In',
     'TITLE_USER_INDEX' => 'Users',
     'TITLE_USER_ADD' => 'User - Add',

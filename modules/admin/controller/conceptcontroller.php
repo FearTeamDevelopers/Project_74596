@@ -11,12 +11,17 @@ use THCFrame\Events\Events as Event;
  */
 class ConceptController extends Controller
 {
+
     /**
      * @before _secured, _participant
      */
     public function store()
     {
         $this->_disableView();
+
+        if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
+            $this->ajaxResponse($this->lang('ACCESS_DENIED'), 403, true);
+        }
 
         $conceptId = RequestMethods::post('conceptid', 0);
 
@@ -34,13 +39,13 @@ class ConceptController extends Controller
             if ($concept->validate()) {
                 $id = $concept->save();
 
-                Event::fire('admin.log', array('success', 'Concept id: '.$id));
-                echo $id;
+                Event::fire('admin.log', array('success', 'Concept id: ' . $id));
+                $this->ajaxResponse($this->lang('COMMON_SUCCESS'), false, 200, array('conceptid' => $id));
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: new concept'.
-                    ' Errors: '.json_encode($concept->getErrors()), ));
+                Event::fire('admin.log', array('fail', 'Concept id: new concept' .
+                    ' Errors: ' . json_encode($concept->getErrors()),));
 
-                echo 'fail';
+                $this->ajaxResponse($this->lang('COMMON_FAIL'), true);
             }
         } else {
             $concept = \Admin\Model\ConceptModel::first(array('id = ?' => (int) $conceptId));
@@ -55,13 +60,13 @@ class ConceptController extends Controller
             if ($concept->validate()) {
                 $concept->save();
 
-                Event::fire('admin.log', array('success', 'Concept id: '.$concept->getId()));
-                echo $concept->getId();
+                Event::fire('admin.log', array('success', 'Concept id: ' . $concept->getId()));
+                $this->ajaxResponse($this->lang('COMMON_SUCCESS'), false, 200, array('conceptid' => $concept->getId()));
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: '.$conceptId.
-                    ' Errors: '.json_encode($concept->getErrors()), ));
+                Event::fire('admin.log', array('fail', 'Concept id: ' . $conceptId .
+                    ' Errors: ' . json_encode($concept->getErrors()),));
 
-                echo 'fail';
+                $this->ajaxResponse($this->lang('COMMON_FAIL'), true);
             }
         }
     }
@@ -75,19 +80,24 @@ class ConceptController extends Controller
     {
         $this->_disableView();
 
+        if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
+            $this->ajaxResponse($this->lang('ACCESS_DENIED'), true, 403);
+        }
+
         $concept = \Admin\Model\ConceptModel::first(array('id = ?' => (int) $id, 'userId = ?' => $this->getUser()->getId()));
 
         if (null === $concept) {
-            echo $this->lang('NOT_FOUND');
+            $this->ajaxResponse($this->lang('NOT_FOUND'), true, 404);
         } else {
             if ($concept->delete()) {
-                Event::fire('admin.log', array('success', 'Concept id: '.$id));
-                echo 'success';
+                Event::fire('admin.log', array('success', 'Concept id: ' . $id));
+                $this->ajaxResponse($this->lang('COMMON_SUCCESS'));
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: '.$id,
-                    'Errors: '.json_encode($concept->getErrors()), ));
-                echo $this->lang('COMMON_FAIL');
+                Event::fire('admin.log', array('fail', 'Concept id: ' . $id,
+                    'Errors: ' . json_encode($concept->getErrors()),));
+                $this->ajaxResponse($this->lang('COMMON_FAIL'), true);
             }
         }
     }
+
 }

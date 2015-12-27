@@ -22,49 +22,27 @@ class CSRF
     /**
      * Session object
      * 
-     * @var THCFrame\Session\Session 
+     * @var THCFrame\Session\Driver 
      */
     private $_session;
 
     /**
-     * Writes token to session
+     * CSRF token
+     * 
+     * @var string
      */
-    private function _writeTokenToSession($token)
-    {
-        $this->_session->set(self::$_tokenname, $token);
-    }
+    private $_token;
 
     /**
      * 
      * @param string $tokenname
      */
-    public function __construct($tokenname = 'csrf')
+    public function __construct(\THCFrame\Session\Driver $sesion)
     {
-        self::$_tokenname = $tokenname;
+        $this->_session = $sesion;
 
-        $this->_session = Registry::get('session');
-        $this->setToken();
-    }
-
-    /**
-     * Refresh token stored in session
-     */
-    public function refreshToken()
-    {
-        $this->_session->erase(self::$_tokenname);
-
-        $this->setToken();
-    }
-
-    /**
-     * Verify if supplied token matches the stored token
-     *
-     * @param string $token
-     * @return boolean
-     */
-    public function isValidToken($token)
-    {
-        return ($token === $this->getToken());
+        $this->_token = Rand::randStr(32);
+        $this->setToken($this->_token);
     }
 
     /**
@@ -72,8 +50,7 @@ class CSRF
      */
     public function generateHiddenField()
     {
-        $token = $this->getToken();
-        echo '<input type="hidden" name="' . self::$_tokenname . '" value="' . $token . '" />';
+        return '<input type="hidden" name="' . self::$_tokenname . '" value="' . $this->getToken() . '" />';
     }
 
     /**
@@ -83,10 +60,12 @@ class CSRF
      */
     public function verifyRequest()
     {
-        $checkPost = RequestMethods::issetpost(self::$_tokenname) && $this->isValidToken(RequestMethods::post(self::$_tokenname));
-        $checkGet = RequestMethods::issetget(self::$_tokenname) && $this->isValidToken(RequestMethods::get(self::$_tokenname));
+        $checkPost = RequestMethods::issetpost(self::$_tokenname) && (RequestMethods::post(self::$_tokenname) === $this->getTokenFromSession());
+        $checkGet = RequestMethods::issetget(self::$_tokenname) && (RequestMethods::get(self::$_tokenname) === $this->getTokenFromSession());
 
-        $this->refreshToken();
+        $newToken = Rand::randStr(32);
+        $this->eraseToken()
+                ->setToken($newToken);
 
         if ($checkGet || $checkPost) {
             return true;
@@ -96,28 +75,50 @@ class CSRF
     }
 
     /**
-     * Reads token from session
+     * Return token value
      * 
      * @return string
      */
     public function getToken()
     {
-        if ($this->_session->get(self::$_tokenname) !== null) {
-            return $this->_session->get(self::$_tokenname);
-        } else {
-            return false;
-        }
+        return $this->_token;
     }
 
     /**
-     * Generates a new token value and saves it in session
+     * Return token value from session
+     * 
+     * @return string
      */
-    public function setToken()
+    public function getTokenFromSession()
     {
-        if ($this->getToken() === false) {
-            $token = Rand::randStr(32);
-            $this->_writeTokenToSession($token);
-        }
+        return $this->_session->get(self::$_tokenname);
+    }
+
+    /**
+     * Set token value and store it in session
+     * 
+     * @param string $token
+     * @return \THCFrame\Security\CSRF
+     */
+    public function setToken($token)
+    {
+        $this->_token = $token;
+        $this->_session->set(self::$_tokenname, $token);
+
+        return $this;
+    }
+
+    /**
+     * Set token value to null and delete it from session
+     * 
+     * @return \THCFrame\Security\CSRF
+     */
+    public function eraseToken()
+    {
+        $this->_token = null;
+        $this->_session->erase(self::$_tokenname);
+
+        return $this;
     }
 
     /**

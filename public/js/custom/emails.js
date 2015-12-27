@@ -7,13 +7,17 @@ jQuery(document).ready(function () {
         var template = jQuery('select[name=template] option:selected').val();
         var lang = jQuery('select[name=lang] option:selected').val();
         var url = jQuery(this).attr('href')+template+'/'+lang;
+        var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, function (message) {
-            if (message == 'notfound') {
+        jQuery.post(url, {csrf: csrf}, function (response) {
+            var data = $.parseJSON(response);
+            jQuery('#csrf').val(data.csrf);
+            
+            if (data.error == true) {
                 jQuery('#dialog p').text('Error while loading template');
                 jQuery('#dialog').dialog();
             } else {
-                var template = jQuery.parseJSON(message);
+                var template = jQuery.parseJSON(data.message);
 
                 CKEDITOR.instances['ckeditor'].setData(template.text);
                 jQuery('input[name=subject]').val(template.subject);

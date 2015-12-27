@@ -84,11 +84,6 @@ return array(
     'TITLE_NEWS_EDIT' => 'Novinky - Upravit',
     'TITLE_NEWS_COMMENTS' => 'Novinky - Komentáře',
 
-    'TITLE_REPORT_INDEX' => 'Reportáže',
-    'TITLE_REPORT_ADD' => 'Reportáže - Přidat',
-    'TITLE_REPORT_EDIT' => 'Reportáže - Upravit',
-    'TITLE_REPORT_COMMENTS' => 'Reportáže - Komentáře',
-
     'TITLE_USER_LOGIN' => 'Přihlásit se',
     'TITLE_USER_INDEX' => 'Uživatelé',
     'TITLE_USER_ADD' => 'Uživatelé - Přidat',

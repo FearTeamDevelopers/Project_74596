@@ -10,30 +10,37 @@ jQuery(document).ready(function () {
         var keywords = jQuery('input[name=keywords]').val();
         var metatitle = jQuery('input[name=metatitle]').val();
         var metadescription = jQuery('textarea[name=metadescription]').text();
-        
-        jQuery.post('/admin/concept/store/', {conceptid:cid, type:type,title:title,
-                shorttext:shorttext, text: text, keywords:keywords, 
-                metatitle:metatitle, metadescription:metadescription}, function (msg) {
-            if (msg == 'fail') {
+        var csrf = jQuery('#csrf').val();
+
+        jQuery.post('/admin/concept/store/', {conceptid: cid, type: type, title: title,
+            shorttext: shorttext, text: text, keywords: keywords,
+            metatitle: metatitle, metadescription: metadescription, csrf: csrf}, function (response) {
+            var data = $.parseJSON(response);
+            jQuery('#csrf').val(data.csrf);
+
+            if (data.error == true) {
                 jQuery('#dialog p').text('Error while saving concept');
                 jQuery('#dialog').dialog();
             } else {
-                jQuery('#conceptid').val(msg);
+                jQuery('#conceptid').val(data.conceptid);
             }
         });
 
     }, 300000);
-    
-    jQuery('a.ajaxLoadConcept').click(function(event){
+
+    jQuery('a.ajaxLoadConcept').click(function (event) {
         event.preventDefault();
         var url = jQuery(this).attr('href');
-        
-        jQuery.post(url, function (message) {
-            if (message == 'notfound') {
+
+        jQuery.post(url, function (response) {
+            var data = $.parseJSON(response);
+            jQuery('#csrf').val(data.csrf);
+
+            if (data.error == true) {
                 jQuery('#dialog p').text('Error while loading concept');
                 jQuery('#dialog').dialog();
             } else {
-                var concept = jQuery.parseJSON(message);
+                var concept = jQuery.parseJSON(data.message);
 
                 jQuery('#conceptid').val(concept.conceptid);
                 jQuery('input[name=title]').val(concept.title);

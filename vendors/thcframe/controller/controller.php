@@ -10,6 +10,7 @@ use THCFrame\Controller\Exception;
 use THCFrame\View\Exception as ViewException;
 use THCFrame\Request\RequestMethods;
 use THCFrame\Request\Response;
+use THCFrame\Core\Lang;
 
 /**
  * Parent controller class
@@ -89,10 +90,60 @@ class Controller extends Base
     protected $_deviceType;
 
     /**
+     * Response object
+     * 
      * @read
      * @var THCFrame\Request\Response
      */
     protected $_response;
+
+    /**
+     * Store security context object.
+     *
+     * @var THCFrame\Security\Security
+     * @read
+     */
+    protected $_security;
+
+    /**
+     * Store initialized cache object.
+     *
+     * @var THCFrame\Cache\Cache
+     * @read
+     */
+    protected $_cache;
+
+    /**
+     * Store configuration.
+     *
+     * @var THCFrame\Configuration\Configuration
+     * @read
+     */
+    protected $_config;
+
+    /**
+     * Store language extension.
+     *
+     * @var THCFrame\Core\Lang
+     * @read
+     */
+    protected $_lang;
+
+    /**
+     * Store server host name.
+     *
+     * @var string
+     * @read
+     */
+    protected $_serverHost;
+
+    /**
+     * Session object
+     * 
+     * @read
+     * @var THCFrame\Session\Driver 
+     */
+    protected $_session;
 
     /**
      * 
@@ -109,12 +160,11 @@ class Controller extends Base
      */
     protected function _mutliSubmissionProtectionToken()
     {
-        $session = Registry::get('session');
-        $token = $session->get('submissionprotection');
+        $token = $this->_session->get('submissionprotection');
 
         if ($token === null) {
             $token = md5(microtime());
-            $session->set('submissionprotection', $token);
+            $this->_session->set('submissionprotection', $token);
         }
 
         return $token;
@@ -126,10 +176,9 @@ class Controller extends Base
      */
     protected function _revalidateMutliSubmissionProtectionToken()
     {
-        $session = Registry::get('session');
-        $session->erase('submissionprotection');
+        $this->_session->erase('submissionprotection');
         $token = md5(microtime());
-        $session->set('submissionprotection', $token);
+        $this->_session->set('submissionprotection', $token);
 
         return $token;
     }
@@ -140,13 +189,12 @@ class Controller extends Base
      */
     protected function _checkMutliSubmissionProtectionToken()
     {
-        $session = Registry::get('session');
-        $sessionToken = $session->get('submissionprotection');
+        $this->_sessionToken = $this->_session->get('submissionprotection');
 
         $token = RequestMethods::post('submstoken');
 
-        if ($token == $sessionToken) {
-            $session->erase('submissionprotection');
+        if ($token == $this->_sessionToken) {
+            $this->_session->erase('submissionprotection');
             return true;
         } else {
             return false;
@@ -155,25 +203,24 @@ class Controller extends Base
 
     /**
      * 
+     * @param type $message
+     * @param type $status
+     * @param type $error
      */
-    protected function _checkCSRFToken()
+    protected function ajaxResponse($message, $error = false, $status = 200, array $additionalData = array())
     {
-        $security = Registry::get('security');
+        $data = array(
+            'message' => $message,
+            'error' => (bool) $error,
+            'csrf' => $this->getSecurity()->getCsrf()->getToken(),
+                ) + $additionalData;
 
-        if ($security->getCSRF()->verifyRequest()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+        $this->_response->setHttpVersionStatusHeader('HTTP/1.1 ' . (int) $status . ' ' . $this->_response->getStatusMessageByCode($status))
+                ->setHeader('Content-type', 'application/json')
+                ->setData($data);
 
-    /**
-     * 
-     */
-    protected function _refreshCSRFToken()
-    {
-        $security = Registry::get('security');
-        $security->getCSRF()->refreshToken();
+        $this->_response->sendHeaders();
+        $this->_response->send();
     }
 
     /**
@@ -211,6 +258,12 @@ class Controller extends Base
         $router = Registry::get('router');
 
         $this->_response = new Response();
+        $this->_session = Registry::get('session');
+        $this->_security = Registry::get('security');
+        $this->_serverHost = RequestMethods::server('HTTP_HOST');
+        $this->_cache = Registry::get('cache');
+        $this->_config = Registry::get('configuration');
+        $this->_lang = Lang::getInstance();
 
         if (!empty($configuration->view)) {
             $this->_defaultExtension = explode(',', $configuration->view->extension);
@@ -339,9 +392,8 @@ class Controller extends Base
     public function getDeviceType()
     {
         $detect = Registry::get('mobiledetect');
-        $session = Registry::get('session');
 
-        $deviceType = $session->get('deviceType');
+        $deviceType = $this->_session->get('deviceType');
 
         if ($deviceType === null) {
             if ($detect->isMobile() && !$detect->isTablet()) {
@@ -351,8 +403,8 @@ class Controller extends Base
             } else {
                 $deviceType = 'computer';
             }
-            
-            $session->set('deviceType', $deviceType);
+
+            $this->_session->set('deviceType', $deviceType);
         }
 
         return $deviceType;

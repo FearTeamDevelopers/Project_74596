@@ -144,12 +144,14 @@ jQuery(document).ready(function () {
                 buttons: {
                     "Smazat": function () {
                         jQuery("#loader, .loader").show();
-                        jQuery.post(url, {csrf: csrf}, function (msg) {
-                            if (msg == 'success') {
+                        jQuery.post(url, {csrf: csrf}, function (response) {
+                            var data = $.parseJSON(response);
+                            if (data.error == false) {
                                 jQuery("#loader, .loader").hide();
+                                jQuery('#csrf').val(data.csrf);
                                 parentTr.fadeOut();
                             } else {
-                                alert(msg);
+                                alert(data.message);
                             }
                         });
                         jQuery(this).dialog("close");
@@ -178,11 +180,13 @@ jQuery(document).ready(function () {
                 buttons: {
                     "Ano": function () {
                         jQuery("#loader, .loader").show();
-                        jQuery.post(url, {csrf: csrf}, function (msg) {
-                            if (msg == 'success') {
+                        jQuery.post(url, {csrf: csrf}, function (response) {
+                            var data = $.parseJSON(response);
+                            if (data.error == false) {
+                                jQuery('#csrf').val(data.csrf);
                                 location.reload();
                             } else {
-                                alert(msg);
+                                alert(data.message);
                             }
                         });
                     },
@@ -264,9 +268,11 @@ jQuery(document).ready(function () {
         var action = jQuery('.tableoptions select[name=action]').children('option:selected').val();
         var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, {csrf: csrf, action: action, ids: selected}, function (msg) {
-            jQuery('#dialog p').text(msg);
-            
+        jQuery.post(url, {csrf: csrf, action: action, ids: selected}, function (response) {
+            var data = $.parseJSON(response);
+            jQuery('#dialog p').text(data.message);
+            jQuery('#csrf').val(data.csrf);
+
             jQuery('#dialog').dialog({
                 title: 'Výsledek',
                 width: 450,
@@ -610,12 +616,14 @@ jQuery(document).ready(function () {
         var url = jQuery(this).attr('href');
         var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, {csrf: csrf}, function (msg) {
-            if (msg == 'success') {
+        jQuery.post(url, {csrf: csrf}, function (response) {
+            var data = $.parseJSON(response);
+            if (data.error == false) {
+                jQuery('#csrf').val(data.csrf);
                 jQuery('#currentLogo, #currentImage').hide(500);
                 jQuery('.uploadNewImage').removeClass('nodisplay');
             } else {
-                jQuery('#currentLogo').append("<label class='error'>" + msg + "</label>")
+                jQuery('#currentLogo, #currentImage').append("<label class='error'>" + data.message + "</label>")
             }
         });
 
@@ -639,12 +647,14 @@ jQuery(document).ready(function () {
             buttons: {
                 "Smazat": function () {
                     jQuery("#loader, .loader").show();
-                    jQuery.post(url, {csrf: csrf}, function (msg) {
-                        if (msg == 'success') {
+                    jQuery.post(url, {csrf: csrf}, function (response) {
+                        var data = $.parseJSON(response);
+                        if (data.error == false) {
+                            jQuery('#csrf').val(data.csrf);
                             jQuery("#loader, .loader").hide();
                             parent.hide('explode', 500);
                         } else {
-                            alert(msg);
+                            alert(data.message);
                         }
                     });
                     jQuery(this).dialog("close");
@@ -664,13 +674,16 @@ jQuery(document).ready(function () {
         var url = jQuery(this).attr('href');
         var csrf = jQuery('#csrf').val();
 
-        jQuery.post(url, {csrf: csrf}, function (msg) {
-            if (msg == 'active') {
+        jQuery.post(url, {csrf: csrf}, function (response) {
+            var data = $.parseJSON(response);
+            jQuery('#csrf').val(data.csrf);
+
+            if (data.status == 'active') {
                 parent.removeClass('photoinactive').addClass('photoactive');
-            } else if (msg == 'inactive') {
+            } else if (data.status == 'inactive') {
                 parent.removeClass('photoactive').addClass('photoinactive');
             } else {
-                alert(msg);
+                alert(data.message);
             }
         });
 
@@ -694,12 +707,15 @@ jQuery(document).ready(function () {
             buttons: {
                 "Smazat": function () {
                     jQuery("#loader, .loader").show();
-                    jQuery.post(url, {csrf: csrf}, function (msg) {
-                        if (msg == 'success') {
+                    jQuery.post(url, {csrf: csrf}, function (response) {
+                        var data = $.parseJSON(response);
+
+                        if (data.error == false) {
+                            jQuery('#csrf').val(data.csrf);
                             jQuery("#loader, .loader").hide();
                             parentTr.fadeOut();
                         } else {
-                            alert(msg);
+                            alert(data.message);
                         }
                     });
                     jQuery(this).dialog("close");
@@ -728,11 +744,13 @@ jQuery(document).ready(function () {
             buttons: {
                 "Ano": function () {
                     jQuery("#loader, .loader").show();
-                    jQuery.post(url, {csrf: csrf}, function (msg) {
-                        if (msg == 'success') {
+                    jQuery.post(url, {csrf: csrf}, function (response) {
+                        var data = $.parseJSON(response);
+                        if (data.error == false) {
+                            jQuery('#csrf').val(data.csrf);
                             location.reload();
                         } else {
-                            alert(msg);
+                            alert(data.message);
                         }
                     });
                 },
@@ -750,11 +768,13 @@ jQuery(document).ready(function () {
         var csrf = jQuery('#csrf').val();
 
         jQuery("#loader, .loader").show();
-        jQuery.post(url, {csrf: csrf}, function (msg) {
-            if (msg == 'active' || msg == 'inactive') {
+        jQuery.post(url, {csrf: csrf}, function (response) {
+            var data = $.parseJSON(response);
+            if (data.error == false) {
+                jQuery('#csrf').val(data.csrf);
                 location.reload();
             } else {
-                alert(msg);
+                alert(data.message);
             }
         });
 

@@ -122,7 +122,7 @@ class SystemController extends Controller
         $view->set('config', $config);
 
         if (RequestMethods::post('submitEditSet')) {
-            if ($this->_checkCSRFToken() !== true) {
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
                 self::redirect('/admin/');
             }
             $errors = array();
@@ -182,10 +182,8 @@ class SystemController extends Controller
 
         $host = RequestMethods::server('HTTP_HOST');
 
-        $pageContent = \App\Model\PageContentModel::all(array('active = ?' => true));
         $redirects = RedirectModel::all(array('module = ?' => 'app'));
         $news = \App\Model\NewsModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
-        $reports = \App\Model\ReportModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
         $actions = \App\Model\ActionModel::all(array('active = ?' => true, 'approved = ?' => 1), array('urlKey'));
 
         $redirectArr = array();

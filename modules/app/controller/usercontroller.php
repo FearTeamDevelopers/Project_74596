@@ -33,7 +33,10 @@ class UserController extends Controller
     public function login()
     {
         $this->_disableView();
-        $response = new \THCFrame\Request\Exception\Response();
+
+        if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
+            $this->ajaxResponse($this->lang('ACCESS_DENIED'), true, 403);
+        }
 
         $email = RequestMethods::post('email');
         $password = RequestMethods::post('password');
@@ -52,29 +55,15 @@ class UserController extends Controller
                     $error = $this->lang('PASS_EXPIRATION_TOMORROW');
                 }
             }
-            
+
             //attendance
-            
+
             
             //response
-            $response->setHttpVersionStatusHeader('HTTP/1.1 200 OK')
-                    ->setHeader('Content-type', 'application/json')
-                    ->setData(array(
-                        'loggedIn' => true, 
-                        'error' => $error,
-                        'csrf' => '',
-                    ));
-
-            $response->sendHeaders();
-            $response->send();
+            $this->ajaxResponse($this->lang('COMMON_SUCCESS'), false, 200, array('loggedIn' => true));
         } catch (\Exception $e) {
             Event::fire('app.log', array('fail', 'Login Exception: ' . $e->getMessage()));
-            $response->setHttpVersionStatusHeader('HTTP/1.1 401 Unauthorized')
-                    ->setHeader('Content-type', 'application/json')
-                    ->setData(array('loggedIn' => false, 'error' => $this->lang('LOGIN_COMMON_ERROR')));
-
-            $response->sendHeaders();
-            $response->send();
+            $this->ajaxResponse($this->lang('LOGIN_COMMON_ERROR'), true, 401, array('loggedIn' => false));
         }
     }
 
@@ -84,15 +73,14 @@ class UserController extends Controller
     public function logout()
     {
         $this->_disableView();
-        $response = new \THCFrame\Request\Exception\Response();
+
+        if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
+            $this->ajaxResponse($this->lang('ACCESS_DENIED'), true, 403);
+        }
+
         $this->getSecurity()->logout();
 
-        $response->setHttpVersionStatusHeader('HTTP/1.1 200 OK')
-                ->setHeader('Content-type', 'application/json')
-                ->setData(array('loggedOut' => true, 'error' => false));
-
-        $response->sendHeaders();
-        $response->send();
+        $this->ajaxResponse($this->lang('COMMON_SUCCESS'), false, 200, array('loggedOut' => true));
     }
 
     /**
@@ -126,7 +114,7 @@ class UserController extends Controller
                 ->set('myactions', $myActions);
 
         if (RequestMethods::post('editProfile')) {
-            if ($this->_checkCSRFToken() !== true) {
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
                 self::redirect('/muj-profil');
             }
 

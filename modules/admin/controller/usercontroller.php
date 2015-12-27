@@ -123,7 +123,7 @@ class UserController extends Controller
                 ->set('roles', \App\Model\UserModel::getAllRoles());
 
         if (RequestMethods::post('submitAddUser')) {
-            if ($this->_checkCSRFToken() !== true &&
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true &&
                     $this->_checkMutliSubmissionProtectionToken() !== true) {
                 self::redirect('/admin/user/');
             }
@@ -221,7 +221,7 @@ class UserController extends Controller
                 ->set('roles', \App\Model\UserModel::getAllRoles());
 
         if (RequestMethods::post('submitUpdateProfile')) {
-            if ($this->_checkCSRFToken() !== true) {
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
                 self::redirect('/admin/user/');
             }
             $errors = array();
@@ -303,7 +303,7 @@ class UserController extends Controller
                 ->set('roles', \App\Model\UserModel::getAllRoles());
 
         if (RequestMethods::post('submitEditUser')) {
-            if ($this->_checkCSRFToken() !== true) {
+            if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
                 self::redirect('/admin/user/');
             }
 
@@ -381,10 +381,14 @@ class UserController extends Controller
     {
         $this->_disableView();
 
+        if ($this->getSecurity()->getCsrf()->verifyRequest() !== true) {
+            $this->ajaxResponse($this->lang('ACCESS_DENIED'), true, 403);
+        }
+        
         $user = \App\Model\UserModel::first(array('id = ?' => (int) $id));
 
         if (null === $user) {
-            echo $this->lang('NOT_FOUND');
+            $this->ajaxResponse($this->lang('NOT_FOUND'), true, 404);
         } else {
             $user->deleted = true;
             $user->active = false;
@@ -392,10 +396,10 @@ class UserController extends Controller
             if ($user->validate()) {
                 $user->save();
                 Event::fire('admin.log', array('success', 'User id: ' . $id));
-                echo 'success';
+                $this->ajaxResponse($this->lang('COMMON_SUCCESS'));
             } else {
                 Event::fire('admin.log', array('fail', 'User id: ' . $id));
-                echo $this->lang('COMMON_FAIL');
+                $this->ajaxResponse($this->lang('COMMON_FAIL'), true);
             }
         }
     }
@@ -421,7 +425,7 @@ class UserController extends Controller
     {
         $this->_disableView();
         $view = $this->getActionView();
-
+        
         $user = \App\Model\UserModel::first(array('id = ?' => (int) $id));
 
         if (null === $user) {
@@ -475,7 +479,7 @@ class UserController extends Controller
     {
         $this->_disableView();
         $view = $this->getActionView();
-
+        
         $user = \App\Model\UserModel::first(array('id = ?' => (int) $id));
 
         if (null === $user) {
@@ -518,6 +522,7 @@ class UserController extends Controller
     public function forceUserDelete($email)
     {
         $this->_disableView();
+        
         if (strtolower(ENV) == 'live') {
             self::redirect('/admin/');
         }

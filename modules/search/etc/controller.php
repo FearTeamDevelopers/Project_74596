@@ -255,7 +255,7 @@ class Controller extends BaseController
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
                     ->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                    ->set('token', $this->_security->getCSRF()->getToken());
+                    ->set('token', $this->_security->getCsrf()->getToken());
         }
 
         if ($layoutView) {
@@ -264,7 +264,7 @@ class Controller extends BaseController
                     ->set('isAdmin', $this->isAdmin())
                     ->set('isSuperAdmin', $this->isSuperAdmin())
                     ->set('submstoken', $this->_mutliSubmissionProtectionToken())
-                    ->set('token', $this->_security->getCSRF()->getToken());
+                    ->set('token', $this->_security->getCsrf()->getToken());
         }
 
         parent::render();
