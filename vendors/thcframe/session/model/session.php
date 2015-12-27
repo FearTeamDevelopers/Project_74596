@@ -33,7 +33,6 @@ class Session extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 256
      * 
      * @validate alphanumeric
      * @label data

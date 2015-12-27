@@ -116,6 +116,42 @@ jQuery(document).ready(function () {
         return false;
     });
 
+    jQuery('#text-link-to-report, #texten-link-to-report').click(function (event) {
+        event.preventDefault();
+        var type = jQuery(this).attr('id');
+
+        jQuery('#insert-dialog p').html('Nahrávám ...');
+        jQuery('#insert-dialog p').load('/admin/report/inserttocontent/');
+
+        jQuery('#insert-dialog').dialog({
+            title: 'Vložit odkaz',
+            width: 600,
+            modal: true,
+            buttons: {
+                'Insert': function () {
+                    var src = jQuery('#content').val();
+                    var target = jQuery('#link-target').val();
+                    var name = jQuery('#link-name').val();
+                    var tag = "<a href=\"http://www.hastrman.cz/reportaze/r/" + src + "\" target=" + target + ">" + name + "</a>";
+
+                    if (type.substr(0, 6) == 'texten') {
+                        CKEDITOR.instances['ckeditor2'].insertText(tag);
+                    } else {
+                        CKEDITOR.instances['ckeditor'].insertText(tag);
+                    }
+
+                    jQuery('#insert-dialog p').html('');
+                    jQuery(this).dialog('close');
+                },
+                Close: function () {
+                    jQuery('#insert-dialog p').html('');
+                    jQuery(this).dialog('close');
+                }
+            }
+        });
+        return false;
+    });
+
     jQuery('#text-link-to-news, #texten-link-to-news').click(function (event) {
         event.preventDefault();
         var type = jQuery(this).attr('id');
@@ -188,19 +224,31 @@ jQuery(document).ready(function () {
         return false;
     });
     
-    jQuery('select[name=type]').change(function(){
+    jQuery('select[name=type]').change(function () {
         var type = jQuery(this).children('option:selected').val();
-        
-        if(type == 1){
-            if(jQuery('#singleRecipient').hasClass('nodisplay')){
+
+        if (type == 1) {
+            if (jQuery('#singleRecipient').hasClass('nodisplay')) {
                 jQuery('#singleRecipient').removeClass('nodisplay');
                 jQuery('#groupRecipient').addClass('nodisplay');
+                jQuery('#actionRecipient').addClass('nodisplay');
             }
-        }else{
-            if(jQuery('#groupRecipient').hasClass('nodisplay')){
+        } else if (type == 2) {
+            if (jQuery('#groupRecipient').hasClass('nodisplay')) {
                 jQuery('#groupRecipient').removeClass('nodisplay');
                 jQuery('#singleRecipient').addClass('nodisplay');
+                jQuery('#actionRecipient').addClass('nodisplay');
             }
+        } else if (type == 3) {
+            if (jQuery('#actionRecipient').hasClass('nodisplay')) {
+                jQuery('#actionRecipient').removeClass('nodisplay');
+                jQuery('#singleRecipient').addClass('nodisplay');
+                jQuery('#groupRecipient').addClass('nodisplay');
+            }
+        } else {
+            jQuery('#singleRecipient').addClass('nodisplay');
+            jQuery('#groupRecipient').addClass('nodisplay');
+            jQuery('#actionRecipient').addClass('nodisplay');
         }
     });
 });

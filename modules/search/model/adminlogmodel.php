@@ -5,23 +5,23 @@ namespace Search\Model;
 use THCFrame\Model\Model;
 
 /**
- * Log ORM class
+ * Log ORM class.
  */
 class AdminLogModel extends Model
 {
-
     /**
      * @column
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 80
      * 
      * @validate alphanumeric, max(80)
@@ -31,7 +31,7 @@ class AdminLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
@@ -41,7 +41,7 @@ class AdminLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
@@ -51,17 +51,17 @@ class AdminLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
      */
     protected $_action;
-    
+
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 15
      * 
      * @validate alpha, max(15)
@@ -71,18 +71,18 @@ class AdminLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 250
      * 
      * @validate alphanumeric, max(250)
      */
     protected $_httpreferer;
-    
+
     /**
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate alphanumeric
      */
@@ -91,20 +91,24 @@ class AdminLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_modified;
 
@@ -121,5 +125,4 @@ class AdminLogModel extends Model
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }
-
 }

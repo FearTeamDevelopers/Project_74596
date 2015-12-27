@@ -112,19 +112,19 @@
                                     {if $day[2] == $i}
                                         {if $parts[0] == \App\Model\ActionModel::TYPE_TRAINING}
                                             {if $att["type"] == 1}
-                                            <td class="bg-green"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
+                                            <td class="bg-green"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">T</a></td>
                                             {/if}{elseif $att["type"] == 2}
-                                                <td class="bg-red" title="{echo $att["comment"]}"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
+                                                <td class="bg-red" title="{echo $att['comment']}"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">T</a></td>
                                             {/elseif}{else}
-                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">T</a></td>
+                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">T</a></td>
                                             {/else}
                                         {/if}{elseif $parts[0] == \App\Model\ActionModel::TYPE_MATCH}
                                             {if $att["type"] == 1}
-                                                <td class="bg-green"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
+                                                <td class="bg-green"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">Z</a></td>
                                             {/if}{elseif $att["type"] == 2}
-                                                <td class="bg-red" title="{echo $att["comment"]}><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
+                                                <td class="bg-red" title="{echo $att['comment']}"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">Z</a></td>
                                             {/elseif}{else}
-                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att->actionId}" target="_blank">Z</a></td>
+                                                <td class="bg-orange"><a href="/admin/action/edit/{echo $att['actionId']}" target="_blank">Z</a></td>
                                             {/else}
                                         {/elseif}
                                         {script break;}

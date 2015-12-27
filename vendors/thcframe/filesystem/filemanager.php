@@ -8,6 +8,7 @@ use THCFrame\Registry\Registry;
 use THCFrame\Filesystem\Image;
 use THCFrame\Filesystem\File;
 use THCFrame\Core\StringMethods;
+use THCFrame\Core\Lang;
 
 /**
  * FileManager class
@@ -19,6 +20,11 @@ class FileManager extends Base
     const FILE_CHMOD = 0644;
     const MAX_FILE_UPLOAD_SIZE = 15000000;
 
+    /**
+     * @read
+     */
+    protected $_lang;
+    
     /**
      * @read
      */
@@ -89,6 +95,7 @@ class FileManager extends Base
     {
         parent::__construct($options);
 
+        $this->_lang = Lang::getInstance();
         $configuration = Registry::get('configuration');
 
         if (!empty($configuration->files)) {
@@ -96,7 +103,7 @@ class FileManager extends Base
             $this->_pathToImages = trim($configuration->files->pathToImages, '/');
             $this->_pathToThumbs = trim($configuration->files->pathToThumbs, '/');
 
-            $this->checkDirectories();
+            $this->_checkDirectories();
         } else {
             throw new \Exception('Error in configuration file');
         }
@@ -106,7 +113,7 @@ class FileManager extends Base
      * Check for default directory structure. 
      * Creates it if needed
      */
-    private function checkDirectories()
+    private function _checkDirectories()
     {
         if (!is_dir(APP_PATH . '/' . $this->_pathToDocs)) {
             mkdir(APP_PATH . '/' . $this->_pathToDocs, self::DIR_CHMOD, true);
@@ -126,7 +133,7 @@ class FileManager extends Base
      * @param mixed $files
      * @return \ArrayObject
      */
-    private function toIterator($files)
+    private function _toIterator($files)
     {
         if (!$files instanceof \Traversable) {
             $files = new \ArrayObject(is_array($files) ? $files : array($files));
@@ -140,7 +147,7 @@ class FileManager extends Base
      * 
      * @param string $file
      */
-    private function backup($file)
+    private function _backup($file)
     {
         $ext = $this->getExtension($file);
         $filename = $this->getFileName($file);
@@ -201,7 +208,7 @@ class FileManager extends Base
      */
     public function remove($files)
     {
-        $files = iterator_to_array($this->toIterator($files));
+        $files = iterator_to_array($this->_toIterator($files));
         $files = array_reverse($files);
         
         foreach ($files as $file) {
@@ -267,7 +274,7 @@ class FileManager extends Base
             $mode = self::DIR_CHMOD;
         }
         
-        foreach ($this->toIterator($dirs) as $dir) {
+        foreach ($this->_toIterator($dirs) as $dir) {
             if (is_dir($dir)) {
                 continue;
             }
@@ -291,7 +298,7 @@ class FileManager extends Base
      */
     public function chmod($files, $mode, $umask = 0000, $recursive = false)
     {
-        foreach ($this->toIterator($files) as $file) {
+        foreach ($this->_toIterator($files) as $file) {
             if ($recursive && is_dir($file) && !is_link($file)) {
                 $this->chmod(new \FilesystemIterator($file), $mode, $umask, true);
             }
@@ -469,29 +476,29 @@ class FileManager extends Base
                     //check for upload errors
                     switch ($error) {
                         case UPLOAD_ERR_INI_SIZE:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the upload_max_filesize directive in php.ini', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_INI_SIZE', array($name));
                             break;
                         case UPLOAD_ERR_FORM_SIZE:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($name));
                             break;
                         case UPLOAD_ERR_PARTIAL:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s was only partially uploaded', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_PARTIAL', array($name));
                             break;
                         case UPLOAD_ERR_NO_FILE:
-                            $this->_uploadErrors[] = "No file was uploaded";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_FILE');
                             break;
                         case UPLOAD_ERR_NO_TMP_DIR:
-                            $this->_uploadErrors[] = "Missing a temporary folder";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_TMP_DIR');
                             break;
                         case UPLOAD_ERR_CANT_WRITE:
-                            $this->_uploadErrors[] = sprintf('Failed to write file %s to disk', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_CANT_WRITE', array($name));
                             break;
                         case UPLOAD_ERR_EXTENSION:
-                            $this->_uploadErrors[] = "File upload stopped by extension";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXTENSION');
                             break;
 
                         default:
-                            $this->_uploadErrors[] = sprintf('Unknown upload error occured while uploading file %s', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($name));
                             break;
                     }
                     continue;
@@ -507,7 +514,7 @@ class FileManager extends Base
                     }
 
                     if ($size > self::MAX_FILE_UPLOAD_SIZE) {
-                        $this->_uploadErrors[] = sprintf('Your file %s size exceeds the maximum size limit', $filename);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($filename));
                         continue;
                     } else {
                         if (in_array($extension, $this->_fileExtensions)) {
@@ -515,13 +522,13 @@ class FileManager extends Base
                             $fileLocName = $pathToDocs . $namePrefix . $fileNameExt;
 
                             if (file_exists($fileLocName)) {
-                                $this->backup($fileLocName);
+                                $this->_backup($fileLocName);
                             }
 
                             $copy = move_uploaded_file($_FILES[$postField]['tmp_name'][$i], $fileLocName);
 
                             if (!$copy) {
-                                $this->_uploadErrors[] = sprintf('Error while uploading image %s. Try again.', $filename);
+                                $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($filename));
                                 continue;
                             } else {
                                 $file = new File($fileLocName);
@@ -531,12 +538,13 @@ class FileManager extends Base
                                 continue;
                             }
                         } else {
-                            $this->_uploadErrors[] = sprintf('File has unsupported extension. Files: %s', join(', ', $this->_fileExtensions));
+                            $extStr = implode(',', $this->_fileExtensions);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXT', array($extStr));
                             continue;
                         }
                     }
                 } else {
-                    $this->_uploadErrors[] = sprintf("Source %s cannot be empty", $i);
+                    $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EMPTY_SOURCE', array($i));
                     continue;
                 }
             }
@@ -547,29 +555,29 @@ class FileManager extends Base
 
                 switch ($error) {
                     case UPLOAD_ERR_INI_SIZE:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the upload_max_filesize directive in php.ini', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_INI_SIZE', array($name));
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($name));
                         break;
                     case UPLOAD_ERR_PARTIAL:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s was only partially uploaded', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_PARTIAL', array($name));
                         break;
                     case UPLOAD_ERR_NO_FILE:
-                        $this->_uploadErrors[] = "No file was uploaded";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_FILE');
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
-                        $this->_uploadErrors[] = "Missing a temporary folder";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_TMP_DIR');
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
-                        $this->_uploadErrors[] = sprintf('Failed to write file %s to disk', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_CANT_WRITE', array($name));
                         break;
                     case UPLOAD_ERR_EXTENSION:
-                        $this->_uploadErrors[] = "File upload stopped by extension";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXTENSION');
                         break;
 
                     default:
-                        $this->_uploadErrors[] = sprintf('Unknown upload error occured while uploading file %s', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($name));
                         break;
                 }
             }
@@ -580,20 +588,20 @@ class FileManager extends Base
                 $filename = $this->getNormalizedFileName($_FILES[$postField]['name']);
 
                 if ($size > self::MAX_FILE_UPLOAD_SIZE) {
-                    $this->_uploadErrors[] = sprintf('Your file %s size exceeds the maximum size limit', $filename);
+                    $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($filename));
                 } else {
                     if (in_array($extension, $this->_fileExtensions)) {
                         $fileNameExt = $filename . '.' . $extension;
                         $fileLocName = $pathToDocs . $namePrefix . $fileNameExt;
 
                         if (file_exists($fileLocName)) {
-                            $this->backup($fileLocName);
+                            $this->_backup($fileLocName);
                         }
 
                         $copy = move_uploaded_file($_FILES[$postField]['tmp_name'], $fileLocName);
 
                         if (!$copy) {
-                            $this->_uploadErrors[] = sprintf('Error while uploading image %s. Try again.', $filename);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($filename));
                         } else {
                             $file = new File($fileLocName);
 
@@ -601,7 +609,8 @@ class FileManager extends Base
                             unset($file);
                         }
                     } else {
-                        $this->_uploadErrors[] = sprintf('File has unsupported extension. Files: %s', join(', ', $this->_fileExtensions));
+                        $extStr = implode(',', $this->_fileExtensions);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXT', array($extStr));
                     }
                 }
             }
@@ -643,29 +652,29 @@ class FileManager extends Base
                     //check for upload errors
                     switch ($error) {
                         case UPLOAD_ERR_INI_SIZE:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the upload_max_filesize directive in php.ini', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_INI_SIZE', array($name));
                             break;
                         case UPLOAD_ERR_FORM_SIZE:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($name));
                             break;
                         case UPLOAD_ERR_PARTIAL:
-                            $this->_uploadErrors[] = sprintf('The uploaded file %s was only partially uploaded', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_PARTIAL', array($name));
                             break;
                         case UPLOAD_ERR_NO_FILE:
-                            $this->_uploadErrors[] = "No file was uploaded";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_FILE');
                             break;
                         case UPLOAD_ERR_NO_TMP_DIR:
-                            $this->_uploadErrors[] = "Missing a temporary folder";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_TMP_DIR');
                             break;
                         case UPLOAD_ERR_CANT_WRITE:
-                            $this->_uploadErrors[] = sprintf('Failed to write file %s to disk', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_CANT_WRITE', array($name));
                             break;
                         case UPLOAD_ERR_EXTENSION:
-                            $this->_uploadErrors[] = "File upload stopped by extension";
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXTENSION');
                             break;
 
                         default:
-                            $this->_uploadErrors[] = sprintf('Unknown upload error occured while uploading file %s', $name);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($name));
                             break;
                     }
                     continue;
@@ -681,7 +690,7 @@ class FileManager extends Base
                     }
 
                     if ($size > self::MAX_FILE_UPLOAD_SIZE) {
-                        $this->_uploadErrors[] = sprintf('Your file %s size exceeds the maximum size limit', $filename);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($filename));
                         continue;
                     } else {
                         if (in_array($extension, $this->_imageExtensions)) {
@@ -691,17 +700,17 @@ class FileManager extends Base
                             $thumbLocName = $pathToThumbs . $namePrefix . $thumbName;
 
                             if (file_exists($imageLocName)) {
-                                $this->backup($imageLocName);
+                                $this->_backup($imageLocName);
                             }
 
                             if (file_exists($thumbLocName)) {
-                                $this->backup($thumbLocName);
+                                $this->_backup($thumbLocName);
                             }
 
                             $copy = move_uploaded_file($_FILES[$postField]['tmp_name'][$i], $imageLocName);
 
                             if (!$copy) {
-                                $this->_uploadErrors[] = sprintf('Error while uploading image %s. Try again.', $filename);
+                                $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($filename));
                                 continue;
                             } else {
                                 $img = new Image($imageLocName);
@@ -738,12 +747,13 @@ class FileManager extends Base
                                 }
                             }
                         } else {
-                            $this->_uploadErrors[] = sprintf('File has unsupported extension. Images: %s', join(', ', $this->_imageExtensions));
+                            $extStr = implode(', ', $this->_imageExtensions);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXT', array($extStr));
                             continue;
                         }
                     }
                 } else {
-                    $this->_uploadErrors[] = sprintf("Source %s cannot be empty", $i);
+                    $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EMPTY_SOURCE', array($i));
                     continue;
                 }
             }
@@ -754,29 +764,29 @@ class FileManager extends Base
 
                 switch ($error) {
                     case UPLOAD_ERR_INI_SIZE:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the upload_max_filesize directive in php.ini', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_INI_SIZE', array($name));
                         break;
                     case UPLOAD_ERR_FORM_SIZE:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s exceeds the MAX_FILE_SIZE directive that was specified in the HTML form', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($name));
                         break;
                     case UPLOAD_ERR_PARTIAL:
-                        $this->_uploadErrors[] = sprintf('The uploaded file %s was only partially uploaded', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_PARTIAL', array($name));
                         break;
                     case UPLOAD_ERR_NO_FILE:
-                        $this->_uploadErrors[] = "No file was uploaded";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_FILE');
                         break;
                     case UPLOAD_ERR_NO_TMP_DIR:
-                        $this->_uploadErrors[] = "Missing a temporary folder";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_NO_TMP_DIR');
                         break;
                     case UPLOAD_ERR_CANT_WRITE:
-                        $this->_uploadErrors[] = sprintf('Failed to write file %s to disk', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_CANT_WRITE', array($name));
                         break;
                     case UPLOAD_ERR_EXTENSION:
-                        $this->_uploadErrors[] = "File upload stopped by extension";
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXTENSION');
                         break;
 
                     default:
-                        $this->_uploadErrors[] = sprintf('Unknown upload error occured while uploading file %s', $name);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($name));
                         break;
                 }
             }
@@ -787,7 +797,7 @@ class FileManager extends Base
                 $filename = $this->getNormalizedFileName($_FILES[$postField]['name']);
 
                 if ($size > self::MAX_FILE_UPLOAD_SIZE) {
-                    $this->_uploadErrors[] = sprintf('Your file %s size exceeds the maximum size limit', $filename);
+                    $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_FORM_SIZE', array($filename));
                 } else {
                     if (in_array($extension, $this->_imageExtensions)) {
                         $imageName = $filename . '.' . $extension;
@@ -796,17 +806,17 @@ class FileManager extends Base
                         $thumbLocName = $pathToThumbs . $namePrefix . $thumbName;
 
                         if (file_exists($imageLocName)) {
-                            $this->backup($imageLocName);
+                            $this->_backup($imageLocName);
                         }
 
                         if (file_exists($thumbLocName)) {
-                            $this->backup($thumbLocName);
+                            $this->_backup($thumbLocName);
                         }
 
                         $copy = move_uploaded_file($_FILES[$postField]['tmp_name'], $imageLocName);
 
                         if (!$copy) {
-                            $this->_uploadErrors[] = sprintf('Error while uploading image %s. Try again.', $filename);
+                            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_DEFAULT', array($filename));
                         } else {
                             $img = new Image($imageLocName);
                             $img->setSize($size);
@@ -840,7 +850,8 @@ class FileManager extends Base
                             }
                         }
                     } else {
-                        $this->_uploadErrors[] = sprintf('File has unsupported extension. Images: %s', join(', ', $this->_imageExtensions));
+                        $extStr = implode(', ', $this->_imageExtensions);
+                        $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXT', array($extStr));
                     }
                 }
             }
@@ -884,11 +895,11 @@ class FileManager extends Base
             $thumbLocName = $pathToThumbs . $namePrefix . $thumbName;
 
             if (file_exists($imageLocName)) {
-                $this->backup($imageLocName);
+                $this->_backup($imageLocName);
             }
 
             if (file_exists($thumbLocName)) {
-                $this->backup($thumbLocName);
+                $this->_backup($thumbLocName);
             }
 
             if ($img->getWidth() > $this->getMaxImageWidth() || $img->getHeight() > $this->getMaxImageHeight()) {
@@ -918,7 +929,8 @@ class FileManager extends Base
                 $this->_uploadedFiles[] = $img;
             }
         } else {
-            $this->_uploadErrors[] = sprintf('File has unsupported extension. Images: %s', join(', ', $this->_imageExtensions));
+            $extStr = implode(', ', $this->_imageExtensions);
+            $this->_uploadErrors[] = $this->getLang()->_get('UPLOAD_ERR_EXT', array($extStr));
         }
 
         return $this;

@@ -1,6 +1,5 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/action/">Akce</a></li>
-    <li><a href="/admin/action/showattendance/">Docházka</a></li>
     <li class="current"><a href="#">Přidat Akci</a></li>
     <li><a href="/admin/action/help/">Nápověda</a></li>
 </ul><!--maintabmenu-->
@@ -17,7 +16,7 @@
             </colgroup>
             <thead>
                 <tr>
-                    <td class="head0">Vytvořen</td>
+                    <td class="head0">Vytvořeno</td>
                     <td class="head1">Poslední změna</td>
                     <td class="head0">&nbsp;</td>
                 </tr>
@@ -67,14 +66,7 @@
                     <label class="error">{echo join("<br/>", $errors["shortBody"])}</label>
                     {/if}
                     <br/>
-                    <button id="clear-teaser">Smazat</button>
-                    <button id="teaser-new-paragraph">Nový odstavec</button>
-                    <button id="teaser-readmore-link">Přidat odkaz na celý článek</button>
-                    <button id="teaser-to-text">Zkopírovat do Text</button>
-                    <button id="teaser-link-to-gallery">Odkaz na galerii</button>
-                    <button id="teaser-link-to-action">Odkaz na akci</button>
-                    <button id="teaser-link-to-news">Odkaz na novinku</button>
-                    <button id="teaser-link-to-content">Odkaz na stránku</button>
+                    {include components/teaserButtons.phtml}
                 </span>
             </p>
             <p>
@@ -85,19 +77,13 @@
                     <label class="error">{echo join("<br/>", $errors["body"])}</label>
                     {/if}
                     <br/>
-                    <button id="clear-text">Smazat</button>
-                    <button id="text-new-paragraph">Nový odstavec</button>
-                    <button id="text-to-teaser">Zkopírovat do Teaser</button>
-                    <button id="text-link-to-gallery">Odkaz na galerii</button>
-                    <button id="text-link-to-action">Odkaz na akci</button>
-                    <button id="text-link-to-news">Odkaz na novinku</button>
-                    <button id="text-link-to-content">Odkaz na stránku</button>
+                    {include components/textButtons.phtml}
                 </span>
             </p>
             <p>
-                <label>Datum - začátek</label>
+                <label>Datum - začátek*</label>
                 <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'datestart', array($action,'startDate'), array('class'=>'width20 datepicker2'))}
+                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'datestart', array($action,'startDate'), array('class'=>'width20 datepicker2','required'=>true))}
                     Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timestart', array($action,'startTime'), array('class'=>'width20'))}
 
                     {if isset($errors["startDate"])}
@@ -109,9 +95,9 @@
                 </span>
             </p>
             <p>
-                <label>Datum - konec</label>
+                <label>Datum - konec*</label>
                 <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'dateend', array($action,'endDate'), array('class'=>'width20 datepicker3'))}
+                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'dateend', array($action,'endDate'), array('class'=>'width20 datepicker3','required'=>true))}
                     Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timeend', array($action,'endTime'), array('class'=>'width20'))}
 
                     {if isset($errors["endDate"])}
@@ -122,22 +108,7 @@
                     {/if}
                 </span>
             </p>
-            <p>
-                <label>Typ</label>
-                <span class="field">
-                    <select name="type" class="width80">
-                        {foreach $type in \App\Model\ActionModel::getTypes()}
-                        <option value="{echo $type_i}">{echo $type}</option>
-                        {/foreach}
-                    </select>
-                    {if isset($errors["type"])}
-                    <label class="error">
-                        {echo join("<br/>", $errors["type"])}
-                    </label>
-                    {/if}
-                </span>
-            </p>
-
+            
             <br/>
             <div class="contenttitle radiusbottom0">
                 <h2 class="table"><span>Metadata</span></h2>

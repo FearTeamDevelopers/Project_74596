@@ -130,7 +130,10 @@ final class Dispatcher extends Base
             throw new Exception\Action('Method Name not specified');
         }
 
-        $status = $this->loadConfigFromDb($module.'status');
+        $status = null;
+        if(in_array(ucfirst($module), \THCFrame\Core\Core::getModuleNames())){
+            $status = Registry::get('configuration')->{$module.'status'};
+        }
 
         if ($status !== null && $status != 1) {
             throw new Exception\Offline('Application is offline');
@@ -151,7 +154,7 @@ final class Dispatcher extends Base
         }
 
         $file_name = strtolower("./modules/{$module}/controller/{$class}controller.php");
-        $class = "\\".ucfirst($module)."\Controller\\".ucfirst($class).'Controller';
+        $class = "\\".ucfirst($module)."\\Controller\\".ucfirst($class).'Controller';
 
         if (FALSE === file_exists($file_name)) {
             throw new Exception\Controller(sprintf('Class file %s not found', $file_name));

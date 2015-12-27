@@ -26,13 +26,14 @@ class ConfigModel extends Model
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 200
      * 
      * @validate required, alphanumeric, max(200)
@@ -43,7 +44,7 @@ class ConfigModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 200
      * 
      * @validate required, alphanumeric, max(200)
@@ -55,7 +56,7 @@ class ConfigModel extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate required, alphanumeric, max(2048)
      * @label value
@@ -65,20 +66,22 @@ class ConfigModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @validate datetime, max(19)
      */
     protected $_modified;
 

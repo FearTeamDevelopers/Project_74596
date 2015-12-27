@@ -2,18 +2,29 @@
 
 namespace App\Model;
 
-use THCFrame\Security\Model\BasicUser;
+use THCFrame\Security\Model\BasicUserModel;
 
 /**
  * 
  */
-class UserModel extends BasicUser
+class UserModel extends BasicUserModel
 {
+
+    /**
+     * Pole uživatelských rolí
+     * @var array
+     */
+    private static $_avRoles = array(
+        'role_superadmin' => 'Super Admin',
+        'role_admin' => 'Admin',
+        'role_participant' => 'Člen s přístupem do administrace',
+        'role_member' => 'Člen',
+    );
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 40
      *
      * @validate required, alphanumeric, min(3), max(40)
@@ -24,7 +35,7 @@ class UserModel extends BasicUser
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 40
      *
      * @validate required, alphanumeric, min(3), max(40)
@@ -35,34 +46,55 @@ class UserModel extends BasicUser
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 15
-     * 
      * @validate numeric, max(15)
      * @label telefon
      */
     protected $_phoneNumber;
-    
+
     /**
      * @column
      * @readwrite
      * @type text
+     * @validate alphanumeric
+     * @label personal info
+     */
+    protected $_personalData;
+
+    /**
+     * @column
+     * @readwrite
+     * @type varchar
      * @length 50
-     *
+     * @unique
      * @validate alphanumeric, max(50)
      * @label activation token
      */
     protected $_emailActivationToken;
-    
+
     /**
      * @column
      * @readwrite
-     * @type boolean
-     * 
-     * @validate max(3)
+     * @index
+     * @type tinyint
+     * @length 1
+     * @default 0
+     * @validate max(1)
      */
     protected $_getNewActionNotification;
-    
+
+    /**
+     * @column
+     * @readwrite
+     * @index
+     * @type tinyint
+     * @length 1
+     * @default 0
+     * @validate max(1)
+     */
+    protected $_team;
+
     /**
      * 
      */
@@ -72,18 +104,23 @@ class UserModel extends BasicUser
         $raw = $primary['raw'];
 
         if (empty($this->$raw)) {
-            $this->setCreated(date('Y-m-d H:i:s'));
-            $this->setBlocked(false);
-            $this->setLastLogin(0);
-            $this->setTotalLoginAttempts(0);
-            $this->setLastLoginAttempt(0);
-            $this->setFirstLoginAttempt(0);
+            $this->setGetNewActionNotification(0);
+            $this->setTeam(0);
         }
-        $this->setModified(date('Y-m-d H:i:s'));
+
+        parent::preSave();
     }
-    
+
     /**
      * 
+     * @return type
+     */
+    public static function getAllRoles()
+    {
+        return self::$_avRoles;
+    }
+
+    /**
      * @return type
      */
     public function getWholeName()
@@ -92,24 +129,23 @@ class UserModel extends BasicUser
     }
 
     /**
-     * 
      * @return type
      */
     public function __toString()
     {
-        $str = "Id: {$this->_id} <br/>Email: {$this->_email} <br/> Name: {$this->_firstname} {$this->_lastname}";
+        $str = "Email: {$this->_email}";
+
         return $str;
     }
-    
+
     /**
-     * 
      * @return type
      */
     public static function fetchAll()
     {
         return self::all(
                 array('role <> ?' => 'role_superadmin'), 
-                array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created', 'blocked'), 
+                array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created', 'blocked', 'deleted'), 
                 array('id' => 'asc')
         );
     }
@@ -122,10 +158,29 @@ class UserModel extends BasicUser
     public static function fetchLates($limit = 10)
     {
         return self::all(
-                array('role <> ?' => 'role_superadmin', 'active = ?' => true, 'blocked = ?' => false), 
-                array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created', 'blocked'), 
-                array('created' => 'desc'),
-                (int)$limit
+                array('role <> ?' => 'role_superadmin'), 
+                array('id', 'firstname', 'lastname', 'email', 'role', 'active', 'created', 'blocked', 'deleted'), 
+                array('created' => 'desc'), 
+                (int) $limit
         );
     }
+
+    /**
+     * 
+     * @return type
+     */
+    public static function fetchAdminsEmail()
+    {
+        $admins = self::all(array('role = ?' => 'role_admin', 'active = ?' => true, 'deleted = ?' => false, 'blocked = ?' => false), array('email'));
+
+        $returnArr = array();
+        if (!empty($admins)) {
+            foreach ($admins as $admin) {
+                $returnArr[] = $admin->getEmail();
+            }
+        }
+
+        return $returnArr;
+    }
+
 }

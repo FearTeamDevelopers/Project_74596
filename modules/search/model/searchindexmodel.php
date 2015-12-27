@@ -9,7 +9,6 @@ use THCFrame\Model\Model;
  */
 class SearchIndexModel extends Model
 {
-
     /**
      * @readwrite
      */
@@ -19,19 +18,20 @@ class SearchIndexModel extends Model
      * @read
      */
     protected $_databaseIdent = 'search';
-    
+
     /**
      * @column
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 100
      * 
      * @validate alpha, max(100)
@@ -42,7 +42,7 @@ class SearchIndexModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 100
      * 
      * @validate required, alphanumeric, max(100)
@@ -53,7 +53,7 @@ class SearchIndexModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 350
      * 
      * @validate path, max(350)
@@ -64,40 +64,44 @@ class SearchIndexModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 150
      * 
      * @validate path, max(150)
      * @label source title
      */
     protected $_sourceTitle;
-    
+
     /**
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate alphanumeric
      * @label source meta description
      */
     protected $_sourceMetaDescription;
-    
+
     /**
      * @column
      * @readwrite
-     * @type datetime
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_sourceCreated;
-    
+
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type smallint
+     * @unsigned
      * 
-     * @validate numeric, max(8)
+     * @validate numeric, max(5)
      * @label occurence
      */
     protected $_occurence;
@@ -105,30 +109,35 @@ class SearchIndexModel extends Model
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type smallint
+     * @unsigned
      * 
-     * @validate numeric, max(8)
+     * @validate numeric, max(5)
      * @label weight
      */
     protected $_weight;
-    
+
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_modified;
 
@@ -145,5 +154,4 @@ class SearchIndexModel extends Model
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }
-
 }

@@ -84,7 +84,7 @@ class Profiler
      * @param mixed $size
      * @return mixed
      */
-    private function convert($size)
+    private function _convert($size)
     {
         $unit = array('b', 'kb', 'mb', 'gb');
         return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2) . ' ' . $unit[$i];
@@ -108,7 +108,7 @@ class Profiler
      * 
      * @return boolean
      */
-    private function isActive()
+    private function _isActive()
     {
         if ($this->_active === null) {
             $configuration = Registry::get('configuration');
@@ -131,13 +131,13 @@ class Profiler
      */
     public function start($identifier = 'CORE')
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             Event::fire('framework.profiler.start.before', array($identifier));
             
             $this->dbStart($identifier);
             $this->_profiles[$identifier]['startTime'] = microtime(true);
-            $this->_profiles[$identifier]['startMemoryPeakUsage'] = $this->convert(memory_get_peak_usage());
-            $this->_profiles[$identifier]['startMomoryUsage'] = $this->convert(memory_get_usage());
+            $this->_profiles[$identifier]['startMemoryPeakUsage'] = $this->_convert(memory_get_peak_usage());
+            $this->_profiles[$identifier]['startMomoryUsage'] = $this->_convert(memory_get_usage());
             
             Event::fire('framework.profiler.start.after', array($identifier));
         }
@@ -150,20 +150,20 @@ class Profiler
      */
     public function stop($identifier = 'CORE')
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             Event::fire('framework.profiler.stop.before', array($identifier));
             
             $this->_profiles[$identifier]['requestUri'] = RequestMethods::server('REQUEST_URI');
             $this->_profiles[$identifier]['totalTime'] = round(microtime(true) - $this->_profiles[$identifier]['startTime'], 8);
-            $this->_profiles[$identifier]['endMemoryPeakUsage'] = $this->convert(memory_get_peak_usage());
-            $this->_profiles[$identifier]['endMomoryUsage'] = $this->convert(memory_get_usage());
+            $this->_profiles[$identifier]['endMemoryPeakUsage'] = $this->_convert(memory_get_peak_usage());
+            $this->_profiles[$identifier]['endMomoryUsage'] = $this->_convert(memory_get_usage());
             $this->_profiles[$identifier]['dbProfiles'] = $this->_dbProfiles[$identifier];
             $this->_profiles[$identifier]['sessionArr'] = $_SESSION;
             $this->_profiles[$identifier]['postArr'] = $_POST;
             $this->_profiles[$identifier]['getArr'] = $_GET;
 
             $this->dbStop($identifier);
-            $this->process();
+            $this->_process();
             
             Event::fire('framework.profiler.stop.after', array($identifier));
         }
@@ -174,7 +174,7 @@ class Profiler
      */
     public function dbStart($identifier = 'CORE')
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             $this->_dbProfiles[$identifier] = array();
             $this->_dbLastIdentifier = $identifier;
         }
@@ -185,7 +185,7 @@ class Profiler
      */
     public function dbStop($identifier = 'CORE')
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             unset($this->_dbProfiles[$identifier]);
             $this->_dbLastIdentifier = 'CORE';
         }
@@ -199,7 +199,7 @@ class Profiler
      */
     public function dbQueryStart($query)
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             $this->_dbLastQueryIdentifier = microtime();
 
             $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['startTime'] = microtime(true);
@@ -215,9 +215,9 @@ class Profiler
      */
     public function dbQueryStop($totalRows)
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             $startTime = $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['startTime'];
-            $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['execTime'] = round(microtime(true) - $startTime, 8);
+            $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['execTime'] = round(microtime(true) - $startTime, 8)*1000;
             $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['totalRows'] = $totalRows;
             $this->_dbProfiles[$this->_dbLastIdentifier][$this->_dbLastQueryIdentifier]['backTrace'] = debug_backtrace();
         }
@@ -239,7 +239,7 @@ class Profiler
      */
     public function _display()
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             if (file_exists(APP_PATH . '/application/logs/profiler.log')) {
                 return file_get_contents(APP_PATH . '/application/logs/profiler.log');
             } else {
@@ -253,9 +253,9 @@ class Profiler
     /**
      * Save formated result into file
      */
-    private function process()
+    private function _process()
     {
-        if ($this->isActive()) {
+        if ($this->_isActive()) {
             $str = '<link href="/public/css/plugins/profiler.min.css" media="screen" rel="stylesheet" type="text/css" /><div id="profiler">';
 
             foreach ($this->_profiles as $ident => $profile) {
@@ -265,16 +265,20 @@ class Profiler
                         . "<span title=\"Execution time [s]\">{$profile['totalTime']}</span>"
                         . "<span title=\"Memory peak usage\">{$profile['endMemoryPeakUsage']}</span>"
                         . "<span title=\"Memory usage\">{$profile['endMomoryUsage']}</span>"
-                        . "<span title=\"SQL Query\"><a href=\"#\" class=\"profiler-show-query\" value=\"{$ident}\">SQL Query:</a>" . count($profile['dbProfiles']) . "</span>"
+                        . "<span title=\"SQL Query\"><a href=\"#\" class=\"profiler-show-query\" value=\"{$ident}\">SQL Query: </a>" . count($profile['dbProfiles']) . "</span>"
                         . "<span><a href=\"#\" class=\"profiler-show-globalvar\" value=\"{$ident}\">Global variables</a></span></div>";
                 $str .= "<div class=\"profiler-query\" id=\"{$ident}_db\">"
                         . "<table><tr style=\"font-weight:bold; border-top:1px solid black;\" class=\"query-header\">"
-                        . "<td colspan=5>Query</td><td>Execution time [s]</td><td>Returned rows</td><td colspan=6>Backtrace</td></tr>";
+                        . "<td colspan=5>Query</td><td>Execution time [ms]</td><td>Returned rows</td><td colspan=6>Backtrace</td></tr>";
 
                 foreach ($profile['dbProfiles'] as $key => $value) {
                     $str .= "<tr>";
                     $str .= "<td colspan=5 width=\"40%\">{$value['query']}</td>";
-                    $str .= "<td>{$value['execTime']}</td>";
+                    if($value['execTime'] > 100){
+                        $str .= "<td class='red'>{$value['execTime']}</td>";
+                    }else{
+                        $str .= "<td>{$value['execTime']}</td>";
+                    }
                     $str .= "<td>{$value['totalRows']}</td>";
                     $str .= "<td colspan=6 class=\"backtrace\"><div>";
 

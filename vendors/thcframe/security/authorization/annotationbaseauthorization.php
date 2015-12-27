@@ -4,7 +4,7 @@ namespace THCFrame\Security\Authorization;
 
 use THCFrame\Core\Base;
 use THCFrame\Security\Authorization\AuthorizationInterface;
-use THCFrame\Security\Model\BasicUser;
+use THCFrame\Security\Model\BasicUserModel;
 use THCFrame\Security\Exception;
 
 /**
@@ -50,7 +50,7 @@ class AnnotationBaseAuthorization extends Base implements AuthorizationInterface
      * @return boolean
      * @throws Exception\Role
      */
-    public function isGranted(BasicUser $user, $requiredRole)
+    public function isGranted(BasicUserModel $user, $requiredRole)
     {
         if ($user === null) {
             $actualRole = 'role_guest';

@@ -33,15 +33,18 @@
                         <td>{echo $user->getEmail()}</td>
                         <td>{echo $user->getCreated()}</td>
                         <td>
-                            {if ($user->active)}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
-                            {if ($user->blocked)}<span class="infoLabel infoLabelGray">Zablokovaný</span>{/if}
+                            {if ($user->getActive())}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
+                            {else}<span class="infoLabel infoLabelGray">Neaktivní</span>{/else}
+                            {if ($user->getBlocked())}<span class="infoLabel infoLabelGray">Zablokovaný</span>{/if}
+                            {if ($user->getDeleted())}<span class="infoLabel infoLabelRed">Smazaný</span>{/if}
                             {if $user->getRole() == "role_admin"}<span class="infoLabel infoLabelBlue">Admin</span>{/if}
                         </td>
 
                         <td>
                             <a href="/admin/user/edit/{echo $user->id}" class="btn btn3 btn_pencil" title="Upravit"></a> 
-                            <a href="/admin/user/delete/{echo $user->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
                             <a href="/admin/user/forcepasswordreset/{echo $user->id}" class="btn btn3 btn_key" title="Vygenerovat nové heslo"></a>
+                            {if !$user->getDeleted()}<a href="/admin/user/delete/{echo $user->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>{/if}
+                            {if !$user->getActive() && !$user->getDeleted()}<a href="/admin/user/accountactivation/{echo $user->id}" class="btn btn3 btn_refresh" title="Aktivovat účet"></a>{/if}
                         </td>
                     </tr>
                 {/foreach}

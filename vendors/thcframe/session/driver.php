@@ -4,12 +4,13 @@ namespace THCFrame\Session;
 
 use THCFrame\Core\Base;
 use THCFrame\Session\Exception;
+use THCFrame\Core\BagInterface;
 
 /**
  * Factory allows many different kinds of configuration driver classes to be used, 
  * we need a way to share code across all driver classes.
  */
-abstract class Driver extends Base
+abstract class Driver extends Base implements BagInterface
 {
 
     /**
@@ -36,6 +37,8 @@ abstract class Driver extends Base
     public abstract function set($key, $value);
 
     public abstract function erase($key);
-    
+
     public abstract function clear();
+
+    public abstract function hashKey($key);
 }

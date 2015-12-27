@@ -5,7 +5,7 @@ namespace THCFrame\Security\Authentication;
 use THCFrame\Security\Authentication\Authentication;
 use THCFrame\Security\Authentication\AuthenticationInterface;
 use THCFrame\Security\Exception;
-use THCFrame\Security\Model\BasicUser;
+use THCFrame\Security\Model\BasicUserModel;
 use THCFrame\Security\PasswordManager;
 use THCFrame\Core\Core;
 use THCFrame\Request\RequestMethods;
@@ -129,15 +129,14 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
      */
     public function authenticate($name, $pass)
     {
-        
-
         $user = \App\Model\UserModel::first(
-                        array("{$this->_name} = ?" => $name), array('id', "{$this->_name}", "{$this->_pass}",
-                    'salt', 'active', 'blocked', 'lastLogin', 'role',
-                    'totalLoginAttempts', 'lastLoginAttempt', 'firstLoginAttempt'));
+                        array("{$this->_name} = ?" => $name, 'active = ?' => true, 'deleted = ?' => false), 
+                        array('id', "{$this->_name}", "{$this->_pass}", 'salt', 'active', 'blocked', 
+                                'deleted', 'lastLogin', 'role', 'passExpire', 'accountExpire', 
+                                'totalLoginAttempts', 'lastLoginAttempt', 'firstLoginAttempt'));
 
         if ($user === null) {
-            throw new Exception\UserNotExists();
+            throw new Exception\UserNotExists('User '.$name.' does not exists');
         }
 
         Registry::get('session')->set('userLastLogin', $user->getLastLogin());
@@ -145,15 +144,15 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
         $passVerify = PasswordManager::validatePassword($pass, $user->getPassword(), $user->getSalt());
 
         if ($passVerify === true) {
-            if ($user instanceof BasicUser) {
+            if ($user instanceof BasicUserModel) {
                 if (!$user->isActive()) {
-                    throw new Exception\UserInactive();
+                    throw new Exception\UserInactive('User '.$name.' is not active');
                 } elseif ($user->isAccountExpired()) {
-                    throw new Exception\UserExpired();
+                    throw new Exception\UserExpired('User '.$name.' account is expired');
                 } elseif ($user->isPasswordExpired()) {
-                    throw new Exception\UserPassExpired();
+                    throw new Exception\UserPassExpired('User '.$name.' password is expired');
                 } elseif ($user->isBlocked()) {
-                    throw new Exception\UserBlocked();
+                    throw new Exception\UserBlocked('User '.$name.' account is blocked');
                 } else {
                     $this->_successfullLogin($user);
                     return $this->_loadCompleteUser($user->getId());
@@ -163,14 +162,14 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
             }
         } else {
             if ($user->isBlocked()) {
-                throw new Exception\UserBlocked();
+                throw new Exception\UserBlocked('User '.$name.' account is blocked');
             } elseif ($this->isBruteForce($user)) { //Brute force attack detection
                 $identifier = $this->_name;
                 Core::getLogger()->log(sprintf('Brute Force Attack Detected for account %s', $user->$identifier));
 
-                throw new Exception\BruteForceAttack('WARNING: Brute Force Attack Detected.');
+                throw new Exception\BruteForceAttack('User '.$name.' WARNING: Brute Force Attack Detected.');
             } else {
-                throw new Exception\WrongPassword($errMessage);
+                throw new Exception\WrongPassword('User '.$name.' password is not correct');
             }
         }
     }
@@ -181,7 +180,7 @@ class DatabaseAuthentication extends Authentication implements AuthenticationInt
      * @param string $user    User object
      * @return boolean      Returns True if brute-force is detected. False otherwise
      */
-    protected function isBruteForce(BasicUser $user)
+    protected function isBruteForce(BasicUserModel $user)
     {
         $currentTime = time();
 

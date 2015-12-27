@@ -49,7 +49,8 @@ class Core
             'THCFrame\Security\Exception\CSRF',
             'THCFrame\Security\Exception\WrongPassword',
             'THCFrame\Security\Exception\UserNotExists',
-            'THCFrame\Security\Exception\BruteForceAttack'
+            'THCFrame\Security\Exception\BruteForceAttack',
+            'THCFrame\Security\Exception\SessionFixationAttack',
         ),
         '404' => array(
             'THCFrame\Router\Exception\Module',
@@ -67,6 +68,7 @@ class Core
             'THCFrame\Controller\Exception',
             'THCFrame\Controller\Exception\Argument',
             'THCFrame\Controller\Exception\Implementation',
+            'THCFrame\Controller\Exception\Header',
             'THCFrame\Core\Exception',
             'THCFrame\Core\Exception\Argument',
             'THCFrame\Core\Exception\Implementation',
@@ -163,23 +165,23 @@ class Core
     public static function _errorHandler($number, $text, $file, $row)
     {
         switch ($number) {
-            case E_WARNING: case E_USER_WARNING :
-                $type = 'Warning';
+            case E_WARNING:
+            case E_USER_WARNING :
+                $type = \THCFrame\Logger\Driver::WARNING;
                 break;
-            case E_NOTICE: case E_USER_NOTICE:
-                $type = 'Notice';
+            case E_NOTICE:
+            case E_USER_NOTICE:
+                $type = \THCFrame\Logger\Driver::NOTICE;
                 break;
             default:
-                $type = 'Error';
+                $type = \THCFrame\Logger\Driver::ERROR;
                 break;
         }
 
-        $message = "{$type} ~ {$file} ~ {$row} ~ {$text}";
-
         if (self::$_logger instanceof \THCFrame\Logger\Driver) {
-            self::$_logger->log($message);
+            self::$_logger->log($type, '[{file}:{row}] [{text}]', array('file' => $file, 'row' => $row, 'text' => $text));
         } else {
-            file_put_contents(APP_PATH . '/application/logs/error.log', $message . PHP_EOL);
+            file_put_contents(APP_PATH . '/application/logs/error.log', "{$type} ~ {$file} ~ {$row} ~ {$text}" . PHP_EOL, FILE_APPEND);
         }
     }
 
@@ -191,17 +193,11 @@ class Core
     public static function _exceptionHandler(\Exception $exception)
     {
         $type = get_class($exception);
-        $file = $exception->getFile();
-        $row = $exception->getLine();
-        $text = $exception->getMessage();
-
-        $message = "Uncaught exception: {$type} ~ {$file} ~ {$row} ~ {$text}" . PHP_EOL;
-        $message .= $exception->getTraceAsString();
 
         if (self::$_logger instanceof \THCFrame\Logger\Driver) {
-            self::$_logger->log($message);
+            self::$_logger->error('Uncaught exception: {exception}', array('exception' => $exception));
         } else {
-            file_put_contents(APP_PATH . '/application/logs/error.log', $message . PHP_EOL);
+            file_put_contents(APP_PATH . '/application/logs/exception.log', "Uncaught exception: {$type} ~ {$exception->getFile()} ~ {$exception->getLine()} ~ {$exception->getMessage()}" . PHP_EOL, FILE_APPEND);
         }
     }
 
@@ -236,7 +232,7 @@ class Core
      * @return type
      * @throws Exception
      */
-    public static function initialize($modules)
+    public static function initialize($modules, $autoloaderPrefixes = array())
     {
         if (!defined('APP_PATH')) {
             throw new Exception('APP_PATH not defined');
@@ -254,29 +250,26 @@ class Core
         }
 
         // Autoloader
-        $prefixes = array(
-            'THCFrame' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors'. DIRECTORY_SEPARATOR .'thcframe',
-            'IDS' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors'. DIRECTORY_SEPARATOR .'ids',
-            'Swift' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors'. DIRECTORY_SEPARATOR .'swiftmailer'
-            );
-
         require_once APP_PATH . '/vendors/thcframe/core/autoloader.php';
         self::$_autoloader = new Autoloader();
         self::$_autoloader->register();
-        self::$_autoloader->addNamespaces($prefixes);
-        
-        //register modules
-        self::registerModules($modules);
-        
-        // Logger
-        $logger = new Logger();
-        self::$_logger = $logger->initialize();
 
-        // error and exception handlers
-        set_error_handler(__CLASS__ . '::_errorHandler');
-        set_exception_handler(__CLASS__ . '::_exceptionHandler');
+        if (!empty($autoloaderPrefixes)) {
+            self::$_autoloader->addNamespaces($autoloaderPrefixes);
+        }
 
         try {
+            // Logger
+            $logger = new Logger();
+            self::$_logger = $logger->initialize();
+
+            // error and exception handlers
+            set_error_handler(__CLASS__ . '::_errorHandler');
+            set_exception_handler(__CLASS__ . '::_exceptionHandler');
+
+            //register modules
+            self::registerModules($modules);
+
             // configuration
             $configuration = new \THCFrame\Configuration\Configuration(
                     array('type' => 'ini', 'options' => array('env' => ENV))
@@ -290,7 +283,7 @@ class Core
                 $database = new \THCFrame\Database\Database();
                 $connectors = $database->initialize($parsedConfig);
                 Registry::set('database', $connectors);
-                
+
                 //extend configuration for config loaded from db
                 $confingInitialized->extendForDbConfig();
             }
@@ -326,19 +319,21 @@ class Core
                         http_response_code($template);
                         header('Content-type: text/html');
                         include($defaultErrorFile);
-                        exit();
+                        exit;
                     }
                 }
             }
 
             // render fallback template
+            self::$_logger->error('{exception}', array('exception' => $e));
+
             http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';
             if (ENV == 'dev') {
-                print_r($e);
+                print ('<pre>' . print_r($e, true) . '</pre>');
             }
-            exit();
+            exit;
         }
     }
 
@@ -366,16 +361,12 @@ class Core
         if (array_key_exists(ucfirst($moduleName), self::$_modules)) {
             throw new \THCFrame\Module\Exception\Multiload(sprintf('Module %s has been alerady loaded', ucfirst($moduleName)));
         } else {
-            self::$_autoloader->addNamespace(ucfirst($moduleName), MODULES_PATH. DIRECTORY_SEPARATOR.strtolower($moduleName));
-            $moduleClass = ucfirst($moduleName)."\Etc\ModuleConfig";
+            self::$_autoloader->addNamespace(ucfirst($moduleName), MODULES_PATH . DIRECTORY_SEPARATOR . strtolower($moduleName));
+            $moduleClass = ucfirst($moduleName) . "\Etc\ModuleConfig";
 
-            try {
-                $moduleObject = new $moduleClass();
-                $moduleObjectName = ucfirst($moduleObject->getModuleName());
-                self::$_modules[$moduleObjectName] = $moduleObject;
-            } catch (Exception $e) {
-                
-            }
+            $moduleObject = new $moduleClass();
+            $moduleObjectName = ucfirst($moduleObject->getModuleName());
+            self::$_modules[$moduleObjectName] = $moduleObject;
         }
     }
 
@@ -459,12 +450,12 @@ class Core
                 foreach ($classes as $class) {
                     if ($class == $exception) {
                         $controller = Registry::get('controller');
-                        
-                        if(null !== $controller){
+
+                        if (null !== $controller) {
                             $controller->willRenderLayoutView = false;
                             $controller->willRenderActionView = false;
                         }
-                        
+
                         $defaultErrorFile = MODULES_PATH . "/app/view/errors/{$template}.phtml";
 
                         http_response_code($template);
@@ -476,13 +467,15 @@ class Core
             }
 
             // render fallback template
+            self::$_logger->error('{exception}', array('exception' => $e));
+
             http_response_code(500);
             header('Content-type: text/html');
             echo 'An error occurred.';
             if (ENV == 'dev') {
-                print_r($e);
+                print ('<pre>' . print_r($e, true) . '</pre>');
             }
-            exit();
+            exit;
         }
     }
 
@@ -493,7 +486,7 @@ class Core
      */
     public static function getFrameworkVersion()
     {
-        return '1.2.4';
+        return '1.3.0';
     }
 
 }

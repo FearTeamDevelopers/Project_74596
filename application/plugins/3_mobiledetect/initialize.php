@@ -1,22 +1,10 @@
 <?php
 
-if (!isset($_SESSION['app_devicetype'])) {
-    require_once 'MobileDetect.php';
+THCFrame\Events\Events::fire('plugin.mobiledetect.devicetype.before', array());
 
-    $detect = new MobileDetect();
+require_once 'MobileDetect.php';
 
-    if ($detect->isMobile() && !$detect->isTablet()) {
-        $deviceType = 'phone';
-    } elseif ($detect->isTablet() && !$detect->isMobile()) {
-        $deviceType = 'tablet';
-    } else {
-        $deviceType = 'computer';
-    }
+$detect = new MobileDetect();
+\THCFrame\Registry\Registry::set('mobiledetect', $detect);
 
-    $_SESSION['app_devicetype'] = $deviceType;
-} else {
-    $deviceType = $_SESSION['app_devicetype'];
-}
-
-
-THCFrame\Events\Events::fire('plugin.mobiledetect.devicetype', array($deviceType));
+THCFrame\Events\Events::fire('plugin.mobiledetect.devicetype.after', array());

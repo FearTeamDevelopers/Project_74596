@@ -5,15 +5,28 @@
 
 CKEDITOR.editorConfig = function (config) {
     config.entities_latin = false;
+    config.font_defaultLabel = 'Arial';
+    config.fontSize_defaultLabel = '12px';
     config.allowedContent = true;
+    config.enterMode = CKEDITOR.ENTER_BR;
     config.format_tags = 'p;h2;h3;h4;h5;h6;pre;address;div';
+    config.entities = false;
 
-    config.extraPlugins = 'wordcount';
+    config.extraPlugins = 'wordcount,lightbox,youtube';
+    
     config.wordcount = {
         showWordCount: false,
         showCharCount: true,
         countHTML: false
     };
+
+    config.youtube_width = '640';
+    config.youtube_height = '480';
+    config.youtube_related = false;
+    config.youtube_older = false;
+    config.youtube_privacy = true;
+
+    config.extraAllowedContent = 'a[data-lightbox,data-title,data-lightbox-saved]';
 
     config.toolbar = [
         {name: 'document', groups: ['mode', 'document', 'doctools'], items: ['Source', '-', 'Save', 'NewPage', 'Preview', 'Print', '-', 'Templates']},
@@ -23,8 +36,8 @@ CKEDITOR.editorConfig = function (config) {
         {name: 'basicstyles', groups: ['basicstyles', 'cleanup'], items: ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript', '-', 'RemoveFormat']},
         {name: 'paragraph', groups: ['list', 'indent', 'blocks', 'align', 'bidi'], items: ['NumberedList', 'BulletedList', '-', 'Outdent', 'Indent', '-', 'Blockquote', 'CreateDiv', '-', 'JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock']},
         '/',
-        {name: 'links', items: ['Link', 'Unlink', 'Anchor']},
-        {name: 'insert', items: ['Image', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak']},
+        {name: 'links', items: ['Link', 'Unlink', 'Anchor', 'lightbox']},
+        {name: 'insert', items: ['Image',  'Youtube', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak']},
         '/',
         {name: 'styles', items: ['Styles', 'Format', 'Font', 'FontSize']},
         {name: 'colors', items: ['TextColor', 'BGColor']},

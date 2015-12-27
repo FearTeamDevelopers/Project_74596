@@ -22,14 +22,6 @@ class PasswordManager extends Base
     protected $_encoder = 'sha512';
 
     /**
-     * Minimum password strength that all passwords must have
-     * 
-     * @readwrite
-     * @var float
-     */
-    protected $_passwordStrength = 0.5;
-
-    /**
      * Generated string loaded from config file
      * 
      * @readwrite
@@ -37,6 +29,11 @@ class PasswordManager extends Base
      */
     protected $_secret;
 
+    /**
+     * @var PasswordManager
+     */
+    private static $_instance = null;
+    
     /**
      * Set of supported keyboard layouts for password strength detection
      * 
@@ -55,6 +52,21 @@ class PasswordManager extends Base
     }
 
     /**
+     * 
+     * @return type
+     */
+    public static function getInstance()
+    {
+        $configuration = Registry::get('configuration');
+        
+        if(self::$_instance === null){
+            self::$_instance = new static($configuration->security);
+        }
+
+        return self::$_instance;
+    }
+
+    /**
      * Static wrapper for hashPassword function
      * 
      * @param string $pass          password in plain-text
@@ -64,9 +76,7 @@ class PasswordManager extends Base
      */
     public static function hashPassword($pass, $dynamicSalt = '', $algo = '')
     {
-        $configuration = Registry::get('configuration');
-            
-        $pm = new static($configuration->security);
+        $pm = self::getInstance();
         return $pm->getPasswordHash($pass, $dynamicSalt, $algo);
     }
     
@@ -103,9 +113,7 @@ class PasswordManager extends Base
      */
     public static function validatePassword($newPassword, $oldHash, $oldSalt)
     {
-        $configuration = Registry::get('configuration');
-            
-        $pm = new static($configuration->security);
+        $pm = self::getInstance();
         return $pm->isPasswordValid($newPassword, $oldHash, $oldSalt);
     }
     
@@ -462,33 +470,33 @@ class PasswordManager extends Base
     /**
      * To generate a random string of specified strength.
      * 
-     * @param float $Security   The desired strength of the string
+     * @param float $security   The desired strength of the string
      * @return String       string that is of desired strength
      */
-    public static function generate($Security = .5)
+    public static function generate($security = 0.5)
     {
         $MaxLen = 20;
 
-        if ($Security > .3){
+        if ($security > .3){
             $UseNumbers = true;
         }else{
             $UseNumbers = false;
         }
 
-        if ($Security > .5){
+        if ($security > .5){
             $UseUpper = true;
         }else{
             $UseUpper = false;
         }
 
-        if ($Security > .9){
+        if ($security > .9){
             $UseSymbols = true;
         }else{
             $UseSymbols = false;
         }
 
 
-        $Length = max($Security * $MaxLen, 4);
+        $Length = max($security * $MaxLen, 4);
 
         $chars = 'abcdefghijklmnopqrstuvwxyz';
 

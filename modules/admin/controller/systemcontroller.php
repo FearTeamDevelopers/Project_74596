@@ -10,6 +10,7 @@ use THCFrame\Configuration\Model\ConfigModel;
 use THCFrame\Profiler\Profiler;
 use THCFrame\Router\Model\RedirectModel;
 use THCFrame\Filesystem\LineCounter;
+use THCFrame\Core\Core;
 
 /**
  * 
@@ -26,7 +27,7 @@ class SystemController extends Controller
     }
 
     /**
-     * Ability to clear cache from administration
+     * Ability to clear cache from administration.
      * 
      * @before _secured, _admin
      */
@@ -44,7 +45,7 @@ class SystemController extends Controller
     }
 
     /**
-     * Create db bakcup
+     * Create db bakcup.
      * 
      * @before _secured, _admin
      */
@@ -64,18 +65,18 @@ class SystemController extends Controller
         } catch (\THCFrame\Database\Exception\Mysqldump $ex) {
             $view->errorMessage($ex->getMessage());
             Event::fire('admin.log', array('fail', 'Database backup',
-                'Error: ' . $ex->getMessage()));
+                'Error: ' . $ex->getMessage(),));
         }
 
         self::redirect('/admin/system/');
     }
 
     /**
-     * Get admin log
+     * Get admin log.
      * 
-     * @before _secured, _superadmin
+     * @before _secured, _admin
      */
-    public function showAdminLog()
+    public function showLog()
     {
         $view = $this->getActionView();
         $log = \Admin\Model\AdminLogModel::all(array(), array('*'), array('created' => 'DESC'), 250);
@@ -83,14 +84,41 @@ class SystemController extends Controller
     }
 
     /**
-     * Edit application settings
+     * 
+     * @param type $id
+     * @before _secured, _admin
+     */
+    public function showLogDetail($id)
+    {
+        $this->_disableView();
+
+        $log = \Admin\Model\AdminLogModel::first(array('id = ?' => (int) $id));
+
+        if (!empty($log)) {
+            $params = preg_replace_callback('/\\\\u([0-9a-fA-F]{4})/', function ($match) {
+                return mb_convert_encoding(pack('H*', $match[1]), 'UTF-8', 'UTF-16BE');
+            }, $log->getParams());
+
+            $str = 'Akce: <br/><strong>' . $log->getModule() . '/' . $log->getController() . '/' . $log->getAction() . '</strong><br/><br/>';
+            $str .= 'Referer: <br/><strong>' . $log->getHttpreferer() . '</strong><br/><br/>';
+            $str .= 'Parametry: <br/><strong>' . $params . '</strong>';
+            echo $str;
+            exit;
+        } else {
+            echo $this->lang('NOT_FOUND');
+            exit;
+        }
+    }
+
+    /**
+     * Edit application settings.
      * 
      * @before _secured, _admin
      */
     public function settings()
     {
         $view = $this->getActionView();
-        $config = ConfigModel::all();
+        $config = ConfigModel::all(array(), array('*'), array('title' => 'ASC'));
         $view->set('config', $config);
 
         if (RequestMethods::post('submitEditSet')) {
@@ -123,7 +151,7 @@ class SystemController extends Controller
     }
 
     /**
-     * Get profiler result
+     * Get profiler result.
      * 
      * @before _secured
      */
@@ -135,7 +163,7 @@ class SystemController extends Controller
     }
 
     /**
-     * Generate sitemap.xml
+     * Generate sitemap.xml.
      * 
      * @before _secured, _admin
      */
@@ -170,46 +198,22 @@ class SystemController extends Controller
         $articlesXml = '';
         $pageContentXml = "<url><loc>http://{$host}</loc></url>" . PHP_EOL
                 . "<url><loc>http://{$host}/akce</loc></url>"
-                . "<url><loc>http://{$host}/probehleakce</loc></url>"
-                . "<url><loc>http://{$host}/archivakci</loc></url>"
-                . "<url><loc>http://{$host}/archivnovinek</loc></url>"
-                . "<url><loc>http://{$host}/archivreportazi</loc></url>"
-                . "<url><loc>http://{$host}/reportaze</loc></url>"
                 . "<url><loc>http://{$host}/novinky</loc></url>"
-                . "<url><loc>http://{$host}/galerie</loc></url>"
-                . "<url><loc>http://{$host}/bazar</loc></url>" . PHP_EOL;
+                . "<url><loc>http://{$host}/galerie</loc></url>" . PHP_EOL;
 
         $linkCounter = 10;
-
-        if (null !== $pageContent) {
-            foreach ($pageContent as $content) {
-                $pageUrl = '/page/' . $content->getUrlKey();
-                if (array_key_exists($pageUrl, $redirectArr)) {
-                    $pageUrl = $redirectArr[$pageUrl];
-                }
-                $pageContentXml .= "<url><loc>http://{$host}{$pageUrl}</loc></url>" . PHP_EOL;
-                $linkCounter++;
-            }
-        }
 
         if (null !== $news) {
             foreach ($news as $_news) {
                 $articlesXml .= "<url><loc>http://{$host}/novinky/r/{$_news->getUrlKey()}</loc></url>" . PHP_EOL;
-                $linkCounter++;
+                $linkCounter+=1;
             }
         }
 
         if (null !== $actions) {
             foreach ($actions as $action) {
                 $articlesXml .= "<url><loc>http://{$host}/akce/r/{$action->getUrlKey()}</loc></url>" . PHP_EOL;
-                $linkCounter++;
-            }
-        }
-
-        if (null !== $reports) {
-            foreach ($reports as $report) {
-                $articlesXml .= "<url><loc>http://{$host}/reportaze/r/{$report->getUrlKey()}</loc></url>" . PHP_EOL;
-                $linkCounter++;
+                $linkCounter+=1;
             }
         }
 
@@ -237,6 +241,103 @@ class SystemController extends Controller
 
         $view->set('totallines', $totalLines)
                 ->set('filecounter', $fileCounter);
+    }
+
+    /**
+     * Generate basic model classes
+     * 
+     * @before _secured, _superadmin
+     */
+    public function generator($dbIdent = 'main')
+    {
+        $this->_disableView();
+        $view = $this->getActionView();
+
+        try {
+            $generator = new \THCFrame\Model\Generator(array('dbIdent' => $dbIdent));
+            $generator->createModels();
+
+            Event::fire('admin.log', array('success', 'Generate model classes'));
+            $view->successMessage('New models were generated');
+            self::redirect('/admin/system/');
+        } catch (\Exception $ex) {
+            Event::fire('admin.log', array('fail', 'An error occured while creating model classes: ' . $ex->getMessage()));
+            $view->errorMessage('An error occured while creating model classes: ' . $ex->getMessage());
+            self::redirect('/admin/system/');
+        }
+    }
+
+    /**
+     * Update database schema based on basic model classes
+     * 
+     * @before _secured, _superadmin
+     */
+    public function sync($type = 1)
+    {
+        //set_time_limit(0);
+
+        $this->_disableView();
+        $view = $this->getActionView();
+
+        $models = array(
+            '\App\Model\Basic\BasicActionModel',
+            '\App\Model\Basic\BasicAttendanceModel',
+            '\App\Model\Basic\BasicCommentModel',
+            '\App\Model\Basic\BasicGalleryModel',
+            '\App\Model\Basic\BasicNewsModel',
+            '\App\Model\Basic\BasicPhotoModel',
+            '\Admin\Model\Basic\BasicActionhistoryModel',
+            '\Admin\Model\Basic\BasicAdminlogModel',
+            '\Admin\Model\Basic\BasicConceptModel',
+            '\Admin\Model\Basic\BasicEmailModel',
+            '\Admin\Model\Basic\BasicImessageModel',
+            '\Admin\Model\Basic\BasicNewshistoryModel',
+            '\THCFrame\Configuration\Model\ConfigModel',
+            '\THCFrame\Router\Model\RedirectModel',
+            '\THCFrame\Security\Model\AuthtokenModel',
+            '\THCFrame\Security\Model\FhsBaselineModel',
+            '\THCFrame\Security\Model\FhsHistoryModel',
+            '\THCFrame\Security\Model\FhsScannedModel',
+        );
+
+        $db = \THCFrame\Registry\Registry::get('database')->get();
+        $error = false;
+
+        $dump = new Mysqldump();
+        $dump->create();
+
+        foreach ($models as $model) {
+            $m = new $model();
+
+            if ($type == 1) {
+                if (!$db->sync($m, false, 'alter', false)) {
+                    $errMsg = 'An error occured while executing db sync for model: ' . $model . '. Check error log';
+                    $error = true;
+
+                    Event::fire('admin.log', array('fail', $errMsg));
+                    Core::getLogger()->critical('{error}', array('error' => $errMsg));
+                }
+            } elseif ($type == 2) {
+                if (!$db->sync($m, true, 'alter', false)) {
+                    $errMsg = 'An error occured while executing db sync for model: ' . $model . '. Check error log';
+                    $error = true;
+
+                    Event::fire('admin.log', array('fail', $errMsg));
+                    Core::getLogger()->critical('{error}', array('error' => $errMsg));
+                }
+            }
+
+            unset($m);
+        }
+
+        if ($error === true) {
+            $view->errorMessage('An error occured while executing db sync. Check error log');
+            self::redirect('/admin/system/');
+        } else {
+            Event::fire('admin.log', array('success', 'Model -> DB sync'));
+            $view->successMessage('Model -> DB sync done');
+            self::redirect('/admin/system/');
+        }
     }
 
 }

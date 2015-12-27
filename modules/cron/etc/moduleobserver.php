@@ -5,26 +5,25 @@ namespace Cron\Etc;
 use THCFrame\Registry\Registry;
 use THCFrame\Events\SubscriberInterface;
 use THCFrame\Request\RequestMethods;
+use THCFrame\Core\Core;
 
 /**
- * Module specific observer class
+ * Module specific observer class.
  */
 class ModuleObserver implements SubscriberInterface
 {
 
     /**
-     * 
      * @return type
      */
     public function getSubscribedEvents()
     {
         return array(
-            'cron.log' => 'cronLog'
+            'cron.log' => 'cronLog',
         );
     }
 
     /**
-     * 
      * @param array $params
      */
     public function cronLog()
@@ -43,7 +42,7 @@ class ModuleObserver implements SubscriberInterface
 
             $paramStr = '';
             if (!empty($params)) {
-                $paramStr = join(', ', $params);
+                $paramStr = implode(', ', $params);
             }
         } else {
             $result = 'fail';
@@ -57,8 +56,16 @@ class ModuleObserver implements SubscriberInterface
             'action' => $action,
             'result' => $result,
             'httpreferer' => RequestMethods::getHttpReferer(),
-            'params' => $paramStr
+            'params' => $paramStr,
         ));
+
+        Core::getLogger()->cron('{result} /{module}/{controller}/{action} {params}', array(
+            'result' => $result,
+            'module' => $module,
+            'controller' => $controller,
+            'action' => $action,
+            'params' => $paramStr)
+        );
 
         if ($log->validate()) {
             $log->save();

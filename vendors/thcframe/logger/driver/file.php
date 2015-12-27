@@ -3,7 +3,6 @@
 namespace THCFrame\Logger\Driver;
 
 use THCFrame\Logger;
-use THCFrame\Registry\Registry;
 
 /**
  * File logger class
@@ -13,7 +12,11 @@ class File extends Logger\Driver
 
     const DIR_CHMOD = 0755;
     const FILE_CHMOD = 0644;
-    const MAX_FILE_SIZE = 1000000;
+    const MAX_FILE_SIZE = 5000000;
+    const ERROR_LOG = 1;
+    const DEBUG_LOG = 2;
+    const SQL_LOG = 3;
+    const CRON_LOG = 4;
 
     /**
      * Object constructor
@@ -23,16 +26,25 @@ class File extends Logger\Driver
     public function __construct($options = null)
     {
         $options = array(
-            'path' => 'application/logs',
-            'syslog' => '{date}-system.log',
-            'errorlog' => '{date}-error.log'
+            'path' => 'application' . DIRECTORY_SEPARATOR . 'logs',
+            'debuglog' => '{date}-debug.log',
+            'errorlog' => '{date}-error.log',
+            'sqllog' => '{date}-sql.log',
+            'cronlog' => '{date}-cron.log',
+            'log' => '{date}.log',
         );
 
         parent::__construct($options);
 
         $this->path = APP_PATH . DIRECTORY_SEPARATOR . trim($this->path, DIRECTORY_SEPARATOR);
-        $this->syslog = $this->path . DIRECTORY_SEPARATOR
-                . str_replace('{date}', date('Y-m-d', time()), trim($this->syslog, DIRECTORY_SEPARATOR));
+        $this->log = $this->path . DIRECTORY_SEPARATOR
+                . str_replace('{date}', date('Y-m-d', time()), trim($this->log, DIRECTORY_SEPARATOR));
+        $this->debuglog = $this->path . DIRECTORY_SEPARATOR
+                . str_replace('{date}', date('Y-m-d', time()), trim($this->debuglog, DIRECTORY_SEPARATOR));
+        $this->sqllog = $this->path . DIRECTORY_SEPARATOR
+                . str_replace('{date}', date('Y-m-d', time()), trim($this->sqllog, DIRECTORY_SEPARATOR));
+        $this->cronlog = $this->path . DIRECTORY_SEPARATOR
+                . str_replace('{date}', date('Y-m-d', time()), trim($this->cronlog, DIRECTORY_SEPARATOR));
         $this->errorlog = $this->path . DIRECTORY_SEPARATOR
                 . str_replace('{date}', date('Y-m-d', time()), trim($this->errorlog, DIRECTORY_SEPARATOR));
 
@@ -42,6 +54,56 @@ class File extends Logger\Driver
 
         $date = date('Y-m-d', strtotime('-90 days'));
         $this->deleteOldLogs($date);
+    }
+
+    private function interpolate($message, array $context = array())
+    {
+        // vytvoří nahrazovací pole se závorkami okolo kontextových klíčů
+        $replace = array();
+        if (!empty($context)) {
+            foreach ($context as $key => $val) {
+                $replace['{' . $key . '}'] = $val;
+            }
+            // interpoluje nahrazovací hodnoty do zprávy a vrátí je
+            return strtr($message, $replace);
+        }
+        return $message;
+    }
+
+    private function putContents($file, $message)
+    {
+        if (!file_exists($file)) {
+            file_put_contents($file, $message, FILE_APPEND);
+        } elseif (file_exists($file) && filesize($file) < self::MAX_FILE_SIZE) {
+            file_put_contents($file, $message, FILE_APPEND);
+        } elseif (file_exists($file) && filesize($file) > self::MAX_FILE_SIZE) {
+            for ($i = 1; $i < 100; $i+=1) {
+                if (!file_exists($file . $i)) {
+                    file_put_contents($file . $i, $message, FILE_APPEND);
+                } elseif (file_exists($file . $i) && filesize($file . $i) < self::MAX_FILE_SIZE) {
+                    file_put_contents($file . $i, $message, FILE_APPEND);
+                } else {
+                    continue;
+                }
+            }
+        }
+    }
+
+    private function appendLine($level, $message, $context, $type = 0)
+    {
+        $message = '[' . date('Y-m-d H:i:s') . '][' . $level . ']' . $this->interpolate($message, $context) . PHP_EOL;
+
+        if ($type === self::DEBUG_LOG) {
+            $this->putContents($this->debuglog, $message);
+        } elseif ($type === self::SQL_LOG) {
+            $this->putContents($this->sqllog, $message);
+        } elseif ($type === self::CRON_LOG) {
+            $this->putContents($this->cronlog, $message);
+        } elseif ($type === self::ERROR_LOG) {
+            $this->putContents($this->errorlog, $message);
+        } else {
+            $this->putContents($this->log, $message);
+        }
     }
 
     /**
@@ -79,62 +141,102 @@ class File extends Logger\Driver
         }
     }
 
-    /**
-     * Save log message into file
-     * 
-     * @param string $message
-     * @param mixed $flag
-     * @param boolean $prependTime
-     * @param string $file
-     */
-    public function log($message, $type = 'error', $flag = FILE_APPEND, $prependTime = true, $file = null)
+    public function emergency($message, array $context = array())
     {
-        if ($prependTime) {
-            $time = '[' . date('Y-m-d H:i:s', time()) . '] ';
-        }else{
-            $time = '';
-        }
-        
-        $user = Registry::get('security')->getUser();
-        
-        if($user === null){
-            $userName = '(annonymous) - ';
-        }else{
-            $userName = '('.$user->getWholeName().') - ';
-        }
-        
-        $message = $time.$userName.$message . PHP_EOL;
+        $this->appendLine(self::EMERGENCY, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
 
-        if ($file !== null) {
-            if (mb_strlen($file) > 50) {
-                $file = trim(substr($file, 0, 50)) . '.log';
-            }
+    public function alert($message, array $context = array())
+    {
+        $this->appendLine(self::ALERT, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
 
-            $path = $this->path . DIRECTORY_SEPARATOR . $file;
-            if (!file_exists($path)) {
-                file_put_contents($path, $message, $flag);
-            } elseif (file_exists($path) && filesize($path) < self::MAX_FILE_SIZE) {
-                file_put_contents($path, $message, $flag);
-            } elseif (file_exists($path) && filesize($path) > self::MAX_FILE_SIZE) {
-                file_put_contents($path, $message);
-            }
-        } elseif ($type == 'error') {
-            if (!file_exists($this->errorlog)) {
-                file_put_contents($this->errorlog, $message, $flag);
-            } elseif (file_exists($this->errorlog) && filesize($this->errorlog) < self::MAX_FILE_SIZE) {
-                file_put_contents($this->errorlog, $message, $flag);
-            } elseif (file_exists($this->errorlog) && filesize($this->errorlog) > self::MAX_FILE_SIZE) {
-                file_put_contents($this->errorlog, $message);
-            }
-        } else {
-            if (!file_exists($this->syslog)) {
-                file_put_contents($this->syslog, $message, $flag);
-            } elseif (file_exists($this->syslog) && filesize($this->syslog) < self::MAX_FILE_SIZE) {
-                file_put_contents($this->syslog, $message, $flag);
-            } elseif (file_exists($this->syslog) && filesize($this->syslog) > self::MAX_FILE_SIZE) {
-                file_put_contents($this->syslog, $message);
-            }
+    public function critical($message, array $context = array())
+    {
+        $this->appendLine(self::CRITICAL, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
+
+    public function error($message, array $context = array())
+    {
+        $this->appendLine(self::ERROR, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
+
+    public function warning($message, array $context = array())
+    {
+        $this->appendLine(self::WARNING, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
+
+    public function notice($message, array $context = array())
+    {
+        $this->appendLine(self::NOTICE, $message, $context, self::ERROR_LOG);
+        return $this;
+    }
+
+    public function info($message, array $context = array())
+    {
+        $this->appendLine(self::INFO, $message, $context);
+        return $this;
+    }
+
+    public function debug($message, array $context = array())
+    {
+        $this->appendLine(self::DEBUG, $message, $context, self::DEBUG_LOG);
+        return $this;
+    }
+
+    public function sql($message, array $context = array())
+    {
+        $this->appendLine(self::SQL, $message, $context, self::SQL_LOG);
+        return $this;
+    }
+
+    public function cron($message, array $context = array())
+    {
+        $this->appendLine(self::SQL, $message, $context, self::CRON_LOG);
+        return $this;
+    }
+
+    public function log($level, $message, array $context = array())
+    {
+        switch ($level) {
+            case self::EMERGENCY:
+                $this->emergency($message, $context);
+                break;
+            case self::ALERT:
+                $this->alert($message, $context);
+                break;
+            case self::CRITICAL:
+                $this->critical($message, $context);
+                break;
+            case self::ERROR:
+                $this->error($message, $context);
+                break;
+            case self::WARNING:
+                $this->error($message, $context);
+                break;
+            case self::NOTICE:
+                $this->notice($message, $context);
+                break;
+            case self::INFO:
+                $this->info($message, $context);
+                break;
+            case self::DEBUG:
+                $this->debug($message, $context);
+                break;
+            case self::SQL:
+                $this->sql($message, $context);
+                break;
+            case self::CRON:
+                $this->cron($message, $context);
+                break;
         }
+        
+        return $this;
     }
 
 }

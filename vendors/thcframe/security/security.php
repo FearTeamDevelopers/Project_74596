@@ -9,7 +9,8 @@ use THCFrame\Security\Exception;
 use THCFrame\Security\SecurityInterface;
 use THCFrame\Security\CSRF;
 use THCFrame\Security\PasswordManager;
-use THCFrame\Security\Model\BasicUser;
+use THCFrame\Security\Model\BasicUserModel;
+use THCFrame\Request\CookieBag;
 
 /**
  * Security context class. Wrapper for authentication and authorization methods
@@ -52,7 +53,7 @@ class Security extends Base implements SecurityInterface
     /**
      * Authenticated user object
      * @readwrite
-     * @var \THCFrame\Security\Model\BasicUser or null
+     * @var \THCFrame\Security\Model\BasicUserModel or null
      */
     protected $_user = null;
 
@@ -66,6 +67,32 @@ class Security extends Base implements SecurityInterface
         return new Exception\Implementation(sprintf('%s method not implemented', $method));
     }
 
+    /**
+     * Protection against session fixation attack
+     */
+    protected function sessionFixationProtection()
+    {
+        $cookieBag = CookieBag::getInstance();
+        $session = Registry::get('session');
+
+        $sessionToken = $session->get('sessionFixationProtection', null);
+        $cookieToken = $cookieBag->get('sessionFixationProtection', null);
+        
+        if($sessionToken === null && $cookieToken === null){
+            $token = \THCFrame\Core\Rand::randStr(50);
+            $session->set('sessionFixationProtection', $token);
+            $cookieBag->set('sessionFixationProtection', $token);
+        }
+        
+        if($sessionToken !== $cookieToken){
+            throw new Exception\SessionFixationAttack('High posibility of session fixation attack');
+        }else{
+            $token = \THCFrame\Core\Rand::randStr(50);
+            $session->set('sessionFixationProtection', $token);
+            $cookieBag->set('sessionFixationProtection', $token);
+        }
+    }
+    
     /**
      * Method initialize security context. Check session for user token and
      * initialize authentication and authorization classes
@@ -81,6 +108,8 @@ class Security extends Base implements SecurityInterface
             throw new \Exception('Error in configuration file');
         }
 
+        $this->sessionFixationProtection();
+        
         $user = Registry::get('session')->get('authUser');
 
         $authentication = new Authentication\Authentication();
@@ -89,7 +118,7 @@ class Security extends Base implements SecurityInterface
         $authorization = new Authorization\Authorization();
         $this->_authorization = $authorization->initialize($configuration);
 
-        if ($user instanceof BasicUser) {
+        if ($user instanceof BasicUserModel) {
             $this->_user = $user;
             Event::fire('framework.security.initialize.user', array($user));
         }
@@ -101,10 +130,10 @@ class Security extends Base implements SecurityInterface
 
     /**
      * 
-     * @param BasicUser $user
+     * @param BasicUserModel $user
      * @return type
      */
-    public function setUser(BasicUser $user)
+    public function setUser(BasicUserModel $user)
     {
         @session_regenerate_id();
         $user->password = null;
@@ -158,7 +187,7 @@ class Security extends Base implements SecurityInterface
                 ->erase('lastActive')
                 ->erase('csrf');
         
-        BasicUser::deleteAuthenticationToken();
+        BasicUserModel::deleteAuthenticationToken();
 
         $this->_user = NULL;
         @session_regenerate_id();
@@ -271,5 +300,5 @@ class Security extends Base implements SecurityInterface
             return null;
         }
     }
-
+    
 }

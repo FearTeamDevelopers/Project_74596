@@ -13,9 +13,8 @@ use THCFrame\Core\Core;
  */
 class RedirectController extends Controller
 {
-
     /**
-     * Get list of all redirects
+     * Get list of all redirects.
      * 
      * @before _secured, _superadmin
      */
@@ -27,7 +26,7 @@ class RedirectController extends Controller
     }
 
     /**
-     * Create new redirect
+     * Create new redirect.
      * 
      * @before _secured, _superadmin
      */
@@ -47,17 +46,18 @@ class RedirectController extends Controller
             $redirect = new RedirectModel(array(
                 'module' => RequestMethods::post('module'),
                 'fromPath' => RequestMethods::post('fromurl'),
-                'toPath' => RequestMethods::post('tourl')
+                'toPath' => RequestMethods::post('tourl'),
             ));
 
             if ($redirect->validate()) {
                 $id = $redirect->save();
+                $this->getCache()->invalidate();
 
-                Event::fire('admin.log', array('success', 'Redirect id: ' . $id));
+                Event::fire('admin.log', array('success', 'Redirect id: '.$id));
                 $view->successMessage($this->lang('CREATE_SUCCESS'));
                 self::redirect('/admin/redirect/');
             } else {
-                Event::fire('admin.log', array('fail', 'Errors: '.  json_encode($redirect->getErrors())));
+                Event::fire('admin.log', array('fail', 'Errors: '.json_encode($redirect->getErrors())));
                 $view->set('errors', $redirect->getErrors())
                         ->set('submstoken', $this->_revalidateMutliSubmissionProtectionToken())
                         ->set('redirect', $redirect);
@@ -66,10 +66,11 @@ class RedirectController extends Controller
     }
 
     /**
-     * Edit existing redirect
+     * Edit existing redirect.
      * 
      * @before _secured, _superadmin
-     * @param int   $id     redirect id
+     *
+     * @param int $id redirect id
      */
     public function edit($id)
     {
@@ -82,7 +83,7 @@ class RedirectController extends Controller
             $this->_willRenderActionView = false;
             self::redirect('/admin/redirect/');
         }
-        
+
         $modules = Core::getModuleNames();
         $view->set('redirect', $redirect)
                 ->set('modules', $modules);
@@ -98,23 +99,25 @@ class RedirectController extends Controller
 
             if ($redirect->validate()) {
                 $redirect->save();
+                $this->getCache()->invalidate();
 
-                Event::fire('admin.log', array('success', 'Redirect id: ' . $id));
+                Event::fire('admin.log', array('success', 'Redirect id: '.$id));
                 $view->successMessage($this->lang('UPDATE_SUCCESS'));
                 self::redirect('/admin/redirect/');
             } else {
-                Event::fire('admin.log', array('fail', 'Redirect id: ' . $id,
-                    'Errors: '.  json_encode($redirect->getErrors())));
+                Event::fire('admin.log', array('fail', 'Redirect id: '.$id,
+                    'Errors: '.json_encode($redirect->getErrors()), ));
                 $view->set('errors', $redirect->getErrors());
             }
         }
     }
 
     /**
-     * Delete existing redirect
+     * Delete existing redirect.
      * 
      * @before _secured, _superadmin
-     * @param int   $id     redirect id
+     *
+     * @param int $id redirect id
      */
     public function delete($id)
     {
@@ -124,17 +127,17 @@ class RedirectController extends Controller
                         array('id = ?' => (int) $id), array('id')
         );
 
-        if (NULL === $redirect) {
+        if (null === $redirect) {
             echo $this->lang('NOT_FOUND');
         } else {
-                if ($redirect->delete()) {
-                    Event::fire('admin.log', array('success', 'Redirect id: ' . $id));
-                    echo 'success';
-                } else {
-                    Event::fire('admin.log', array('fail', 'Redirect id: ' . $id));
-                    echo $this->lang('COMMON_FAIL');
-                }
+            if ($redirect->delete()) {
+                $this->getCache()->invalidate();
+                Event::fire('admin.log', array('success', 'Redirect id: '.$id));
+                echo 'success';
+            } else {
+                Event::fire('admin.log', array('fail', 'Redirect id: '.$id));
+                echo $this->lang('COMMON_FAIL');
+            }
         }
     }
-
 }

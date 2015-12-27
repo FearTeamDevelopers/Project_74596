@@ -1,8 +1,0 @@
-
-<section class="wrapper singlePage">
-  <div class="row container">
-    <header>
-      <h1>{echo $action->getTitle()}</h1><span>{echo "Vytvořil: ".$action->getUserAlias().", ".\App\Helper\DateFormater::t2d($action->getCreated())}</span><br/><span>Datum: <strong>{echo \App\Helper\DateFormater::t2d($action->getStartDate())}</strong> - <strong>{echo \App\Helper\DateFormater::t2d($action->getEndDate())}</strong></span><br/>{if !empty($action->startTime)}<span>Čas: <strong>{echo $action->getStartTime()}</strong> - <strong>{echo $action->getEndTime()}</strong><br/></span>{/if}
-    </header>{echo html_entity_decode($action->getBody())}
-  </div>
-</section>

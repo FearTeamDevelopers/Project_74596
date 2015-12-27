@@ -5,7 +5,7 @@ if (ENV == 'dev') {
     require_once 'logger.php';
 
     $logger = new Logger(array(
-        'file' => APP_PATH . '/application/logs/' . date('Y-m-d') . '.log'
+        'file' => APP_PATH . '/application/logs/' . date('Y-m-d') . '-event.log'
     ));
 
 // log cache events
@@ -52,8 +52,8 @@ if (ENV == 'dev') {
     });
 
 // log database events
-    THCFrame\Events\Events::add('framework.database.initialize.before', function($type, $options) use ($logger) {
-        $logger->log(sprintf('framework.database.initialize.before: %s', $type));
+    THCFrame\Events\Events::add('framework.database.initialize.before', function() use ($logger) {
+        $logger->log(sprintf('framework.database.initialize.before'));
     });
 
     THCFrame\Events\Events::add('framework.database.initialize.after', function($type, $options) use ($logger) {
@@ -179,7 +179,20 @@ if (ENV == 'dev') {
         $logger->log(sprintf('framework.view.render.before: %s', $file));
     });
 
-    THCFrame\Events\Events::add('plugin.mobiledetect.devicetype', function($type) use ($logger) {
-        $logger->log(sprintf('plugin.mobiledetect.devicetype: %s', $type));
+// log plugin loading
+    THCFrame\Events\Events::add('plugin.mobiledetect.devicetype.before', function() use ($logger) {
+        $logger->log(sprintf('plugin.mobiledetect.devicetype.before'));
+    });
+    
+    THCFrame\Events\Events::add('plugin.mobiledetect.devicetype.after', function() use ($logger) {
+        $logger->log(sprintf('plugin.mobiledetect.devicetype.after'));
+    });
+    
+    THCFrame\Events\Events::add('plugin.browser.initialize.before', function() use ($logger) {
+        $logger->log(sprintf('plugin.browser.initialize.before'));
+    });
+    
+    THCFrame\Events\Events::add('plugin.browser.initialize.after', function() use ($logger) {
+        $logger->log(sprintf('plugin.browser.initialize.after'));
     });
 }

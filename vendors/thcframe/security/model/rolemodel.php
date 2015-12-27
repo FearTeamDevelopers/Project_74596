@@ -20,31 +20,38 @@ class RoleModel extends Model
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type integer
+     * @type int
+     * @length 10
+     * @unsigned
+     * @null
      * 
-     * @validate numeric, max(8)
+     * @validate numeric, max(10)
      */
     protected $_parentId;
 
     /**
      * @column
      * @readwrite
-     * @type boolean
+     * @index
+     * @type tinyint
+     * @length 1
      * 
-     * @validate max(3)
+     * @default 1
+     * @validate max(1)
      */
     protected $_active;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 100
      * @index
      * @unique
@@ -58,7 +65,7 @@ class RoleModel extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate alphanumeric, max(1024)
      * @label description
@@ -68,32 +75,43 @@ class RoleModel extends Model
     /**
      * @column
      * @readwrite
-     * @type boolean
+     * @index
+     * @type tinyint
+     * @length 1
      * 
-     * @validate max(3)
+     * @default 1
+     * @validate max(1)
      */
     protected $_isLocked;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_modified;
 
+    /**
+     * @readwrite
+     * @var type 
+     */
     protected $_permissions;
     
     /**

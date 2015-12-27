@@ -4,41 +4,77 @@
 
 <div class="content">
     {include imessages.phtml}
-    <div class="grid_8">
+    <div class="grid_7">
         <div class="contenttitle">
             <h2 class="button"><span>Rychlé možnosti</span></h2>
         </div><!--contenttitle-->
         <ul class="widgetlist">
             <li><a href="/admin/news/add/" class="message">+ Novinku</a></li>
             <li><a href="/admin/action/add/" class="events">+ Akci</a></li>
+            <li><a href="/admin/report/add/" class="message">+ Reportáž</a></li>
             <li><a href="/admin/gallery/add/" class="upload">+ Galerii</a></li>
             {if $isAdmin}
                 <li><a href="/admin/partner/add/" class="upload">+ Partnera</a></li>
-                <li><a href="/admin/action/showattendance/" class="events">Docházka</a></li>
             {/if}
         </ul>
     </div>
 
+    {if $isAdmin}
     <div class="grid_4">
         <div class="widgetbox">
             <div class="title"><h2 class="chart"><span>Online návštěvníci</span></h2></div>
             <div class="widgetcontent padding0">
-                Piwik widget
+                <iframe width="100%" height="200" src="http://piwik.hastrman.cz/index.php?module=Widgetize&action=iframe&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=1&period=week&date=today&disableLink=1&widget=1&token_auth=e49c4884f0eb21411273f82ba739984e" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
             </div><!--widgetcontent-->
         </div><!--widgetbox-->
     </div><!--grid_4-->
-
+    <div class="grid_5">
+        <div class="widgetbox fix-height">
+            <div class="title"><h2 class="general"><span>Chyby za poslední týden</span></h2></div>
+            <div class="widgetcontent padding0">
+                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+                    <colgroup>
+                        <col class="con0" /><col class="con1" />
+                        <col class="con0" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="head0">Uživatel</th>
+                            <th class="head1">Vytvořeno</th>
+                            <th class="head0">&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($latesterrors)}
+                        {foreach $error in $latesterrors}
+                        <tr>
+                            <td>
+                                {echo $error->getUserId()}
+                            </td>
+                            <td>{echo $error->getCreated()}</td>
+                            <td>
+                                <a href="/admin/system/showlogdetail/{echo $error->getId()}" class="btn btn3 btn_search dialog" value="Detail chyby" title="Detail"></a>
+                            </td>
+                        </tr>
+                        {/foreach}
+                        {/if} 
+                    </tbody>
+                </table>
+            </div><!--widgetcontent-->
+        </div><!--widgetbox-->
+    </div><!--grid_4-->
+    {/if}
     <div class="clear"></div>
 
+    {if $isAdmin}
     <div class="grid_10">
         <div class="widgetbox">
             <div class="title"><h2 class="chart"><span>Návštěvnost</span></h2></div>
             <div class="widgetcontent padding0">
-                Piwik widget
+                <iframe width="100%" height="300" src="http://piwik.hastrman.cz/index.php?module=Widgetize&action=iframe&columns[]=nb_visits&widget=1&moduleToWidgetize=VisitsSummary&actionToWidgetize=getEvolutionGraph&idSite=1&period=week&date=today&disableLink=1&widget=1&token_auth=e49c4884f0eb21411273f82ba739984e" scrolling="no" frameborder="0" marginheight="0" marginwidth="0"></iframe>
             </div><!--widgetcontent-->
         </div><!--widgetbox-->
     </div><!--grid_10-->
-
     <div class="grid_6">
         <div class="widgetbox">
             <div class="title"><h2 class="general"><span>Nový uživatelé</span></h2></div>
@@ -52,30 +88,30 @@
                         <tr>
                             <th class="head0">Jméno</th>
                             <th class="head1">Email</th>
-                            <th class="head0">Vytvořen</th>
+                            <th class="head0">Vytvořeno</th>
                             <th class="head1">Stav</th>
                         </tr>
                     </thead>
                     <tbody>
                         {if !empty($latestusers)}
-                        {foreach $user in $latestusers}
+                        {foreach $newuser in $latestusers}
                         <tr>
                             <td>
                                 {if $isAdmin}
-                                    <a href="/admin/user/edit/{echo $user->getId()}">
-                                        {echo $user->getFirstname()." ".$user->getLastname()}
+                                    <a href="/admin/user/edit/{echo $newuser->getId()}">
+                                        {echo $newuser->getFirstname()." ".$newuser->getLastname()}
                                     </a>
                                 {/if}{else}
-                                    {echo $user->getFirstname()." ".$user->getLastname()}
+                                    {echo $newuser->getFirstname()." ".$newuser->getLastname()}
                                 {/else}
                             </td>
-                            <td>{echo $user->getEmail()}</td>
-                            <td>{echo $user->getCreated()}</td>
+                            <td>{echo $newuser->getEmail()}</td>
+                            <td>{echo $newuser->getCreated()}</td>
                             <td>
-                                {if $user->active}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
+                                {if $newuser->active}<span class="infoLabel infoLabelGreen">Aktivní</span>{/if}
                                 {else}<span class="infoLabel infoLabelGray">Neaktivní</span>{/else}
-                                {if $user->blocked}<span class="infoLabel infoLabelOrange">Blokovaný</span>{/if}
-                                {if $user->deleted}<span class="infoLabel infoLabelRed">Smazaný</span>{/else}
+                                {if $newuser->blocked}<span class="infoLabel infoLabelOrange">Blokovaný</span>{/if}
+                                {if $newuser->deleted}<span class="infoLabel infoLabelRed">Smazaný</span>{/if}
                             </td>
                         </tr>
                         {/foreach}
@@ -85,10 +121,10 @@
             </div><!--widgetcontent-->
         </div><!--widgetbox-->
     </div><!--grid_6-->
-
+    {/if}
     <div class="clear"></div>
 
-    <div class="grid_6">
+    <div class="grid_8">
         <div class="widgetbox">
             <div class="title"><h2 class="tabbed"><span>Poslední novinky</span></h2></div>
             <div class="widgetcontent padding0 statement">
@@ -109,13 +145,19 @@
                         {if !empty($latestnews)}
                         {foreach $news in $latestnews}
                         <tr>
-                            <td><a href="/admin/news/edit/{echo $news->getId()}">{echo $news->getTitle()}</a></td>
+                            <td>
+                                {if $authUser->getId() == $news->getUserId() || $isAdmin}
+                                    <a href="/admin/news/edit/{echo $news->getId()}">{echo $news->getTitle()}</a>
+                                {/if}{else}
+                                    {echo $news->getTitle()}
+                                {/else}
+                            </td>
                             <td>{echo $news->getUserAlias()}</td>
                             <td>{echo $news->getCreated()}</td>
                             <td>
-                                {if $news->getApproved() == 0}Čeká na schválení{/if}
-                                {elseif $news->getApproved() == 1}Schváleno{/elseif}
-                                {else}Zamítnuto{/else}
+                                {if $news->getApproved() == 0}<span class="infoLabel infoLabelOrange">Čeká na schválení</span>{/if}
+                                {elseif $news->getApproved() == 1}<span class="infoLabel infoLabelGreen">Schváleno</span>{/elseif}
+                                {else}<span class="infoLabel infoLabelRed">Zamítnuto</span>{/else}
                             </td>
                         </tr>
                         {/foreach}
@@ -124,9 +166,55 @@
                 </table>
             </div><!--widgetcontent-->
         </div><!--widgetbox-->
-    </div><!--grid_6-->
+    </div><!--grid_8-->
 
-    <div class="grid_5">
+    <div class="grid_8">
+        <div class="widgetbox">
+            <div class="title"><h2 class="tabbed"><span>Poslední reportáže</span></h2></div>
+            <div class="widgetcontent padding0 statement">
+                <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+                    <colgroup>
+                        <col class="con0" /><col class="con1" />
+                        <col class="con0" /><col class="con1" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th class="head0">Název</th>
+                            <th class="head1">Autor</th>
+                            <th class="head0">Vytvořeno</th>
+                            <th class="head1">Stav</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {if !empty($latestreports)}
+                        {foreach $report in $latestreports}
+                        <tr>
+                            <td>
+                                {if $authUser->getId() == $report->getUserId() || $isAdmin}
+                                    <a href="/admin/report/edit/{echo $report->getId()}">{echo $report->getTitle()}</a>
+                                {/if}{else}
+                                    {echo $news->getTitle()}
+                                {/else}
+                            </td>
+                            <td>{echo $report->getUserAlias()}</td>
+                            <td>{echo $report->getCreated()}</td>
+                            <td>
+                                {if $report->getApproved() == 0}<span class="infoLabel infoLabelOrange">Čeká na schválení</span>{/if}
+                                {elseif $report->getApproved() == 1}<span class="infoLabel infoLabelGreen">Schváleno</span>{/elseif}
+                                {else}<span class="infoLabel infoLabelRed">Zamítnuto</span>{/else}
+                            </td>
+                        </tr>
+                        {/foreach}
+                        {/if} 
+                    </tbody>
+                </table>
+            </div><!--widgetcontent-->
+        </div><!--widgetbox-->
+    </div><!--grid_8-->
+
+    <div class="clear"></div>
+    
+    <div class="grid_8">
         <div class="widgetbox">
             <div class="title"><h2 class="tabbed"><span>Nejnovější Akce</span></h2></div>
             <div class="widgetcontent padding0 statement">
@@ -147,13 +235,19 @@
                         {if !empty($latestactions)}
                         {foreach $action in $latestactions}
                         <tr>
-                            <td><a href="/admin/action/edit/{echo $action->getId()}">{echo $action->getTitle()}</a></td>
+                            <td>
+                                {if $authUser->getId() == $action->getUserId() || $isAdmin}
+                                    <a href="/admin/action/edit/{echo $action->getId()}">{echo $action->getTitle()}</a>
+                                {/if}{else}
+                                    {echo $news->getTitle()}
+                                {/else}
+                            </td>
                             <td>{echo $action->getUserAlias()}</td>
                             <td>{echo $action->getCreated()}</td>
                             <td>
-                                {if $action->getApproved() == 0}Čeká na schválení{/if}
-                                {elseif $action->getApproved() == 1}Schváleno{/elseif}
-                                {else}Zamítnuto{/else}
+                                {if $action->getApproved() == 0}<span class="infoLabel infoLabelOrange">Čeká na schválení</span>{/if}
+                                {elseif $action->getApproved() == 1}<span class="infoLabel infoLabelGreen">Schváleno</span>{/elseif}
+                                {else}<span class="infoLabel infoLabelRed">Zamítnuto</span>{/else}
                             </td>
                         </tr>
                         {/foreach}
@@ -164,7 +258,7 @@
         </div><!--widgetbox-->
     </div><!--grid_5-->
 
-    <div class="grid_5">
+    <div class="grid_8">
         <div class="widgetbox">
             <div class="title"><h2 class="chat"><span>Nejnovější komentáře</span></h2></div>
             <div class="widgetcontent announcement">
@@ -176,9 +270,9 @@
                             {if $isAdmin}
                                 <span class="radius2">
                                     {if $comment->getType() == \App\Model\CommentModel::RESOURCE_ACTION}
-                                        <a href="/admin/action/showcomments/{echo $comment->getResourceId()}">Přejít na komentáře</a>
+                                        <a href="/admin/action/edit/{echo $comment->getResourceId()}#comments">Přejít na komentáře</a>
                                     {/if}{elseif $comment->getType() == \App\Model\CommentModel::RESOURCE_NEWS}
-                                        <a href="/admin/news/showcomments/{echo $comment->getResourceId()}">Přejít na komentáře</a>
+                                        <a href="/admin/report/edit/{echo $comment->getResourceId()}#comments">Přejít na komentáře</a>
                                     {/elseif}
                                 </span>
                             {/if}

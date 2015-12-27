@@ -25,8 +25,6 @@
     {/else}
     <link href="/public/css/custom/reset.css" media="screen" rel="stylesheet" type="text/css">
     <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css">
-    <link href="/public/css/foundation/foundation.css" rel="stylesheet">
-    <link href="/public/css/foundation/foundation-icons.css" rel="stylesheet">
     <link href="/public/css/plugins/lightbox.css" rel="stylesheet">
     <link href="/public/css/custom/styles.css" media="screen" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Ubuntu:400,700" rel="stylesheet" type="text/css">{if isset($canonical)}<link rel="canonical" href="{echo $canonical}">{/if}
@@ -142,23 +140,13 @@
     </div>
     <div id="dialog" title="Chcete pokračovat?">
       <p></p>
-    </div>{if $showfeedback}<a href="/feedback" class="fi-comment feedback">Pošlete nám feedback</a>
+    </div>
     <!--JS scripts
     -->
     <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
     <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
     <script type="text/javascript" src="/public/js/plugins/modernizr.js"></script>
-    <script type="text/javascript" src="/public/js/foundation.min.js"></script>
-    {if isset($includecarousel)}
-    <script type="text/javascript" src="/public/js/plugins/jquery.carouFredSel-6.1.0-packed.js"></script>
-    <script type="text/javascript" src="/public/js/custom/build/homeCarousel.js"></script>
-    {/if}
-    <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script>
-    {if isset($includejssorslider)}
-    <script type="text/javascript" src="/public/js/plugins/jssor.slider.mini.js"></script>
-    <script type="text/javascript" src="/public/js/custom/build/jssor.slider.init.js"></script>
-    {/if}
-    <script type="text/javascript" src="/public/js/custom/build/generalApp.js"></script>
+    <script type="text/javascript" src="/public/js/custom/generalApp.js"></script>
     {if $env == "live"}
     <!--Piwik
     -->

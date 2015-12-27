@@ -378,7 +378,7 @@ class Mysqldump extends Base
                 if ($this->_settings[$dbid]['use-file-compression'] === true) {
                     if (file_exists($path)) {
                         $this->_filemanager->gzCompressFile($path);
-                        unlink($path);
+                        @unlink($path);
                     }
                 }
             }

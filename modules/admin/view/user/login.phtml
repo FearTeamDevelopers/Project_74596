@@ -15,17 +15,17 @@
         <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
         
 
-        <title>TJ Sokol - Administrace</title>
+        <title>Hastrman - Administrace</title>
     </head>
     <body lang="cs">
         <div class="maincontent noright">
-            {include notifications.phtml}
+            {include components/notifications.phtml}
         </div>
 
         <div class="loginbox radius3">
             <div class="loginboxinner radius3">
                 <div class="loginheader">
-                    <h1 class="bebas">Sign In</h1>
+                    <h1 class="font-arial">Sign In</h1>
                     <div class="logo"><img src="/public/images/admin/logo_admin.png" alt="" /></div>
                 </div><!--loginheader-->
 
@@ -49,17 +49,20 @@
                     </div>
                     <form id="login" action="#" method="post">
                         <p>
-                            <label for="email" class="bebas">Email</label>
+                            <label for="email" class="font-arial">Email</label>
                             {echo \Admin\Helper\FormPrinter::input('email', 'email', array(), array('class'=>'radius2', 'required'=>true, 'autofocus'=>true, 'id'=>'email'))}
                         </p>
                         <p>
-                            <label for="password" class="bebas">Heslo</label>
+                            <label for="password" class="font-arial">Heslo</label>
                             {echo \Admin\Helper\FormPrinter::input('password', 'password', array(), array('class'=>'radius2', 'required'=>true, 'id'=>'password'))}
                         </p>
                         <p>
                             <input class="submit" name="submitLogin" type="submit" value="Přihlásit se" />
                         </p>
                     </form>
+                    <div>
+                        V případě potíží s přihlášením si prosím zkontrolujte, že máte povolené ukládání souborů cookie.
+                    </div>
                 </div><!--loginform-->
             </div><!--loginboxinner-->
         </div><!--loginbox-->

@@ -266,8 +266,7 @@ jQuery(document).ready(function () {
 
         jQuery.post(url, {csrf: csrf, action: action, ids: selected}, function (msg) {
             jQuery('#dialog p').text(msg);
-            jQuery("#loader, .loader").hide();
-
+            
             jQuery('#dialog').dialog({
                 title: 'Výsledek',
                 width: 450,
@@ -279,6 +278,7 @@ jQuery(document).ready(function () {
                         jQuery('.tableoptions select[name=selection]').val('1');
                         selected = [];
                         table.ajax.reload();
+                        jQuery("#loader, .loader").hide();
                     }
                 }
             });

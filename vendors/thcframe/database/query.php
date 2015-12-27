@@ -7,6 +7,7 @@ use THCFrame\Core\ArrayMethods;
 use THCFrame\Core\StringMethods;
 use THCFrame\Database\Exception as Exception;
 use THCFrame\Core\Core;
+use THCFrame\Registry\Registry;
 
 /**
  * Query class for OO query creating
@@ -91,10 +92,8 @@ class Query extends Base
      */
     protected function _logError($error, $sql)
     {
-        $errMessage = sprintf('There was an error in the query %s', $error) . PHP_EOL;
-        $errMessage .= 'SQL: ' . $sql;
-
-        Core::getLogger()->log($errMessage);
+        $errMessage = 'There was an error in the query {error} - SQL: {query}';
+        Core::getLogger()->error($errMessage, array('error' => $error, 'query' => $sql));
     }
 
     /**
@@ -127,7 +126,7 @@ class Query extends Base
             $buffer = join(', ', $buffer);
             return "({$buffer})";
         }
-
+        
         if (is_null($value)) {
             return 'NULL';
         }
@@ -208,6 +207,11 @@ class Query extends Base
 
         $input = sprintf($template, $joinedFields, $this->from, $this->alias, $join, $where, $groupBy, $having, $order, $limit);
         $output = mb_ereg_replace('\s+', ' ', $input);
+        
+        if(Registry::get('configuration')->profiler->logSql == 1){
+            Core::getLogger()->sql('{sql}', array('sql' => $output));
+        }
+
         return $output;
     }
 
@@ -232,6 +236,11 @@ class Query extends Base
 
         $input = sprintf($template, $this->from, $fields, $values);
         $output = mb_ereg_replace('\s+', ' ', $input);
+        
+        if(Registry::get('configuration')->profiler->logSql == 1){
+            Core::getLogger()->sql('{sql}', array('sql' => $output));
+        }
+        
         return $output;
     }
 
@@ -272,6 +281,10 @@ class Query extends Base
         $input = sprintf($template, $this->from, $parts, $where, $limit);
         $output = mb_ereg_replace('\s+', ' ', $input);
         
+        if(Registry::get('configuration')->profiler->logSql == 1){
+            Core::getLogger()->sql('{sql}', array('sql' => $output));
+        }
+        
         return $output;
     }
 
@@ -303,6 +316,11 @@ class Query extends Base
 
         $input = sprintf($template, $this->from, $where, $limit);
         $output = mb_ereg_replace('\s+', ' ', $input);
+        
+        if(Registry::get('configuration')->profiler->logSql == 1){
+            Core::getLogger()->sql('{sql}', array('sql' => $output));
+        }
+        
         return $output;
     }
 

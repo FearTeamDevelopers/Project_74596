@@ -15,12 +15,8 @@ jQuery(document).ready(function () {
                 shorttext:shorttext, text: text, keywords:keywords, 
                 metatitle:metatitle, metadescription:metadescription}, function (msg) {
             if (msg == 'fail') {
-                jQuery('#dialog p').text('Chyba při ukládání konceptu');
-                jQuery('#dialog').dialog({
-                    title: 'Chyba při ukládání konceptu',
-                    width: 600,
-                    modal: true
-                });
+                jQuery('#dialog p').text('Error while saving concept');
+                jQuery('#dialog').dialog();
             } else {
                 jQuery('#conceptid').val(msg);
             }
@@ -34,12 +30,8 @@ jQuery(document).ready(function () {
         
         jQuery.post(url, function (message) {
             if (message == 'notfound') {
-                jQuery('#dialog p').text('Chyba při načítání konceptu');
-                jQuery('#dialog').dialog({
-                    title: 'Chyba při načítání konceptu',
-                    width: 600,
-                    modal: true
-                });
+                jQuery('#dialog p').text('Error while loading concept');
+                jQuery('#dialog').dialog();
             } else {
                 var concept = jQuery.parseJSON(message);
 
@@ -74,7 +66,8 @@ jQuery(document).ready(function () {
     jQuery('#teaser-to-meta').click(function (event) {
         event.preventDefault();
         var value = CKEDITOR.instances['ckeditor2'].getData();
-        jQuery('textarea[name=metadescription]').val(value);
+        var short = value.substr(0, 250);
+        jQuery('textarea[name=metadescription]').val(short);
     });
 
     jQuery('#clear-text').click(function (event) {
@@ -101,7 +94,6 @@ jQuery(document).ready(function () {
         event.preventDefault();
         CKEDITOR.instances['ckeditor2'].insertText('<br class="clear-all" />');
     });
-
 
     jQuery('#text-link-to-gallery, #teaser-link-to-gallery').click(function (event) {
         event.preventDefault();

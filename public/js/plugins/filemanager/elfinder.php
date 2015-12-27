@@ -1,7 +1,7 @@
 <?php 
 session_start();
 
-if(!isset($_SESSION['app_authUser'])){
+if(!isset($_SESSION['thc_authUser'])){
     exit;
 }
 ?>

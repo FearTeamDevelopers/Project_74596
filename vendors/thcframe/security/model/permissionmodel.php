@@ -20,13 +20,14 @@ class PermissionModel extends Model
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 100
      * @index
      * @unique
@@ -39,16 +40,19 @@ class PermissionModel extends Model
     /**
      * @column
      * @readwrite
-     * @type boolean
+     * @index
+     * @type tinyint
+     * @length 1
      * 
-     * @validate max(3)
+     * @default 1
+     * @validate max(1)
      */
     protected $_active;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      *
      * @validate required, alpha, max(50)
@@ -59,7 +63,7 @@ class PermissionModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      *
      * @validate required, alpha, max(50)
@@ -70,7 +74,7 @@ class PermissionModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      *
      * @validate required, alpha, max(50)
@@ -81,38 +85,48 @@ class PermissionModel extends Model
     /**
      * @column
      * @readwrite
-     * @type boolean
+     * @index
+     * @type tinyint
+     * @length 1
      * 
-     * @validate max(3)
+     * @default 1
+     * @validate max(1)
      */
     protected $_isAllowed;
 
     /**
      * @column
      * @readwrite
-     * @type boolean
+     * @index
+     * @type tinyint
+     * @length 1
      * 
-     * @validate max(3)
+     * @default 1
+     * @validate max(1)
      */
     protected $_isDenied;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_modified;
 

@@ -11,9 +11,7 @@ use THCFrame\Events\Events as Event;
  */
 class ConceptController extends Controller
 {
-
     /**
-     * 
      * @before _secured, _participant
      */
     public function store()
@@ -22,7 +20,7 @@ class ConceptController extends Controller
 
         $conceptId = RequestMethods::post('conceptid', 0);
 
-        if ((int)$conceptId === 0) {
+        if ((int) $conceptId === 0) {
             $concept = new \Admin\Model\ConceptModel(array(
                 'userId' => $this->getUser()->getId(),
                 'type' => RequestMethods::post('type'),
@@ -31,21 +29,21 @@ class ConceptController extends Controller
                 'body' => RequestMethods::post('text'),
                 'keywords' => RequestMethods::post('keywords'),
                 'metaTitle' => RequestMethods::post('metatitle'),
-                'metaDescription' => RequestMethods::post('metadescription')
+                'metaDescription' => RequestMethods::post('metadescription'),
             ));
             if ($concept->validate()) {
                 $id = $concept->save();
 
-                Event::fire('admin.log', array('success', 'Concept id: ' . $id));
+                Event::fire('admin.log', array('success', 'Concept id: '.$id));
                 echo $id;
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: new concept' .
-                    ' Errors: ' . json_encode($concept->getErrors())));
+                Event::fire('admin.log', array('fail', 'Concept id: new concept'.
+                    ' Errors: '.json_encode($concept->getErrors()), ));
 
                 echo 'fail';
             }
         } else {
-            $concept = \Admin\Model\ConceptModel::first(array('id = ?' => (int)$conceptId));
+            $concept = \Admin\Model\ConceptModel::first(array('id = ?' => (int) $conceptId));
 
             $concept->title = RequestMethods::post('title');
             $concept->shortBody = RequestMethods::post('shorttext');
@@ -57,11 +55,11 @@ class ConceptController extends Controller
             if ($concept->validate()) {
                 $concept->save();
 
-                Event::fire('admin.log', array('success', 'Concept id: ' . $concept->getId()));
+                Event::fire('admin.log', array('success', 'Concept id: '.$concept->getId()));
                 echo $concept->getId();
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: ' . $conceptId .
-                    ' Errors: ' . json_encode($concept->getErrors())));
+                Event::fire('admin.log', array('fail', 'Concept id: '.$conceptId.
+                    ' Errors: '.json_encode($concept->getErrors()), ));
 
                 echo 'fail';
             }
@@ -69,28 +67,27 @@ class ConceptController extends Controller
     }
 
     /**
-     * 
      * @before _secured, _participant
+     *
      * @param type $id
      */
     public function delete($id)
     {
         $this->_disableView();
-        
+
         $concept = \Admin\Model\ConceptModel::first(array('id = ?' => (int) $id, 'userId = ?' => $this->getUser()->getId()));
 
-        if (NULL === $concept) {
+        if (null === $concept) {
             echo $this->lang('NOT_FOUND');
         } else {
             if ($concept->delete()) {
-                Event::fire('admin.log', array('success', 'Concept id: ' . $id));
+                Event::fire('admin.log', array('success', 'Concept id: '.$id));
                 echo 'success';
             } else {
-                Event::fire('admin.log', array('fail', 'Concept id: ' . $id,
-                    'Errors: ' . json_encode($concept->getErrors())));
+                Event::fire('admin.log', array('fail', 'Concept id: '.$id,
+                    'Errors: '.json_encode($concept->getErrors()), ));
                 echo $this->lang('COMMON_FAIL');
             }
         }
     }
-
 }

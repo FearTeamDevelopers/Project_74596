@@ -41,9 +41,8 @@
                             {if ($gallery->getUserId() == $authUser->getId())}<span class="infoLabel infoLabelGray">Moje</span>{/if}
                         </td>
                         <td>
-                            <a href="/admin/gallery/detail/{echo $gallery->id}" class="btn btn_image2">
-                                <span>Vstoupit do galerie</span>
-                            </a>
+                            <a href="/admin/gallery/detail/{echo $gallery->id}" class="btn btn3 btn_image2" title="Vstoupit do galerie"></a>
+                            <a href="/admin/gallery/delete/{echo $gallery->id}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
                         </td>
                     </tr>
                 {/foreach}

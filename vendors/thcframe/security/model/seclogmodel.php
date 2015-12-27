@@ -15,23 +15,24 @@ class SecLogModel extends Model
      * @readwrite
      * @primary
      * @type auto_increment
+     * @unsigned
      */
     protected $_id;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 150
+     * @type varchar
+     * @length 100
      * 
-     * @validate alphanumeric, max(150)
+     * @validate alphanumeric, max(100)
      */
     protected $_userId;
 
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
@@ -41,7 +42,7 @@ class SecLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
@@ -51,7 +52,7 @@ class SecLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
+     * @type varchar
      * @length 50
      * 
      * @validate alpha, max(50)
@@ -62,7 +63,7 @@ class SecLogModel extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate alphanumeric
      */
@@ -72,7 +73,7 @@ class SecLogModel extends Model
      * @column
      * @readwrite
      * @type text
-     * @length 256
+     * @null
      * 
      * @validate alphanumeric, max(500)
      */
@@ -81,30 +82,34 @@ class SecLogModel extends Model
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 20
+     * @type char
+     * @length 15
      * 
-     * @validate numeric, max(20)
+     * @validate numeric, max(15)
      */
     protected $_userIp;
     
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_created;
 
     /**
      * @column
      * @readwrite
-     * @type text
-     * @length 22
+     * @type char
+     * @length 19
+     * @null
      * 
-     * @validate datetime, max(22)
+     * @default null
+     * @validate datetime, max(19)
      */
     protected $_modified;
 

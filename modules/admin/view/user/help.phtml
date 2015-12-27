@@ -16,20 +16,36 @@
 
         <div id="roles">
             <h3>Uživatelské role</h3>
-            <p>
-            <ul>
-                <li>Člen - nemá přístup do administrace, využití zatím jen v bazaru</li>
-                <li>Člen s přístupem do administrace - může vytvářet akce, novinky, reportáže a galerie</li>
-                <li>Admin - může schvalovat články, vytvářet a upravovat Obsah webu, vytvářet uživatele a vidí část systémových nastavení</li>
-                <li>Super Admin - pouze jako systémový účet</li>
-            </ul>
-            </p><br/><br/>
+            <div>
+                <ul>
+                    <li>Člen - nemá přístup do administrace, využití bazaru a při přihlašování k akcím</li>
+                    <li>Člen s přístupem do administrace - může vytvářet akce, novinky, reportáže (ty ale čekají na schválení administrátorem) a galerie</li>
+                    <li>Admin - může schvalovat články, vytvářet a upravovat Obsah webu, vytvářet uživatele a vidí část systémových nastavení</li>
+                </ul>
+            </div>
+            {if $isAdmin}
+            <br/><br/>
+            <h3>Vlastnosti uživatele</h3>
+            <div>
+                <ul>
+                    <li>Jméno - povinné</li>
+                    <li>Příjmení - povinné</li>
+                    <li>Telefon - nepovinné, použití v bazaru pro rychlejší komunikaci</li>
+                    <li>Notifikace - nepovinné, emailové upozornění na dění na stránkách</li>
+                    <li>Email - povinný údaj, slouží pro přihlašování a jako jeden z hlavních údajů v inzerátech v bazaru</li>
+                    <li>Heslo - musí obsahovat minimálně 5 znaků, velká a malá písmena, čísla a znaky (např. -%_*+ atd.)</li>
+                </ul>
+                Z důvodu zachování informací o uživateli v článcích (kdo článek vytvořil) nedochází k úplnému smazání uživatele, ale pouze k označení
+                jako smazaného. Takovýto uživatel se již nemůže na stránky přihlásit a ani nemůže být vytvořen nový uživatelský účet se stejným emailem.
+            </div>
+            {/if}
+            <br/><br/>
             <h3>Přístup do administrace</h3>
             <p>
                 Pokud chcete přidělit uživateli přístup do administrace stačí vytvořit nového uživatele s rolí Člen s přístupem do administrace 
                 nebo tuto roli nastavit již registrovanému uživateli. Roli Admin bych již nikomu nepřiděloval.
             </p>
         </div>
-        
+
     </div>
 </div>

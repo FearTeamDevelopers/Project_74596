@@ -9,13 +9,14 @@
         <link href="/public/css/plugins/grid.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/smoothness/jquery-ui-1.10.4.custom.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/lightbox.css" rel="stylesheet"  type="text/css" />
+        <link href="/public/css/plugins/dropzone.css" rel="stylesheet"  type="text/css" />
         <link href="/public/css/custom/styleAdmin.min.css" media="screen" rel="stylesheet" type="text/css" />
         <link href="/public/css/plugins/jquery.cropit.css" media="screen" rel="stylesheet" type="text/css" />
 
         <script type="text/javascript" src="/public/js/plugins/jquery-1.11.1.min.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery-ui-1.10.4.custom.min.js"></script>
 
-        <title>{echo $title}</title>
+        <title>Hastrman - Administrace</title>
     </head>
     <body lang="cs">
         <div class="header radius3">
@@ -32,7 +33,7 @@
                         </a>
                         <div class="userdrop">
                             <ul>
-                                <li><a href="/admin/user/updateprofile/">Profil</a></li>
+                                <li><a href="/admin/user/profile/">Profil</a></li>
                                 <li><a href="/admin/logout">Odhlásit se</a></li>
                             </ul>
                         </div><!--userdrop-->
@@ -49,14 +50,14 @@
                 <div class="mainleft">
                     <div class="mainleftinner">
                         <div class="leftmenu">
-                            {include menu.phtml}
+                            {include components/menu.phtml}
                         </div><!--leftmenu-->
                         <div id="togglemenuleft"><a></a></div>
                     </div><!--mainleftinner-->
                 </div><!--mainleft-->
 
                 <div class="maincontent noright">
-                    {include notifications.phtml}
+                    {include components/notifications.phtml}
 
                     <div class="maincontentinner container_16">
                         {yield action}
@@ -84,6 +85,6 @@
         <script type="text/javascript" src="/public/js/plugins/lightbox.min.js"></script>
         <script type="text/javascript" src="/public/js/plugins/ckeditor/ckeditor.js"></script>
         <script type="text/javascript" src="/public/js/plugins/jquery.cropit.min.js"></script>
-        <script type="text/javascript" src="/public/js/custom/generalAdmin.js" id="mainCusScr" async></script>
+        <script type="text/javascript" src="/public/js/custom/build/generalAdmin.js" id="mainCusScr" async></script>
     </body>
 </html>

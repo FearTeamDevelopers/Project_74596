@@ -38,12 +38,12 @@ class Logger {
      */
     public function __construct($options) {
         if (!isset($options['file'])) {
-            throw new Exception('Log file invalid.');
+            throw new \Exception('Log file invalid.');
         }
 
         $this->_file = $options['file'];
         $this->_entries = array();
-        $this->_start = microtime();
+        $this->_start = microtime(true);
     }
 
     /**
@@ -53,7 +53,7 @@ class Logger {
     public function log($message) {
         $this->_entries[] = array(
             'message' => '[' . date('Y-m-d H:i:s') . ']' . $message,
-            'time' => microtime()
+            'time' => microtime(true)
         );
     }
 
@@ -74,7 +74,7 @@ class Logger {
         $messages .= 'Average: ' . $this->_average($times);
         $messages .= ', Longest: ' . max($times);
         $messages .= ', Shortest: ' . min($times);
-        $messages .= ', Total: ' . (microtime() - $this->_start);
+        $messages .= ', Total: ' . round(microtime(true) - $this->_start, 6);
         $messages .= PHP_EOL;
 
         file_put_contents($this->_file, $messages, FILE_APPEND);

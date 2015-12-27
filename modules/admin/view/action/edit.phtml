@@ -1,6 +1,5 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/action/">Akce</a></li>
-    <li><a href="/admin/action/showattendance/">Docházka</a></li>
     <li><a href="/admin/action/add/">Přidat Akci</a></li>
     <li class="current"><a href="#">Upravit Akci</a></li>
     <li><a href="/admin/action/help/">Nápověda</a></li>
@@ -8,8 +7,15 @@
 
 {if isset($action)}
 <div class="content">
-    <div class="widgetbox">
-        {if !empty($concepts)}
+    <div id="tabs">
+        <ul>
+            <li><a href="#basic">Základní údaje</a></li>
+            <li><a href="#attendance">Účastníci</a></li>
+            <li><a href="#comments">Komentáře</a></li>
+        </ul>
+
+        <div class="widgetbox" id="basic">
+            {if !empty($concepts)}
             <div class="contenttitle radiusbottom0">
                 <h2 class="table"><span>Koncepty</span></h2>
             </div><!--contenttitle-->
@@ -19,7 +25,7 @@
                 </colgroup>
                 <thead>
                     <tr>
-                        <td class="head0">Vytvořen</td>
+                        <td class="head0">Vytvořeno</td>
                         <td class="head1">Poslední změna</td>
                         <td class="head0">&nbsp;</td>
                     </tr>
@@ -33,200 +39,268 @@
                 </tr>
                 {/foreach}
             </table>
-        {/if}
-        
-        <div class="contenttitle radiusbottom0">
-            <h2 class="table"><span>Základní info</span></h2>
-        </div><!--contenttitle-->
+            {/if}
 
-        <form class="stdform stdform2" method="post" action="#" >
-            <input type="hidden" name="conceptid" id="conceptid" value="{echo isset($conceptid) ? $conceptId:0}" />
-            <input type="hidden" name="concepttype" id="concepttype" value="1" />
-            <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
-            <p>
-                <label>Název*</label>
-                <span class="field">
-                    {echo \Admin\Helper\FormPrinter::input('text', 'title', array($action,'title'), array('required'=>true))}
-                    {if isset($errors["title"])}
-                    <label class="error">{echo join("<br/>", $errors["title"])}</label>
-                    {/if}
-                </span>
-            </p>
-            <p>
-                <label>Pořadí<small>Max. 99</small></label>
-                <span class="field">
-                    {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($action,'rank',1))}
-                    {if isset($errors["rank"])}
-                    <label class="error">{echo join("<br/>", $errors["rank"])}</label>
-                    {/if}
-                </span>
-            </p>
-            <p>
-                <label>Teaser*<small>Max. 750 znaků</small></label>
-                <span class="field">
-                    <textarea rows="20" name="shorttext" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($action,'shortBody')}</textarea>
-                    {if isset($errors["shortBody"])}
-                    <label class="error">{echo join("<br/>", $errors["shortBody"])}</label>
-                    {/if}
-                    <br/>
-                    <button id="clear-teaser">Smazat</button>
-                    <button id="teaser-new-paragraph">Nový odstavec</button>
-                    <button id="teaser-readmore-link">Přidat odkaz na celý článek</button>
-                    <button id="teaser-to-text">Zkopírovat do Text</button>
-                    <button id="teaser-link-to-gallery">Odkaz na galerii</button>
-                    <button id="teaser-link-to-action">Odkaz na akci</button>
-                    <button id="teaser-link-to-news">Odkaz na novinku</button>
-                    <button id="teaser-link-to-content">Odkaz na stránku</button>
-                </span>
-            </p>
-            <p>
-                <label>Text*</label>
-                <span class="field">
-                    <textarea rows="20" name="text" id="ckeditor">{echo \Admin\Helper\FormPrinter::iset($action,'body')}</textarea>
-                    {if isset($errors["body"])}
-                    <label class="error">{echo join("<br/>", $errors["body"])}</label>
-                    {/if}
-                    <br/>
-                    <button id="clear-text">Smazat</button>
-                    <button id="text-new-paragraph">Nový odstavec</button>
-                    <button id="text-to-teaser">Zkopírovat do Teaser</button>
-                    <button id="text-link-to-gallery">Odkaz na galerii</button>
-                    <button id="text-link-to-action">Odkaz na akci</button>
-                    <button id="text-link-to-news">Odkaz na novinku</button>
-                    <button id="text-link-to-content">Odkaz na stránku</button>
-                </span>
-            </p>
-            <p>
-                <label>Datum - začátek</label>
-                <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'datestart', array($action,'startDate'), array('class'=>'width20 datepicker2'))}
-                    Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timestart', array($action,'startTime'), array('class'=>'width20'))}
-
-                    {if isset($errors["startDate"])}
-                    <label class="error">{echo join("<br/>", $errors["startDate"])}</label>
-                    {/if}
-                    {if isset($errors["startTime"])}
-                    <label class="error">{echo join("<br/>", $errors["startTime"])}</label>
-                    {/if}
-                </span>
-            </p>
-            <p>
-                <label>Datum - konec</label>
-                <span class="field">
-                    Datum: {echo \Admin\Helper\FormPrinter::input('text', 'dateend', array($action,'endDate'), array('class'=>'width20 datepicker3'))}
-                    Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timeend', array($action,'endTime'), array('class'=>'width20'))}
-
-                    {if isset($errors["endDate"])}
-                    <label class="error">{echo join("<br/>", $errors["endDate"])}</label>
-                    {/if}
-                    {if isset($errors["endTime"])}
-                    <label class="error">{echo join("<br/>", $errors["endTime"])}</label>
-                    {/if}
-                </span>
-            </p>
-            <p>
-                <label>Typ</label>
-                <span class="field">
-                    <select name="type" class="width80">
-                        {foreach $type in \App\Model\ActionModel::getTypes()}
-                            {script $sel=""}
-                            {if $type_i == $action->actionType}
-                                {script $sel="selected"}
-                            {/if}
-                        
-                            <option value="{echo $type_i}" {echo $sel}>{echo $type}</option>
-                        {/foreach}
-                    </select>
-                </span>
-            </p>
-            
-            <br/>
             <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>Systémové info</span></h2>
+                <h2 class="table"><span>Základní info</span></h2>
             </div><!--contenttitle-->
-            <p>
-                <label>Aktivní</label>
-                <span class="field">
-                    <select name="active" class="width80">
-                        {if $action->active}
-                        <option value="0">Neaktivní</option>
-                        <option value="1" selected>Aktivní</option>
-                        {/if}{else}
-                        <option value="0" selected>Neaktivní</option>
-                        <option value="1">Aktivní</option>
-                        {/else}
-                    </select>
-                </span>
-            </p>
-            <p>
-                <label>Schváleno</label>
-                <span class="field">
-                    <select name="approve" class="width80">
-                        {foreach $type in \App\Model\ActionModel::getStates()}
+
+            <form class="stdform stdform2" method="post" action="#" >
+                <input type="hidden" name="conceptid" id="conceptid" value="{echo isset($conceptid) ? $conceptId:0}" />
+                <input type="hidden" name="concepttype" id="concepttype" value="1" />
+                <input type="hidden" name="csrf" id="csrf" value="{echo $token}" />
+                <p>
+                    <label>Název*</label>
+                    <span class="field">
+                        {echo \Admin\Helper\FormPrinter::input('text', 'title', array($action,'title'), array('required'=>true))}
+                        {if isset($errors["title"])}
+                        <label class="error">{echo join("<br/>", $errors["title"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Pořadí<small>Max. 99</small></label>
+                    <span class="field">
+                        {echo \Admin\Helper\FormPrinter::input('text', 'rank', array($action,'rank',1))}
+                        {if isset($errors["rank"])}
+                        <label class="error">{echo join("<br/>", $errors["rank"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Teaser*<small>Max. 750 znaků</small></label>
+                    <span class="field">
+                        <textarea rows="20" name="shorttext" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($action,'shortBody')}</textarea>
+                        {if isset($errors["shortBody"])}
+                        <label class="error">{echo join("<br/>", $errors["shortBody"])}</label>
+                        {/if}
+                        <br/>
+                        {include components/teaserButtons.phtml}
+                    </span>
+                </p>
+                <p>
+                    <label>Text*</label>
+                    <span class="field">
+                        <textarea rows="20" name="text" id="ckeditor">{echo \Admin\Helper\FormPrinter::iset($action,'body')}</textarea>
+                        {if isset($errors["body"])}
+                        <label class="error">{echo join("<br/>", $errors["body"])}</label>
+                        {/if}
+                        <br/>
+                        {include components/textButtons.phtml}
+                    </span>
+                </p>
+                <p>
+                    <label>Datum - začátek*</label>
+                    <span class="field">
+                        Datum: {echo \Admin\Helper\FormPrinter::input('text', 'datestart', array($action,'startDate'), array('class'=>'width20 datepicker2','required'=>true))}
+                        Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timestart', array($action,'startTime'), array('class'=>'width20'))}
+
+                        {if isset($errors["startDate"])}
+                        <label class="error">{echo join("<br/>", $errors["startDate"])}</label>
+                        {/if}
+                        {if isset($errors["startTime"])}
+                        <label class="error">{echo join("<br/>", $errors["startTime"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Datum - konec*</label>
+                    <span class="field">
+                        Datum: {echo \Admin\Helper\FormPrinter::input('text', 'dateend', array($action,'endDate'), array('class'=>'width20 datepicker3','required'=>true))}
+                        Čas: {echo \Admin\Helper\FormPrinter::input('time', 'timeend', array($action,'endTime'), array('class'=>'width20'))}
+
+                        {if isset($errors["endDate"])}
+                        <label class="error">{echo join("<br/>", $errors["endDate"])}</label>
+                        {/if}
+                        {if isset($errors["endTime"])}
+                        <label class="error">{echo join("<br/>", $errors["endTime"])}</label>
+                        {/if}
+                    </span>
+                </p>
+
+                <br/>
+                <div class="contenttitle radiusbottom0">
+                    <h2 class="table"><span>Systémové info</span></h2>
+                </div><!--contenttitle-->
+                <p>
+                    <label>Aktivní</label>
+                    <span class="field">
+                        <select name="active" class="width80">
+                            {if $action->active}
+                            <option value="0">Neaktivní</option>
+                            <option value="1" selected>Aktivní</option>
+                            {/if}{else}
+                            <option value="0" selected>Neaktivní</option>
+                            <option value="1">Aktivní</option>
+                            {/else}
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>Schváleno</label>
+                    <span class="field">
+                        <select name="approve" class="width80">
+                            {foreach $type in \App\Model\ActionModel::getStates()}
                             {script $sel=""}
                             {if $type_i == $action->approved}
-                                {script $sel="selected"}
+                            {script $sel="selected"}
                             {/if}
-                        
+
                             <option value="{echo $type_i}" {echo $sel}>{echo $type}</option>
-                        {/foreach}
-                    </select>
-                </span>
-            </p>
-            <p>
-                <label>V archivu</label>
-                <span class="field">
-                    <select name="archive" class="width80">
-                        {if $action->archive}
-                        <option value="0">Ne</option>
-                        <option value="1" selected>Ano</option>
-                        {/if}{else}
-                        <option value="0" selected>Ne</option>
-                        <option value="1">Ano</option>
-                        {/else}
-                    </select>
-                </span>
-            </p>
+                            {/foreach}
+                        </select>
+                    </span>
+                </p>
+                <p>
+                    <label>V archivu</label>
+                    <span class="field">
+                        <select name="archive" class="width80">
+                            {if $action->archive}
+                            <option value="0">Ne</option>
+                            <option value="1" selected>Ano</option>
+                            {/if}{else}
+                            <option value="0" selected>Ne</option>
+                            <option value="1">Ano</option>
+                            {/else}
+                        </select>
+                    </span>
+                </p>
 
-            <br/>
+                <br/>
+                <div class="contenttitle radiusbottom0">
+                    <h2 class="table"><span>Metadata</span></h2>
+                </div><!--contenttitle-->
+                <p>
+                    <label>Meta-název</label>
+                    <span class="field">
+                        {echo \Admin\Helper\FormPrinter::input('text', 'metatitle', array($action,'metaTitle'), array('placeholder'=>'Výchozí hodnota: stejná jako Název'))}
+                        {if isset($errors["metaTitle"])}
+                        <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
+                        {/if}
+                    </span>
+                </p>
+                <p>
+                    <label>Meta-popis</label>
+                    <span class="field">
+                        <textarea rows="5" name="metadescription" class="width80" >{echo \Admin\Helper\FormPrinter::iset($action,'metaDescription')}</textarea>
+                        {if isset($errors["metaDescription"])}
+                        <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
+                        {/if}
+                        <br/>
+                    </span>
+                </p>
+                <p>
+                    <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
+                    <span class="field">
+                        {echo \Admin\Helper\FormPrinter::input('text', 'keywords', array($action,'keywords'), array('placeholder'=>"Oddělovač: mezera"))}
+                        {if isset($errors["keywords"])}
+                        <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
+                        {/if}
+                    </span>
+                </p>
+
+                <p class="stdformbutton">
+                    <input name="submitEditAction" type="submit" value="Uložit" class="submit radius2" />
+                    <input name="submitPreviewAction" type="submit" value="Zobrazit náhled" class="submit radius2" />
+                </p>
+            </form>
+        </div>
+
+        <div class="widgetbox" id="attendance">
             <div class="contenttitle radiusbottom0">
-                <h2 class="table"><span>Metadata</span></h2>
+                <h2 class="table"><span>Účastníci</span></h2>
             </div><!--contenttitle-->
-            <p>
-                <label>Meta-název</label>
-                <span class="field">
-                    {echo \Admin\Helper\FormPrinter::input('text', 'metatitle', array($action,'metaTitle'), array('placeholder'=>'Výchozí hodnota: stejná jako Název'))}
-                    {if isset($errors["metaTitle"])}
-                    <label class="error">{echo join("<br/>", $errors["metaTitle"])}</label>
-                    {/if}
-                </span>
-            </p>
-            <p>
-                <label>Meta-popis</label>
-                <span class="field">
-                    <textarea rows="5" name="metadescription" class="width80" >{echo \Admin\Helper\FormPrinter::iset($action,'metaDescription')}</textarea>
-                    {if isset($errors["metaDescription"])}
-                    <label class="error">{echo join("<br/>", $errors["metaDescription"])}</label>
-                    {/if}
-                    <br/>
-                </span>
-            </p>
-            <p>
-                <label>Klíčová slova<small>Pro interní vyhledávač</small></label>
-                <span class="field">
-                    {echo \Admin\Helper\FormPrinter::input('text', 'keywords', array($action,'keywords'), array('placeholder'=>"Oddělovač: mezera"))}
-                    {if isset($errors["keywords"])}
-                    <label class="error">{echo join("<br/>", $errors["keywords"])}</label>
-                    {/if}
-                </span>
-            </p>
+            <table cellpadding="0" cellspacing="0" border="0" class="stdtable">
+                <colgroup>
+                    <col class="con0" /> <col class="con1" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <td class="head0">Jméno a příjmení</td>
+                        <td class="head1">Stav</td>
+                        <td class="head0">&nbsp;</td>
+                    </tr>
+                </thead>
+                {if !empty($attendance)}
+                    {foreach $user in $attendance}
+                        <tr>
+                            <td>{echo $user->getFirstname()." ".$user->getLastname()}</td>
+                            <td>
+                                {if $user->getType() == \App\Model\AttendanceModel::ACCEPT}
+                                    Zúčastní se
+                                {/if}{elseif $user->getType() == \App\Model\AttendanceModel::REJECT}
+                                    Nezúčastní se
+                                {/elseif}{else}
+                                    Ještě neví
+                                {/else}
+                            </td>
+                            <td></td>
+                        </tr>
+                    {/foreach}
+                {/if}
+            </table>
+        </div>
 
-            <p class="stdformbutton">
-                <input name="submitEditAction" type="submit" value="Uložit" class="submit radius2" />
-                <input name="submitPreviewAction" type="submit" value="Zobrazit náhled" class="submit radius2" />
-            </p>
-        </form>
+        <div class="widgetbox" id="comments">
+            <div class="contenttitle radiusbottom0">
+                <h2 class="table"><span>Komentáře</span></h2>
+            </div><!--contenttitle-->
+
+            <table cellpadding="0" cellspacing="0" border="0" class="stdtable" >
+                <colgroup>
+                    <col class="con0" /><col class="con1" />
+                    <col class="con0" /><col class="con1" />
+                    <col class="con0" />
+                </colgroup>
+                <thead>
+                    <tr>
+                        <td class="head0">Id</td><td class="head1">Autor</td>
+                        <td class="head0">Text</td><td class="head1">Vytvořeno</td>
+                        <td class="head0">&nbsp;</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {if (!empty($comments))}
+                    {macro showReplies($replies)}
+                    {foreach $reply in $replies}
+                    <tr>
+                        <td class="alignright">=></td>
+                        <td>{echo $reply->getFirstname()." ".$reply->getLastname()}</td>
+                        <td>{echo $reply->getBody()}</td>
+                        <td>{echo $reply->getCreated()}</td>
+
+                        <td>
+                            <a href="/admin/comment/delete/{echo $reply->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                        </td>
+                    </tr>
+                    {if !empty($reply->_replies)}
+                    {echo showReplies($reply->_replies)}
+                    {/if}
+                    {/foreach}
+                    {/macro}
+
+                    {foreach $comment in $comments}
+                    <tr>
+                        <td>{echo $comment->getId()}</td>
+                        <td>{echo $comment->getFirstname()." ".$comment->getLastname()}</td>
+                        <td>{echo $comment->getBody()}</td>
+                        <td>{echo $comment->getCreated()}</td>
+
+                        <td>
+                            <a href="/admin/comment/delete/{echo $comment->getId()}" class="btn btn3 btn_trash ajaxDelete" title="Smazat"></a>
+                        </td>
+                    </tr>
+
+                    {if !empty($comment->_replies)}
+                    {echo showReplies($comment->_replies)}
+                    {/if}
+                    {/foreach}
+                    {/if}
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>
 <br class="clear-all"/>
 <div id="insert-dialog"><p></p></div>

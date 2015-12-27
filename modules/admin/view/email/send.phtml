@@ -33,8 +33,9 @@
                 <label>Typ emailu</label>
                 <span class="field">
                     <select name="type" class="width40">
-                        <option value="1">Jednotlivý příjemci</option>
+                        <option value="1">Jednotliví příjemci</option>
                         <option value="2">Hromadný pro skupinu</option>
+                        <option value="3">Pro účastníky akce</option>
                     </select>
                 </span>
             </p>
@@ -42,6 +43,21 @@
                 <label>Příjemci*</label>
                 <span class="field">
                     {echo \Admin\Helper\FormPrinter::input('text', 'singlerecipients', array($email,'recipientlist'), array('placeholder'=>'Emaily oddělené čárkou'))}
+                    {if isset($errors["recipientlist"])}
+                    <label class="error">{echo join("<br/>", $errors["recipientlist"])}</label>
+                    {/if}
+                </span>
+            </p>
+            <p id="actionRecipient" class="nodisplay">
+                <label>Akce*</label>
+                <span class="field">
+                    <select name="actionid" class="width40">
+                        {if !empty($actions)}
+                            {foreach $action in $actions}
+                                <option value="{echo $action->getId()}" >{echo $action->getTitle()}</option>
+                            {/foreach}
+                        {/if}
+                    </select>
                     {if isset($errors["recipientlist"])}
                     <label class="error">{echo join("<br/>", $errors["recipientlist"])}</label>
                     {/if}

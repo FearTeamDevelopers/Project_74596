@@ -2,6 +2,9 @@
 
 namespace THCFrame\Request;
 
+use THCFrame\Registry\Registry;
+use THCFrame\Request\CookieBag;
+
 /**
  * Request methods wrapper class
  */
@@ -92,6 +95,20 @@ class RequestMethods
     }
 
     /**
+     * Check if key is in $_POST array
+     * 
+     * @param mixed $key
+     * @return boolean
+     */
+    public static function issetserver($key)
+    {
+        if (isset($_SERVER[$key])) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
      * Get value from $_COOKIE array
      * 
      * @param mixed $key
@@ -100,9 +117,12 @@ class RequestMethods
      */
     public static function cookie($key, $default = '')
     {
-        if (!empty($_COOKIE[$key])) {
-            return $_COOKIE[$key];
+        $cookieBag = CookieBag::getInstance();
+        
+        if($cookieBag->get($key) !== null){
+           return $cookieBag->get($key);
         }
+        
         return $default;
     }
 
@@ -116,15 +136,15 @@ class RequestMethods
         $ipaddress = '';
         if (isset($_SERVER['HTTP_CLIENT_IP'])) {
             $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
             $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_X_FORWARDED'])) {
+        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
             $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
-        } else if (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
+        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
             $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        } else if (isset($_SERVER['HTTP_FORWARDED'])) {
+        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
             $ipaddress = $_SERVER['HTTP_FORWARDED'];
-        } else if (isset($_SERVER['REMOTE_ADDR'])) {
+        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
             $ipaddress = $_SERVER['REMOTE_ADDR'];
         } else {
             $ipaddress = 'UNKNOWN';
@@ -139,9 +159,8 @@ class RequestMethods
      */
     public static function getBrowser()
     {
-        $ua = get_browser();
-
-        return json_encode($ua);
+        $browser = Registry::get('browser');
+        return $browser->getBrowser().' '.$browser->getVersion().' '.$browser->getPlatform().' '.$browser->getUserAgent();
     }
 
     /**
@@ -150,8 +169,8 @@ class RequestMethods
      */
     public static function getHttpReferer()
     {
-        if ($_SERVER['HTTP_REFERER'] === false) {
-            return null;
+        if (!isset($_SERVER['HTTP_REFERER']) || $_SERVER['HTTP_REFERER'] === false || $_SERVER['HTTP_REFERER'] === '') {
+            return '';
         } else {
             return $_SERVER['HTTP_REFERER'];
         }

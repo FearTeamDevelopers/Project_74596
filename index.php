@@ -1,18 +1,18 @@
 <?php
 
 //define environment
-if(preg_match('#^.*\.dev$#i',$_SERVER['SERVER_NAME'])){
-    defined('ENV')? null : define('ENV', 'dev');
-}elseif(preg_match('#^.*\.fear-team\.cz$#i', $_SERVER['SERVER_NAME'])){
-    defined('ENV')? null : define('ENV', 'qa');
-}elseif(preg_match('#^dev\..*\.cz$#i', $_SERVER['SERVER_NAME'])){
-    defined('ENV')? null : define('ENV', 'qa');
-}else{
-    defined('ENV')? null : define('ENV', 'live');
+if (preg_match('#^.*\.dev$#i', $_SERVER['SERVER_NAME'])) {
+    defined('ENV') ? null : define('ENV', 'dev');
+} elseif (preg_match('#^.*\.fear-team\.cz$#i', $_SERVER['SERVER_NAME'])) {
+    defined('ENV') ? null : define('ENV', 'qa');
+} elseif (preg_match('#^dev\..*\.cz$#i', $_SERVER['SERVER_NAME'])) {
+    defined('ENV') ? null : define('ENV', 'qa');
+} else {
+    defined('ENV') ? null : define('ENV', 'live');
 }
 
-defined('APP_PATH')? null : define('APP_PATH', realpath(dirname(__FILE__)));
-defined('MODULES_PATH')? null : define('MODULES_PATH', realpath(dirname(__FILE__).DIRECTORY_SEPARATOR.'modules'));
+defined('APP_PATH') ? null : define('APP_PATH', realpath(dirname(__FILE__)));
+defined('MODULES_PATH') ? null : define('MODULES_PATH', realpath(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'modules'));
 
 if (ENV == 'dev') {
     error_reporting(E_ALL);
@@ -25,7 +25,7 @@ if (ENV == 'dev') {
 if (version_compare(phpversion(), '5.4', '<')) {
     header('Content-type: text/html');
     include(APP_PATH . '/phpversion.phtml');
-    exit();
+    exit;
 }
 
 //xdebug profiler
@@ -35,9 +35,16 @@ if (version_compare(phpversion(), '5.4', '<')) {
 //register modules
 $modules = array('App', 'Admin', 'Search', 'Cron');
 
+//autoloader prefixes
+$prefixes = array(
+    'THCFrame' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors' . DIRECTORY_SEPARATOR . 'thcframe',
+    'IDS' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors' . DIRECTORY_SEPARATOR . 'ids',
+    'Swift' => APP_PATH . DIRECTORY_SEPARATOR . 'vendors' . DIRECTORY_SEPARATOR . 'swiftmailer'
+);
+
 //core
-require(APP_PATH.'/vendors/thcframe/core/core.php');
-THCFrame\Core\Core::initialize($modules);
+require(APP_PATH . '/vendors/thcframe/core/core.php');
+THCFrame\Core\Core::initialize($modules, $prefixes);
 
 //plugins
 $path = APP_PATH . '/application/plugins';

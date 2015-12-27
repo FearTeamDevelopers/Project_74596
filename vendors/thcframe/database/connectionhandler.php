@@ -44,7 +44,7 @@ class ConnectionHandler extends Base
      * 
      * @param type $id
      */
-    public function get($id)
+    public function get($id = 'main')
     {
         if (array_key_exists($id, $this->_connectors)) {
             $id = strtolower(trim($id));

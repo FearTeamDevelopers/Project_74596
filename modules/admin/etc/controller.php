@@ -10,42 +10,53 @@ use THCFrame\Request\RequestMethods;
 use THCFrame\Core\Lang;
 
 /**
- * Module specific controller class extending framework controller class
+ * Module specific controller class extending framework controller class.
  */
 class Controller extends BaseController
 {
-
     /**
-     * Store security context object
-     * @var type 
+     * Store security context object.
+     *
+     * @var THCFrame\Security\Security
      * @read
      */
     protected $_security;
 
     /**
-     * Store initialized cache object
-     * @var type 
+     * Store initialized cache object.
+     *
+     * @var THCFrame\Cache\Cache
      * @read
      */
     protected $_cache;
 
     /**
-     * Store configuration
-     * @var type 
+     * Store configuration.
+     *
+     * @var THCFrame\Configuration\Configuration
      * @read
      */
     protected $_config;
+    
+    /**
+     * Store server host name.
+     *
+     * @var string
+     * @read
+     */
+    protected $_serverHost;
 
     /**
-     * Store language extension
-     * @var type 
+     * Store language extension.
+     *
+     * @var THCFrame\Core\Lang
      * @read
      */
     protected $_lang;
-    
+
     /**
-     * 
      * @param type $string
+     *
      * @return type
      */
     protected function _createUrlKey($string)
@@ -54,63 +65,21 @@ class Controller extends BaseController
         $preCleaned = StringMethods::fastClean($string, $neutralChars, '-');
         $cleaned = StringMethods::fastClean($preCleaned);
         $return = mb_ereg_replace('[\-]+', '-', trim(trim($cleaned), '-'));
+
         return strtolower($return);
     }
 
     /**
-     * 
-     * @param type $body
-     * @param type $subject
-     * @param type $sendTo
-     * @param type $sendFrom
-     * @return boolean
-     */
-    protected function _sendEmail($body, $subject, $sendTo = null, $sendFrom = null)
-    {
-        try {
-            require_once APP_PATH . '/vendors/swiftmailer/swift_required.php';
-            $transport = \Swift_MailTransport::newInstance();
-            $mailer = \Swift_Mailer::newInstance($transport);
-
-            $message = \Swift_Message::newInstance(null)
-                    ->setSubject($subject)
-                    ->setBody($body, 'text/html');
-
-            if (null === $sendTo) {
-                $message->setTo($this->getConfig()->system->adminemail);
-            } else {
-                $message->setTo($sendTo);
-            }
-
-            if (null === $sendFrom) {
-                $message->setFrom('info@sokol.cz');
-            } else {
-                $message->setFrom($sendFrom);
-            }
-
-            if ($mailer->send($message)) {
-                return true;
-            } else {
-                Event::fire('admin.log', array('fail', 'No email sent'));
-                return false;
-            }
-        } catch (\Exception $ex) {
-            Event::fire('admin.log', array('fail', 'Error while sending email: ' . $ex->getMessage()));
-            return false;
-        }
-    }
-
-    /**
-     * Disable view, used for ajax calls
+     * Disable view, used for ajax calls.
      */
     protected function _disableView()
     {
         $this->_willRenderActionView = false;
         $this->_willRenderLayoutView = false;
+        header('Content-Type: text/html; charset=utf-8');
     }
 
     /**
-     * 
      * @param type $options
      */
     public function __construct($options = array())
@@ -118,15 +87,13 @@ class Controller extends BaseController
         parent::__construct($options);
 
         $this->_security = Registry::get('security');
+        $this->_serverHost = RequestMethods::server('HTTP_HOST');
         $this->_cache = Registry::get('cache');
         $this->_config = Registry::get('configuration');
         $this->_lang = Lang::getInstance();
-        
-        $this->getLayoutView()
-                ->setTitle($this->lang('TITLE_DEFAULT_ADMIN'));
 
         // schedule disconnect from database 
-        Event::add('framework.controller.destruct.after', function($name) {
+        Event::add('framework.controller.destruct.after', function ($name) {
             Registry::get('database')->disconnectAll();
         });
     }
@@ -173,8 +140,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
     protected function isCron()
     {
@@ -197,8 +163,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
     protected function isMember()
     {
@@ -220,8 +185,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
     protected function isParticipant()
     {
@@ -243,8 +207,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
     protected function isAdmin()
     {
@@ -266,8 +229,7 @@ class Controller extends BaseController
     }
 
     /**
-     * 
-     * @return boolean
+     * @return bool
      */
     protected function isSuperAdmin()
     {
@@ -312,7 +274,7 @@ class Controller extends BaseController
     }
 
     /**
-     * Load user from security context
+     * Load user from security context.
      */
     public function getUser()
     {
@@ -320,14 +282,13 @@ class Controller extends BaseController
     }
 
     /**
-     * 
      * @param type $key
      * @param type $args
+     *
      * @return type
      */
     public function lang($key, $args = array())
     {
         return $this->getLang()->_get($key, $args);
     }
-    
 }

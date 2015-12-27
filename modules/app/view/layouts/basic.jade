@@ -67,24 +67,12 @@ html
                         p HASTRMAN APNEA tým<br/>Mládežnická 1275<br/>293 01 Mladá Boleslav<br/><br/>E-mail: apnea@hastrman.cz<br/>Jan Tichý - 721 863 728
         #dialog(title='Chcete pokračovat?')
             p
-        |{if $showfeedback}
-        a(href="/feedback").fi-comment.feedback Pošlete nám feedback
 
         //
           JS scripts
         script(type='text/javascript', src='/public/js/plugins/jquery-1.11.1.min.js')
         script(type='text/javascript', src='/public/js/plugins/jquery-ui-1.10.4.custom.min.js')
         script(type='text/javascript', src='/public/js/plugins/modernizr.js')
-        script(type='text/javascript', src='/public/js/foundation.min.js')
-        |{if isset($includecarousel)}
-        script(type='text/javascript', src='/public/js/plugins/jquery.carouFredSel-6.1.0-packed.js')
-        script(type='text/javascript', src='/public/js/custom/build/homeCarousel.js')
-        |{/if}
-        script(type='text/javascript', src='/public/js/plugins/lightbox.min.js')
-        |{if isset($includejssorslider)}
-        script(type='text/javascript', src='/public/js/plugins/jssor.slider.mini.js')
-        script(type='text/javascript', src='/public/js/custom/build/jssor.slider.init.js')
-        |{/if}
         script(type='text/javascript', src='/public/js/custom/build/generalApp.js')
         |{if $env == "live"}
         //

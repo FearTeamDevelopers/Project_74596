@@ -3,6 +3,7 @@
 namespace THCFrame\Core;
 
 use THCFrame\Core\Exception;
+use THCFrame\Registry\Registry;
 
 /**
  * StringMethods class
@@ -222,6 +223,22 @@ class StringMethods
     }
 
     /**
+     * Return hash of given string or object
+     * 
+     * @param string|object $string
+     * @param string        $algo
+     * @return string
+     */
+    public static function getHash($string, $algo = null)
+    {
+        if($algo === null){
+            $algo = Registry::get('configuration')->security->encoder;
+        }
+        
+        return hash_hmac($algo, $string, '');
+    }
+
+    /**
      * Methods perform similarly to the preg_split() functions, but require less
      * formal structure to the regular expressions, and return a more predictable set of results. 
      * The split() method will return the results of a call to the preg_split() function, 
@@ -405,6 +422,32 @@ class StringMethods
         return $cleanString;
     }
     
+    /**
+     * Version of stripos with needles as an array or string
+     * 
+     * @param type $haystack
+     * @param type $needles
+     * @return type
+     */
+    public static function striposArray($haystack, $needles)
+    {
+        if (is_array($needles)) {
+            foreach ($needles as $str) {
+                if (is_array($str)) {
+                    $pos = self::striposArray($haystack, $str);
+                } else {
+                    $pos = stripos($haystack, $str);
+                }
+                if ($pos !== false) {
+                    return $pos;
+                }
+            }
+            return false;
+        } else {
+            return stripos($haystack, $needles);
+        }
+    }
+
     /**
      * truncateHtml can truncate a string up to a number of characters while preserving whole words and HTML tags
      *
@@ -612,13 +655,16 @@ class StringMethods
     }
 
     /**
-     * exho alias
+     * Prepare text for inserting into email template
      * 
-     * @param string $data
+     * @param string $text
+     * @return string
      */
-    public static function echos($data)
+    public static function prepareEmailText($text)
     {
-        self::exho($data);
+        $prepared = str_replace(array('</p>', '</div>'), '<br/>', $text);
+        $prepared = strip_tags($prepared,'<br/><br><a><img/><img><table><tr><td><tbody><meta/><meta>');
+        
+        return $prepared;
     }
-
 }

@@ -51,7 +51,7 @@ class Module extends Base
 
         Event::fire('framework.module.initialize.before', array($this->_moduleName));
 
-        $this->addModuleEvents();
+        $this->_addModuleEvents();
 
         Event::add('framework.router.construct.after', function($router){
             $router->addRedirects($this->getRedirects());
@@ -64,7 +64,7 @@ class Module extends Base
     /**
      * Create module-specific events
      */
-    private function addModuleEvents()
+    private function _addModuleEvents()
     {
         if ($this->getObserverClass() !== null) {
             $obsClass = $this->getObserverClass();

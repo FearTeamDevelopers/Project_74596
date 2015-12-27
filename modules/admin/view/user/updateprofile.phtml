@@ -44,6 +44,18 @@
             </span>
         </p>
         <p>
+            <label>Osobní info</label>
+            <span class="field">
+                <textarea rows="20" name="shorttext" id="ckeditor2">{echo \Admin\Helper\FormPrinter::iset($user,'personalData')}</textarea>
+                {if isset($errors["personalData"])}
+                <label class="error">{echo join("<br/>", $errors["personalData"])}</label>
+                {/if}
+                <br/>
+                <button id="clear-teaser">Smazat</button>
+                <button id="teaser-new-paragraph">Nový odstavec</button>
+            </span>
+        </p>
+        <p>
             <label>Notifikace</label>
             <span class="field">
                 <input type="checkbox" name="actionNotification" value="1" {if $user->getNewActionNotification}checked="checked"{/if}/><span>Chci dostávat emailové oznámení o nových akcích</span><br/>

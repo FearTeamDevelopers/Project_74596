@@ -2,14 +2,14 @@
 
 spl_autoload_register(function($class) {
     $file = strtolower(str_replace('\\', DIRECTORY_SEPARATOR, trim($class, '\\'))) . '.php';
-    $combined = '.' . DIRECTORY_SEPARATOR . $file;
+    $combined = APP_PATH . DIRECTORY_SEPARATOR.'vendors'.DIRECTORY_SEPARATOR . $file;
 
     if (file_exists($combined)) {
         require_once($combined);
         return;
     } else {
         $file = strtolower(str_replace('_', DIRECTORY_SEPARATOR, trim($class, '\\'))) . '.php';
-        $combined = '.' . DIRECTORY_SEPARATOR . $file;
+        $combined = APP_PATH . DIRECTORY_SEPARATOR.'vendors'.DIRECTORY_SEPARATOR . $file;
 
         if (file_exists($combined)) {
             require_once($combined);
@@ -39,8 +39,8 @@ try {
     $result = $ids->run($request);
     if (!$result->isEmpty()) {
 
-        $compositeLog = new IDS_Log_Composite();
-        $compositeLog->addLogger(IDS_Log_File::getInstance($init));
+        $compositeLog = new \IDS_Log_Composite();
+        $compositeLog->addLogger(\IDS_Log_File::getInstance($init));
         /*
         $compositeLog->addLogger(
             IDS_Log_Email::getInstance($init)

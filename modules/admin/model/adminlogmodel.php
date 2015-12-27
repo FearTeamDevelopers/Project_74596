@@ -2,111 +2,13 @@
 
 namespace Admin\Model;
 
-use THCFrame\Model\Model;
+use Admin\Model\Basic\BasicAdminlogModel;
 
 /**
- * Log ORM class
+ * Log ORM class.
  */
-class AdminLogModel extends Model
+class AdminLogModel extends BasicAdminlogModel
 {
-
-    /**
-     * @column
-     * @readwrite
-     * @primary
-     * @type auto_increment
-     */
-    protected $_id;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 80
-     * 
-     * @validate alphanumeric, max(80)
-     */
-    protected $_userId;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 50
-     * 
-     * @validate alpha, max(50)
-     */
-    protected $_module;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 50
-     * 
-     * @validate alpha, max(50)
-     */
-    protected $_controller;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 50
-     * 
-     * @validate alpha, max(50)
-     */
-    protected $_action;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 15
-     * 
-     * @validate alpha, max(15)
-     */
-    protected $_result;
-    
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 250
-     * 
-     * @validate alphanumeric, max(250)
-     */
-    protected $_httpreferer;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 256
-     * 
-     * @validate alphanumeric
-     */
-    protected $_params;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 22
-     * 
-     * @validate datetime, max(22)
-     */
-    protected $_created;
-
-    /**
-     * @column
-     * @readwrite
-     * @type text
-     * @length 22
-     * 
-     * @validate datetime, max(22)
-     */
-    protected $_modified;
 
     /**
      * 
@@ -121,5 +23,13 @@ class AdminLogModel extends Model
         }
         $this->setModified(date('Y-m-d H:i:s'));
     }
-
+    
+    /**
+     * Get errors from last week
+     * @return array
+     */
+    public static function fetchErrorsFromLastWeek()
+    {
+        return self::all(array('result = ?' => 'fail', 'created between date_sub(now(),INTERVAL 1 WEEK) and now()' => ''), array('*'), array('created' => 'desc'));
+    }
 }

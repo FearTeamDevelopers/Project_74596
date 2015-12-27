@@ -1,7 +1,7 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/system/">Hlavní</a></li>
     <li><a href="/admin/system/settings/">Nastavení</a></li>
-    <li><a href="/admin/system/showadminlog/">Admin log</a></li>
+    {if $isAdmin}<li><a href="/admin/system/showlog/">Admin log</a></li>{/if}
     <li class="current"><a href="#">Line Counter</a></li>
 </ul><!--maintabmenu-->
 

@@ -129,8 +129,11 @@ class Filecache extends Cache\Driver
      */
     public function erase($key)
     {
-        if (file_exists($this->_path . $key . $this->_suffix)) {
-            $this->_fileManager->remove($this->_path . $key . $this->_suffix);
+        $matches = glob($this->_path.'*'.$key.'*');
+        foreach ($matches as $file){
+            if (file_exists($file)) {
+                $this->_fileManager->remove($file);
+            }
         }
     }
 

@@ -2,12 +2,12 @@
 
 namespace THCFrame\Security\Authorization;
 
-use THCFrame\Security\Model\BasicUser;
+use THCFrame\Security\Model\BasicUserModel;
 
 /**
  * AuthorizationInterface ensure that authorization class will have isGranted method
  */
 interface AuthorizationInterface
 {
-    public function isGranted(BasicUser $user, $requiredRole);
+    public function isGranted(BasicUserModel $user, $requiredRole);
 }

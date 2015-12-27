@@ -9,6 +9,7 @@ use THCFrame\Registry\Registry;
 use THCFrame\Controller\Exception;
 use THCFrame\View\Exception as ViewException;
 use THCFrame\Request\RequestMethods;
+use THCFrame\Request\Response;
 
 /**
  * Parent controller class
@@ -80,16 +81,18 @@ class Controller extends Base
     protected $_defaultContentType = 'text/html';
 
     /**
+     * Store device type from Mobile Detect class
      * 
-     * @return type
+     * @var string
+     * @read
      */
-    protected function getName()
-    {
-        if (empty($this->_name)) {
-            $this->_name = get_class($this);
-        }
-        return $this->_name;
-    }
+    protected $_deviceType;
+
+    /**
+     * @read
+     * @var THCFrame\Request\Response
+     */
+    protected $_response;
 
     /**
      * 
@@ -156,12 +159,21 @@ class Controller extends Base
     protected function _checkCSRFToken()
     {
         $security = Registry::get('security');
-        
+
         if ($security->getCSRF()->verifyRequest()) {
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * 
+     */
+    protected function _refreshCSRFToken()
+    {
+        $security = Registry::get('security');
+        $security->getCSRF()->refreshToken();
     }
 
     /**
@@ -196,8 +208,9 @@ class Controller extends Base
 
         //get resources
         $configuration = Registry::get('configuration');
-        $session = Registry::get('session');
         $router = Registry::get('router');
+
+        $this->_response = new Response();
 
         if (!empty($configuration->view)) {
             $this->_defaultExtension = explode(',', $configuration->view->extension);
@@ -214,7 +227,7 @@ class Controller extends Base
         $controller = $router->getLastRoute()->getController();
         $action = $router->getLastRoute()->getAction();
 
-        $deviceType = $session->get('devicetype');
+        $deviceType = $this->getDeviceType();
 
         if ($deviceType == 'phone' && $this->_mobileLayout != '') {
             $defaultLayout = $this->_mobileLayout;
@@ -319,6 +332,33 @@ class Controller extends Base
     }
 
     /**
+     * Return device type string
+     * 
+     * @return string
+     */
+    public function getDeviceType()
+    {
+        $detect = Registry::get('mobiledetect');
+        $session = Registry::get('session');
+
+        $deviceType = $session->get('deviceType');
+
+        if ($deviceType === null) {
+            if ($detect->isMobile() && !$detect->isTablet()) {
+                $deviceType = 'phone';
+            } elseif ($detect->isTablet() && !$detect->isMobile()) {
+                $deviceType = 'tablet';
+            } else {
+                $deviceType = 'computer';
+            }
+            
+            $session->set('deviceType', $deviceType);
+        }
+
+        return $deviceType;
+    }
+
+    /**
      * Main render method
      * 
      * @throws View\Exception\Renderer
@@ -349,16 +389,22 @@ class Controller extends Base
                 $profiler->stop();
 
                 //protection against clickjacking
-                header('X-Frame-Options: deny');
-                header("Content-type: {$defaultContentType}");
-                echo $results;
+                $this->_response->setHeader('X-Frame-Options', 'deny')
+                        ->setHeader('Content-type', $defaultContentType)
+                        ->setBody($results);
+
+                $this->_response->sendHeaders()
+                        ->send(false);
             } elseif ($doAction) {
                 $profiler->stop();
 
                 //protection against clickjacking
-                header('X-Frame-Options: deny');
-                header("Content-type: {$defaultContentType}");
-                echo $results;
+                $this->_response->setHeader('X-Frame-Options', 'deny')
+                        ->setHeader('Content-type', $defaultContentType)
+                        ->setBody($results);
+
+                $this->_response->sendHeaders()
+                        ->send(false);
             }
 
             $this->_willRenderLayoutView = false;

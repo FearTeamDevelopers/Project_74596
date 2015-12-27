@@ -31,7 +31,7 @@ class Logger extends Base
     {
         return new Exception\Implementation(sprintf('%s method not implemented', $method));
     }
-    
+
     /**
      * Factory method
      * It accepts initialization options and selects the type of returned object, 

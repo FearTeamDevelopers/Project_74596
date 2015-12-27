@@ -1,6 +1,7 @@
 <ul class="maintabmenu multipletabmenu">
     <li><a href="/admin/user/">Uživatelé</a></li>
     <li class="current"><a href="#">Nový uživatel</a></li>
+    <li><a href="/admin/user/help/">Nápověda</a></li>
 </ul>
 
 <div class="content">
@@ -48,6 +49,7 @@
             <label>Notifikace</label>
             <span class="field">
                 <input type="checkbox" name="actionNotification" value="1" /><span>Chci dostávat emailové oznámení o nových akcích</span><br/>
+                <input type="checkbox" name="reportNotification" value="1"/><span>Chci dostávat emailové oznámení o nových reportážích</span>
             </span>
         </p>
         
@@ -94,7 +96,7 @@
             <span class="field">
                 <select name="role" class="width80">
                     {foreach $role in $roles}
-                        <option value="{echo $role}">{echo $role}</option>
+                        <option value="{echo $role_i}">{echo $role}</option>
                     {/foreach}
                 </select>
                 {if isset($errors["role"])}

@@ -22,6 +22,11 @@ class Database extends Session\Driver
     protected $_ttl;
 
     /**
+     * @readwrite
+     */
+    protected $_secret;
+    
+    /**
      * 
      * @param type $options
      */
@@ -41,6 +46,17 @@ class Database extends Session\Driver
         @session_start();
     }
 
+    /**
+     * Session keys are hashed with sha512 algo
+     * 
+     * @param string $key
+     * @return hash
+     */
+    public function hashKey($key)
+    {
+        return hash_hmac('sha512', $key, $this->getSecret());
+    }
+    
     public function open()
     {
         try{
@@ -66,6 +82,7 @@ class Database extends Session\Driver
      */
     public function erase($key)
     {
+        $key = $this->hashKey($key);
         $state = Session::deleteAll(array('id = ?' => $key));
         
         if($state != -1){
@@ -83,6 +100,7 @@ class Database extends Session\Driver
      */
     public function get($key, $default = '')
     {
+        $key = $this->hashKey($key);
         $ses = Session::first(array('id = ?' => $key));
         
         if($ses !== null){
@@ -100,6 +118,7 @@ class Database extends Session\Driver
      */
     public function set($key, $value)
     {
+        $key = $this->hashKey($key);
         $ses = new Session(array(
             'id' => $key,
             'expires' => time(),
